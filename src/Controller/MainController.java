@@ -17,7 +17,16 @@ public class MainController {
          mainFrame.pack();
          mainFrame.setVisible(true);
 
+         for(int i=0;i<100;i++) {
+             try{
+             java.util.concurrent.TimeUnit.SECONDS.sleep(1);
+             mainWindow.mainPanel.revalidate();
+         } catch (InterruptedException e) {
+                 e.printStackTrace();
+             }
 
-
+         }
     }
 }
+
+

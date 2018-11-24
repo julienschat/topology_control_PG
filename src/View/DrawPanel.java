@@ -6,6 +6,8 @@ import java.awt.geom.Ellipse2D;
 
 public class DrawPanel extends JPanel{
 
+    public java.util.List<Shape> shapes;
+    private int i = 0;
     public DrawPanel(){
 
     }
@@ -13,7 +15,12 @@ public class DrawPanel extends JPanel{
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        drawCircle(g,20,20,10);
+
+        //for (Shape shape : shapes){
+        //     shape.draw(g);
+        //}
+
+        drawCircle(g,20+i,20,10);
         drawCircle(g,40,40,10);
         drawEdge(g,20,20,40,40);
 
@@ -22,7 +29,7 @@ public class DrawPanel extends JPanel{
         int w = getWidth();
         int h = getHeight();
 
-
+        i++;
     }
 
 
