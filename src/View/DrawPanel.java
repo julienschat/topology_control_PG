@@ -2,12 +2,64 @@ package View;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 
 public class DrawPanel extends JPanel{
 
-    public DrawPanel(){
+    private int testX;
+    private int testY;
 
+    public DrawPanel(){
+        this.attachMouseListener();
+    }
+
+    private void attachMouseListener() {
+        DrawPanel panel = this;
+        MouseAdapter adapter = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                panel.testX = e.getX();
+                panel.testY = e.getY();
+                panel.revalidate();
+                panel.repaint();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                super.mouseDragged(e);
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                super.mouseMoved(e);
+            }
+        };
+
+        this.addMouseListener(adapter);
+        this.addMouseMotionListener(adapter);
     }
 
     @Override
@@ -22,7 +74,7 @@ public class DrawPanel extends JPanel{
         int w = getWidth();
         int h = getHeight();
 
-
+        drawCircle(g,this.testX,this.testY,10);
     }
 
 
