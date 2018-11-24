@@ -10,6 +10,8 @@ public class DrawPanel extends JPanel{
 
     private int testX;
     private int testY;
+    public java.util.List<Shape> shapes;
+    private int i = 0;
 
     public DrawPanel(){
         this.attachMouseListener();
@@ -65,7 +67,12 @@ public class DrawPanel extends JPanel{
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        drawCircle(g,20,20,10);
+
+        //for (Shape shape : shapes){
+        //     shape.draw(g);
+        //}
+
+        drawCircle(g,20+i,20,10);
         drawCircle(g,40,40,10);
         drawEdge(g,20,20,40,40);
 
@@ -74,6 +81,7 @@ public class DrawPanel extends JPanel{
         int w = getWidth();
         int h = getHeight();
 
+        i++;
         drawCircle(g,this.testX,this.testY,10);
     }
 
