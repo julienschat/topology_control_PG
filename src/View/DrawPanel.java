@@ -5,16 +5,37 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
+import java.util.LinkedList;
 
 public class DrawPanel extends JPanel{
 
     private int testX;
     private int testY;
-    public java.util.List<Shape> shapes;
+    public java.util.List<Shape> shapes = new LinkedList<Shape>();
     private int i = 0;
+
+    @FunctionalInterface
+    private interface RedirectMouseEvent {
+        void redirect(MouseAdapter ma);
+    }
 
     public DrawPanel(){
         this.attachMouseListener();
+    }
+
+    private void redirectMouseEvent(MouseEvent e, RedirectMouseEvent deferrer) {
+        for (Shape shape: this.shapes) {
+            if (shape.shouldHandleMouseEventAt(e.getX(), e.getY())) {
+                for (MouseAdapter ma : shape.getMouseListeners()) {
+                    deferrer.redirect(ma);
+                }
+            }
+        }
+    }
+
+    private void update() {
+        this.revalidate();
+        this.repaint();
     }
 
     private void attachMouseListener() {
@@ -23,40 +44,50 @@ public class DrawPanel extends JPanel{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                panel.testX = e.getX();
-                panel.testY = e.getY();
-                panel.revalidate();
-                panel.repaint();
+                panel.redirectMouseEvent(e, ma -> ma.mouseClicked(e));
+                panel.update();
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
+                panel.redirectMouseEvent(e, ma -> ma.mousePressed(e));
+                panel.update();
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
+                panel.redirectMouseEvent(e, ma -> ma.mouseReleased(e));
+                panel.update();
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
                 super.mouseEntered(e);
+                panel.redirectMouseEvent(e, ma -> ma.mouseEntered(e));
+                panel.update();
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 super.mouseExited(e);
+                panel.redirectMouseEvent(e, ma -> ma.mouseExited(e));
+                panel.update();
             }
 
             @Override
             public void mouseDragged(MouseEvent e) {
                 super.mouseDragged(e);
+                panel.redirectMouseEvent(e, ma -> ma.mouseDragged(e));
+                panel.update();
             }
 
             @Override
             public void mouseMoved(MouseEvent e) {
                 super.mouseMoved(e);
+                panel.redirectMouseEvent(e, ma -> ma.mouseMoved(e));
+                panel.update();
             }
         };
 
