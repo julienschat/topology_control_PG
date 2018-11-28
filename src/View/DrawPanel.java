@@ -1,5 +1,7 @@
 package View;
 
+import View.Shapes.Shape;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -9,9 +11,7 @@ import java.util.LinkedList;
 
 public class DrawPanel extends JPanel{
 
-    private int testX;
-    private int testY;
-    public java.util.List<Shape> shapes = new LinkedList<Shape>();
+    public java.util.List<View.Shapes.Shape> shapes = new LinkedList<View.Shapes.Shape>();
     private int i = 0;
 
     @FunctionalInterface
@@ -24,7 +24,7 @@ public class DrawPanel extends JPanel{
     }
 
     private void redirectMouseEvent(MouseEvent e, RedirectMouseEvent deferrer) {
-        for (Shape shape: this.shapes) {
+        for (View.Shapes.Shape shape: this.shapes) {
             if (shape.shouldHandleMouseEventAt(e.getX(), e.getY())) {
                 for (MouseAdapter ma : shape.getMouseListeners()) {
                     deferrer.redirect(ma);
@@ -99,21 +99,9 @@ public class DrawPanel extends JPanel{
     public void paintComponent(Graphics g){
         super.paintComponent(g);
 
-        //for (Shape shape : shapes){
-        //     shape.draw(g);
-        //}
-
-        drawCircle(g,20+i,20,10);
-        drawCircle(g,40,40,10);
-        drawEdge(g,20,20,40,40);
-
-        Graphics2D g2d = (Graphics2D) g;
-
-        int w = getWidth();
-        int h = getHeight();
-
-        i++;
-        drawCircle(g,this.testX,this.testY,10);
+        for (Shape shape : shapes){
+             shape.draw(g);
+        }
     }
 
 

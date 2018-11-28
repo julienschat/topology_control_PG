@@ -1,4 +1,4 @@
-package View;
+package View.Shapes;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
