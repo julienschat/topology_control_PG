@@ -25,7 +25,7 @@ public class DrawPanel extends JPanel{
 
     private void redirectMouseEvent(MouseEvent e, RedirectMouseEvent deferrer) {
         for (View.Shapes.Shape shape: this.shapes) {
-            if (shape.shouldHandleMouseEventAt(e.getX(), e.getY())) {
+            if (shape.isNear(e.getX(), e.getY())) {
                 for (MouseAdapter ma : shape.getMouseListeners()) {
                     deferrer.redirect(ma);
                 }

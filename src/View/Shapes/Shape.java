@@ -6,17 +6,11 @@ import java.util.ArrayList;
 
 public abstract class Shape {
 
-    public boolean acceptAllEvents = false;
-
     private java.util.List<MouseAdapter> mouseListeners = new ArrayList<MouseAdapter>();
 
     public abstract void draw(Graphics g);
 
     public abstract boolean isNear(int x, int y);
-
-    public boolean shouldHandleMouseEventAt(int x, int y) {
-        return this.acceptAllEvents || this.isNear(x, y);
-    }
 
     public void addMouseListener(MouseAdapter listener) {
         this.mouseListeners.add(listener);
