@@ -3,6 +3,9 @@ package View.Shapes;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
 public class Node extends Shape {
 
     int x;
@@ -23,6 +26,6 @@ public class Node extends Shape {
 
     @Override
     public boolean isNear(int x, int y) {
-        return false;
+        return sqrt(pow(x - this.x, 2) + pow(y - this.y, 2)) < this.radius;
     }
 }

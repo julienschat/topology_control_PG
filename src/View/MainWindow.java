@@ -12,12 +12,21 @@ public class MainWindow{
 
     public MainWindow() {
         MainWindow window = this;
+
+        // the following code belongs into a dedicated controller
+
+        // example code for adding nodes
         this.drawPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 if (window.drawNode) {
-                    drawPanel.shapes.add(new Node(e.getX(), e.getY()));
+                    Node node = new Node(e.getX(), e.getY());
+                    drawPanel.shapes.add(node);
+
+                    // example code for adding click handler to node
+                    window.addNodeClickExample(node);
+
                     window.drawNode = false;
                 }
             }
@@ -25,6 +34,17 @@ public class MainWindow{
 
         this.newNodeButton.addActionListener(e -> {
             window.drawNode = true;
+        });
+    }
+
+    void addNodeClickExample(Node n) {
+        MainWindow window = this;
+        n.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                window.debugText.append("Node clicked.");
+            }
         });
     }
 
