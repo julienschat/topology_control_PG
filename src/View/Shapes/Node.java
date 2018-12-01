@@ -17,6 +17,11 @@ public class Node extends Shape {
         this.y = y;
     }
 
+    public void updateCoordinates(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
     @Override
     public void draw(Graphics g) {
         Ellipse2D.Double circle = new Ellipse2D.Double(x-radius,y-radius,radius*2,radius*2);

@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 public class MainWindow{
 
     private boolean drawNode = false;
+    private Node dragged;
 
     public MainWindow() {
         MainWindow window = this;
@@ -32,18 +33,42 @@ public class MainWindow{
             }
         });
 
+        this.drawPanel.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                super.mouseDragged(e);
+                if (window.dragged != null) {
+                    window.dragged.updateCoordinates(e.getX(), e.getY());
+                }
+            }
+        });
+
         this.newNodeButton.addActionListener(e -> {
             window.drawNode = true;
         });
     }
 
     void addNodeClickExample(Node n) {
+
         MainWindow window = this;
         n.addMouseListener(new MouseAdapter() {
+            // click example
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 window.debugText.append("Node clicked.");
+            }
+
+            //dragging example
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                window.dragged = n;
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e);
+                window.dragged = null;
             }
         });
     }
