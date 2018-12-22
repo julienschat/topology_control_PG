@@ -1,5 +1,9 @@
 package Model;
 
 public class AlgorithmState {
-    Graph origin;
+    protected Graph pristine;
+
+    public AlgorithmState(Graph _pristine) {
+        pristine = _pristine;
+    }
 }
