@@ -26,4 +26,8 @@ public class Node {
     public Node cloneWithoutEdges() {
         return new Node(this.x, this.y, this.radius);
     }
+
+    public double distanceTo(Node other) {
+        return Math.sqrt(Math.pow(x - other.x, 2) + Math.pow(y - other.y, 2));
+    }
 }

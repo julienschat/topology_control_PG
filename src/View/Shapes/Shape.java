@@ -10,7 +10,7 @@ public abstract class Shape {
 
     public abstract void draw(Graphics g);
 
-    public abstract boolean isNear(int x, int y);
+    public abstract boolean isNear(double x, double y);
 
     public void addMouseListener(MouseAdapter listener) {
         this.mouseListeners.add(listener);

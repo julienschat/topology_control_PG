@@ -8,11 +8,11 @@ import static java.lang.Math.sqrt;
 
 public class Node extends Shape {
 
-    int x;
-    int y;
-    int radius = 5;
+    double x;
+    double y;
+    double radius = 5;
 
-    public Node(int x, int y) {
+    public Node(double x, double y) {
         this.x = x;
         this.y = y;
     }
@@ -30,7 +30,7 @@ public class Node extends Shape {
     }
 
     @Override
-    public boolean isNear(int x, int y) {
+    public boolean isNear(double x, double y) {
         return sqrt(pow(x - this.x, 2) + pow(y - this.y, 2)) < this.radius;
     }
 }

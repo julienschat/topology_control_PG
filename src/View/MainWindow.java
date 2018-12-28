@@ -1,10 +1,13 @@
 package View;
 
+import Model.Graph;
+import View.Shapes.Edge;
 import View.Shapes.Node;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 public class MainWindow{
 
@@ -13,6 +16,23 @@ public class MainWindow{
 
     public MainWindow() {
         MainWindow window = this;
+
+        // test code reading a graph
+
+        try {
+            Graph graph = Graph.readFile("./test_graph.txt");
+            for (Model.Node node : graph.nodeList) {
+                drawPanel.shapes.add(new Node(node.x, node.y));
+            }
+            for (Model.Edge edge: graph.edgeList) {
+                drawPanel.shapes.add(new Edge(edge.left.x, edge.left.y, edge.right.x, edge.right.y));
+            }
+        }
+        catch (IOException ignored) {
+
+        }
+
+        // run algorithm here
 
         // the following code belongs into a dedicated controller
 
