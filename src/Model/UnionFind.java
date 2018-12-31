@@ -7,10 +7,10 @@ public class UnionFind {
     private ArrayList<InternalNode> universe;
 
     public class InternalNode {
-        public InternalNode parent = null;
-        public int rank = 0;
-        public Node node;
-        public InternalNode(Node item) {
+        InternalNode parent = null;
+        int rank = 0;
+        Node node;
+        InternalNode(Node item) {
             this.node = item;
         }
     }
@@ -20,7 +20,7 @@ public class UnionFind {
         universe = new ArrayList<>(nodes.size());
         for (Node node: nodes) {
             node.id = i;
-            universe.set(i, new InternalNode(node));
+            universe.add(new InternalNode(node));
             i++;
         }
     }

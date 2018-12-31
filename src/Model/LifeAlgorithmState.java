@@ -4,12 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public enum LifeAlgorithmPhase {
-    INIT,
-    FINDING_EDGES,
-    FINISHED
-}
-
 public class LifeAlgorithmState extends AlgorithmState {
     public LinkedList<Edge> edgeList = new LinkedList<Edge>();
     public LinkedList<Edge> edgesByCoverage;

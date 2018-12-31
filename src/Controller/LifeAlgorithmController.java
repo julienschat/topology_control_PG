@@ -8,13 +8,14 @@ import java.util.stream.Collectors;
 
 public class LifeAlgorithmController extends AlgorithmController {
     @Override
-    public AlgorithmState Init(Graph origin) {
+    public AlgorithmState init(Graph origin) {
         LifeAlgorithmState state = new LifeAlgorithmState(origin);
         state.unionFind.makeSets(origin.nodeList);
         origin.calculateCoverages();
         state.edgesByCoverage = origin.edgeList.stream()
                 .sorted(Comparator.comparing(e -> e.coverage))
                 .collect(Collectors.toCollection(LinkedList::new));
+        state.phase = LifeAlgorithmPhase.FINDING_EDGES;
         return state;
     }
 
@@ -26,6 +27,9 @@ public class LifeAlgorithmController extends AlgorithmController {
             if (state.unionFind.find(e.left) != state.unionFind.find(e.right)) {
                 state.edgeList.push(e);
                 state.unionFind.union(e.left, e.right);
+            }
+            if (state.edgesByCoverage.isEmpty()) {
+                state.phase = LifeAlgorithmPhase.FINISHED;
             }
         }
     }

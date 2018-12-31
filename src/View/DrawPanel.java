@@ -33,7 +33,7 @@ public class DrawPanel extends JPanel{
         }
     }
 
-    private void update() {
+    public void update() {
         this.revalidate();
         this.repaint();
     }

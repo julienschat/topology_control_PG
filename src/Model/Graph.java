@@ -13,6 +13,11 @@ public class Graph {
 
     public Graph() { }
 
+    public Graph(List<Node> nodes, List<Edge> edges) {
+        nodeList = nodes;
+        edgeList = edges;
+    }
+
     public void insertNode(Node n) {
         this.nodeList.add(n);
     }
