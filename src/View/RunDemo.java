@@ -32,6 +32,15 @@ public class RunDemo implements Runnable {
             if (dist > 0) {
                 drawPanel.shapes.add(new Radius(node.x, node.y, dist));
             }
+            for (Model.Node other : graph.nodeList) {
+                if (node.distanceTo(other) < dist) {
+                    if (!node.getNeighbours().contains(other)) {
+                        Edge shapeEdge = new Edge(node.x, node.y, other.x, other.y);
+                        shapeEdge.highlight = true;
+                        drawPanel.shapes.add(shapeEdge);
+                    }
+                }
+            }
         }
         for (Model.Edge edge: graph.edgeList) {
             drawPanel.shapes.add(new Edge(edge.left.x, edge.left.y, edge.right.x, edge.right.y));

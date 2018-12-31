@@ -26,6 +26,7 @@ public class Graph {
         // this could be improved by using a spatial tree
         return this.nodeList.stream()
                 .filter(o -> node.distanceTo(o) <= range)
+                .filter(o -> o != node)
                 .collect(Collectors.toList());
 
     }
@@ -52,13 +53,16 @@ public class Graph {
         Graph graph = new Graph();
         Scanner sc = new Scanner(Paths.get(fileName));
         while (sc.hasNext()) {
-            Node node = new Node(sc.nextDouble(), sc.nextDouble(), sc.nextDouble());
-            for (Node other: graph.getNodesInRange(node, node.radius)) {
-                graph.connectNodes(node, other);
-            }
-            graph.nodeList.add(node);
+            graph.nodeList.add(new Node(sc.nextDouble(), sc.nextDouble(), sc.nextDouble()));
         }
         sc.close();
+        for (Node node : graph.nodeList) {
+            for (Node other: graph.getNodesInRange(node, node.radius)) {
+                if (!node.getNeighbours().contains(other)) {
+                    graph.connectNodes(node, other);
+                }
+            }
+        }
         return graph;
     }
 
