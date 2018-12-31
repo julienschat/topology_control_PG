@@ -7,8 +7,10 @@ import Model.Graph;
 import Model.LifeAlgorithmState;
 import View.Shapes.Edge;
 import View.Shapes.Node;
+import View.Shapes.Radius;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 
 public class RunDemo implements Runnable {
@@ -23,6 +25,13 @@ public class RunDemo implements Runnable {
         drawPanel.shapes.clear();
         for (Model.Node node : graph.nodeList) {
             drawPanel.shapes.add(new Node(node.x, node.y));
+            double dist = node.edgeList.stream()
+                    .map(e -> e.left.distanceTo(e.right))
+                    .max(Comparator.naturalOrder())
+                    .orElse((double) 0);
+            if (dist > 0) {
+                drawPanel.shapes.add(new Radius(node.x, node.y, dist));
+            }
         }
         for (Model.Edge edge: graph.edgeList) {
             drawPanel.shapes.add(new Edge(edge.left.x, edge.left.y, edge.right.x, edge.right.y));
@@ -39,7 +48,7 @@ public class RunDemo implements Runnable {
 
             drawGraph(graph);
 
-            TimeUnit.SECONDS.sleep(1);
+            TimeUnit.SECONDS.sleep(2);
 
             AlgorithmController controller = new LifeAlgorithmController();
             AlgorithmState state = controller.init(graph);
@@ -49,7 +58,8 @@ public class RunDemo implements Runnable {
             while (!controller.isFinished(state)) {
                 controller.processState(state);
                 // Begin of Life specific code
-                Graph tmp = new Graph(state.origin.nodeList, ((LifeAlgorithmState)state).edgeList);
+                LifeAlgorithmState lState = (LifeAlgorithmState)state;
+                Graph tmp = graph.reducedGraph(lState.edgeList);
                 drawGraph(tmp);
                 // End of Life specific code
                 TimeUnit.MILLISECONDS.sleep(500);

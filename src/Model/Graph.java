@@ -1,22 +1,15 @@
 package Model;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Graph {
     public List<Node> nodeList = new ArrayList<>();
     public List<Edge> edgeList = new LinkedList<>();
 
     public Graph() { }
-
-    public Graph(List<Node> nodes, List<Edge> edges) {
-        nodeList = nodes;
-        edgeList = edges;
-    }
 
     public void insertNode(Node n) {
         this.nodeList.add(n);
@@ -45,6 +38,16 @@ public class Graph {
         return newGraph;
     }
 
+    public Graph reducedGraph(List<Edge> edges) {
+        Graph newGraph = cloneGraphWithoutEdges();
+        for (Edge edge: edges) {
+            int lIndex = edge.left.index;
+            int rIndex = edge.right.index;
+            newGraph.connectNodes(newGraph.nodeList.get(lIndex), newGraph.nodeList.get(rIndex));
+        }
+        return newGraph;
+    }
+
     public static Graph readFile(String fileName) throws IOException {
         Graph graph = new Graph();
         Scanner sc = new Scanner(Paths.get(fileName));
@@ -57,6 +60,14 @@ public class Graph {
         }
         sc.close();
         return graph;
+    }
+
+    public void fixNodeIndicies() {
+        int index = 0;
+        for (Node node: nodeList) {
+            node.index = index;
+            index++;
+        }
     }
 
     public void calculateCoverages() {
