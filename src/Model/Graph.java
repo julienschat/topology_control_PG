@@ -3,10 +3,7 @@ package Model;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -55,5 +52,14 @@ public class Graph {
         }
         sc.close();
         return graph;
+    }
+
+    public void calculateCoverages() {
+        for (Node node: nodeList) {
+            node.edgeList.sort(Comparator.comparingDouble(e -> e.left.distanceTo(e.right)));
+            for (int i = 1; i < node.edgeList.size(); i++) {
+                node.edgeList.get(i).coverage += i;
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ package Model;
 public class Edge {
     public Node left;
     public Node right;
+    public int coverage = 2;
 
     public Edge(Node left, Node right) {
         this.left = left;

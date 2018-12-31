@@ -1,17 +1,37 @@
 package Controller;
 
-import Model.AlgorithmState;
-import Model.Graph;
-import Model.LifeAlgorithmState;
+import Model.*;
+
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 public class LifeAlgorithmController extends AlgorithmController {
     @Override
-    public AlgorithmState Init(Graph pristine) {
-        return new LifeAlgorithmState(pristine);
+    public AlgorithmState Init(Graph origin) {
+        LifeAlgorithmState state = new LifeAlgorithmState(origin);
+        state.unionFind.makeSets(origin.nodeList);
+        origin.calculateCoverages();
+        state.edgesByCoverage = origin.edgeList.stream()
+                .sorted(Comparator.comparing(e -> e.coverage))
+                .collect(Collectors.toCollection(LinkedList::new));
+        return state;
     }
 
     @Override
     public void processState(AlgorithmState algorithmState) {
-        
+        LifeAlgorithmState state = (LifeAlgorithmState) algorithmState;
+        if (state.phase != LifeAlgorithmPhase.FINISHED) {
+            Edge e = state.edgesByCoverage.pop();
+            if (state.unionFind.find(e.left) != state.unionFind.find(e.right)) {
+                state.edgeList.push(e);
+                state.unionFind.union(e.left, e.right);
+            }
+        }
+    }
+
+    @Override
+    public boolean isFinished(AlgorithmState algorithmState) {
+        return ((LifeAlgorithmState)algorithmState).phase == LifeAlgorithmPhase.FINISHED;
     }
 }
