@@ -1,0 +1,11 @@
+package Model;
+
+public enum LiseAlgorithmPhase {
+
+    MAXEDGECHOOSING,
+    SHORTESTPATHCHECKING,
+    MINEDGECHOOSING,
+    SAMECOVERAGECHOOSING,
+    FINISHED
+
+}
