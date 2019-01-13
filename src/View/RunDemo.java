@@ -69,10 +69,10 @@ public class RunDemo implements Runnable {
 
             while (!algorithmController.isFinished(state)) {
                 algorithmController.processState(state);
-                // Begin of Life specific code
+
                 Graph tmp = new Graph(state.origin.nodeList, state.edgesChosen);
                 drawGraph(tmp);
-                // End of Life specific code
+
                 TimeUnit.MILLISECONDS.sleep(400);
             }
             System.out.println("Finished");

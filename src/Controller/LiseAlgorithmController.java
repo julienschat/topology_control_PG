@@ -120,7 +120,6 @@ public class LiseAlgorithmController extends AlgorithmController{
     }
 
     public void addEdgeToTSPanner(AlgorithmState algorithmState, Edge edge){
-        System.out.println("Edge is added to TPSpanner, from: "+edge.left.id+" to "+edge.right.id);
         ((LiseAlgorithmState) algorithmState).newTSpannerGraph.connectNodes(((LiseAlgorithmState) algorithmState).newTSpannerGraph.getNodeById(edge.left.id),((LiseAlgorithmState) algorithmState).newTSpannerGraph.getNodeById(edge.right.id));
     }
 
