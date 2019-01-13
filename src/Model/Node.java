@@ -32,8 +32,6 @@ public class Node extends HeapableObject {
                 .collect(Collectors.toList());
     }
 
-
-
     public Node cloneWithoutEdges() {
         return new Node(this.x, this.y, this.radius, this.id);
     }

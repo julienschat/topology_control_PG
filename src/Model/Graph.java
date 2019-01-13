@@ -1,11 +1,9 @@
 package Model;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Graph {
     public List<Node> nodeList = new ArrayList<>();
@@ -36,6 +34,7 @@ public class Graph {
         // this could be improved by using a spatial tree
         return this.nodeList.stream()
                 .filter(o -> node.distanceTo(o) <= range)
+                .filter(o -> o != node)
                 .collect(Collectors.toList());
 
     }
@@ -48,21 +47,45 @@ public class Graph {
         return newGraph;
     }
 
+    public Graph reducedGraph(List<Edge> edges) {
+        Graph newGraph = cloneGraphWithoutEdges();
+        for (Edge edge: edges) {
+            int lIndex = edge.left.index;
+            int rIndex = edge.right.index;
+            newGraph.connectNodes(newGraph.nodeList.get(lIndex), newGraph.nodeList.get(rIndex));
+        }
+        return newGraph;
+    }
+
     public static Graph readFile(String fileName) throws IOException {
         Graph graph = new Graph();
         Scanner sc = new Scanner(Paths.get(fileName));
         int id = 0;
         while (sc.hasNext()) {
-            Node node = new Node(sc.nextDouble(), sc.nextDouble(), sc.nextDouble(),id);
 
-            for (Node other: graph.getNodesInRange(node, node.radius)) {
-                graph.connectNodes(node, other);
-            }
-            graph.nodeList.add(node);
+
+            graph.nodeList.add(new Node(sc.nextDouble(), sc.nextDouble(), sc.nextDouble(),id));
             id++;
         }
         sc.close();
+        for (Node node : graph.nodeList) {
+            for (Node other: graph.getNodesInRange(node, node.radius)) {
+                if (!node.getNeighbours().contains(other)) {
+                    graph.connectNodes(node, other);
+                }
+            }
+
+
+        }
         return graph;
+    }
+
+    public void fixNodeIndicies() {
+        int index = 0;
+        for (Node node: nodeList) {
+            node.index = index;
+            index++;
+        }
     }
 
     public void calculateCoverages() {

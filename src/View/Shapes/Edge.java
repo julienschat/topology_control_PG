@@ -10,6 +10,8 @@ public class Edge extends Shape {
     double x2;
     double y2;
 
+    public boolean highlight = false;
+
     public Edge(double x1, double y1, double x2, double y2) {
         this.x1 = x1;
         this.y1 = y1;
@@ -21,7 +23,11 @@ public class Edge extends Shape {
     public void draw(Graphics g) {
         Line2D line  = new Line2D.Double(x1, y1, x2, y2);
         Graphics2D g2d = (Graphics2D) g;
+        if (highlight) {
+            g2d.setColor(Color.BLUE);
+        }
         g2d.draw(line);
+        g2d.setColor(Color.BLACK);
     }
 
     @Override

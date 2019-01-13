@@ -10,6 +10,7 @@ public class LifeAlgorithmController extends AlgorithmController {
     @Override
     public AlgorithmState init(Graph origin, double... params) {
         LifeAlgorithmState state = new LifeAlgorithmState(origin);
+        origin.fixNodeIndicies();
         state.unionFind.makeSets(origin.nodeList);
         origin.calculateCoverages();
         state.edgesByCoverage = origin.edgeList.stream()
