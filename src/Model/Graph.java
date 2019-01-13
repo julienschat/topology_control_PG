@@ -28,6 +28,9 @@ public class Graph {
         b.edgeList.add(edge);
         this.edgeList.add(edge);
     }
+    public Node getNodeById(int idOfNode){
+        return nodeList.stream().filter(n->idOfNode==n.id).findFirst().orElse(null);
+    }
 
     public List<Node> getNodesInRange(Node node, double range) {
         // this could be improved by using a spatial tree
@@ -48,12 +51,15 @@ public class Graph {
     public static Graph readFile(String fileName) throws IOException {
         Graph graph = new Graph();
         Scanner sc = new Scanner(Paths.get(fileName));
+        int id = 0;
         while (sc.hasNext()) {
-            Node node = new Node(sc.nextDouble(), sc.nextDouble(), sc.nextDouble());
+            Node node = new Node(sc.nextDouble(), sc.nextDouble(), sc.nextDouble(),id);
+
             for (Node other: graph.getNodesInRange(node, node.radius)) {
                 graph.connectNodes(node, other);
             }
             graph.nodeList.add(node);
+            id++;
         }
         sc.close();
         return graph;
