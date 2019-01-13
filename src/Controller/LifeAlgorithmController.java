@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class LifeAlgorithmController extends AlgorithmController {
     @Override
-    public AlgorithmState init(Graph origin) {
+    public AlgorithmState init(Graph origin, double... params) {
         LifeAlgorithmState state = new LifeAlgorithmState(origin);
         state.unionFind.makeSets(origin.nodeList);
         origin.calculateCoverages();
@@ -25,7 +25,7 @@ public class LifeAlgorithmController extends AlgorithmController {
         if (state.phase != LifeAlgorithmPhase.FINISHED) {
             Edge e = state.edgesByCoverage.pop();
             if (state.unionFind.find(e.left) != state.unionFind.find(e.right)) {
-                state.edgeList.push(e);
+                state.edgesChosen.push(e);
                 state.unionFind.union(e.left, e.right);
             }
             if (state.edgesByCoverage.isEmpty()) {
