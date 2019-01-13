@@ -2,6 +2,7 @@ package View;
 
 import Controller.AlgorithmController;
 import Controller.LifeAlgorithmController;
+import Controller.LiseAlgorithmController;
 import Model.AlgorithmState;
 import Model.Graph;
 import Model.LifeAlgorithmState;
@@ -22,7 +23,7 @@ public class MainWindow{
     public MainWindow() {
         MainWindow window = this;
 
-        new Thread(new RunDemo(drawPanel)).start();
+        new Thread(new RunDemo(drawPanel,new LiseAlgorithmController())).start();
 
         // the following code belongs into a dedicated controller
 
