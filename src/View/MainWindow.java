@@ -1,19 +1,13 @@
 package View;
 
-import Controller.AlgorithmController;
 import Controller.LifeAlgorithmController;
 import Controller.LiseAlgorithmController;
-import Model.AlgorithmState;
+import Controller.AlgorithmRunner;
 import Model.Graph;
-import Model.LifeAlgorithmState;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.concurrent.TimeUnit;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -143,10 +137,10 @@ public class MainWindow{
                 String selected = (String)algoChooser.getSelectedItem();
                 switch (selected) {
                     case "LIFE":
-                        new Thread(new RunDemo(graphDrawer, currentGraph, new LifeAlgorithmController())).start();
+                        new Thread(new AlgorithmRunner(graphDrawer, currentGraph, new LifeAlgorithmController())).start();
                         break;
                     case "LISE":
-                        new Thread(new RunDemo(graphDrawer, currentGraph, new LiseAlgorithmController())).start();
+                        new Thread(new AlgorithmRunner(graphDrawer, currentGraph, new LiseAlgorithmController())).start();
                         break;
                 }
             }

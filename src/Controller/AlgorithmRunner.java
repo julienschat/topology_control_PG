@@ -1,4 +1,4 @@
-package View;
+package Controller;
 
 import Controller.AlgorithmController;
 import Controller.LifeAlgorithmController;
@@ -6,6 +6,7 @@ import Model.AlgorithmState;
 import Model.Graph;
 import Model.LifeAlgorithmState;
 import Model.LiseAlgorithmState;
+import View.GraphDrawer;
 import View.Shapes.Edge;
 import View.Shapes.Node;
 import View.Shapes.Radius;
@@ -14,12 +15,12 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 
-public class RunDemo implements Runnable {
+public class AlgorithmRunner implements Runnable {
     private AlgorithmController algorithmController;
     private GraphDrawer drawer;
     private Graph graph;
 
-    public RunDemo(GraphDrawer drawer, Graph graph, AlgorithmController algorithmController) {
+    public AlgorithmRunner(GraphDrawer drawer, Graph graph, AlgorithmController algorithmController) {
         this.drawer = drawer;
         this.graph = graph;
         this.algorithmController = algorithmController;
@@ -29,9 +30,6 @@ public class RunDemo implements Runnable {
     public void run() {
         try {
             drawer.draw(graph, false);
-
-            TimeUnit.SECONDS.sleep(5);
-
 
             AlgorithmState state = algorithmController.init(graph);
 
