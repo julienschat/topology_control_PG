@@ -26,6 +26,6 @@ public class LiseAlgorithmState extends AlgorithmState {
 
     @Override
     public AlgorithmState clone() {
-        return null;
+        return this;
     }
 }
