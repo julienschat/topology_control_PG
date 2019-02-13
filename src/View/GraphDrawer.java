@@ -20,7 +20,7 @@ public class GraphDrawer extends Observable {
         this.panel = panel;
     }
 
-    public void draw(Graph graph) {
+    public void draw(Graph graph, boolean radii) {
         panel.shapes.clear();
         for (Model.Node node : graph.nodeList) {
             View.Shapes.Node viewNode = new Node(node.x, node.y);
@@ -49,6 +49,11 @@ public class GraphDrawer extends Observable {
             });
 
             panel.shapes.add(viewNode);
+
+            if (radii) {
+                panel.shapes.add(new Radius(node.x, node.y, node.radius));
+            }
+
 //            double dist = node.edgeList.stream()
 //                    .map(e -> e.left.distanceTo(e.right))
 //                    .max(Comparator.naturalOrder())

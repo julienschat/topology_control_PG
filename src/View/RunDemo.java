@@ -28,7 +28,7 @@ public class RunDemo implements Runnable {
     @Override
     public void run() {
         try {
-            drawer.draw(graph);
+            drawer.draw(graph, false);
 
             TimeUnit.SECONDS.sleep(5);
 
@@ -41,7 +41,7 @@ public class RunDemo implements Runnable {
                 algorithmController.processState(state);
 
                 Graph tmp = new Graph(state.origin.nodeList, state.edgesChosen);
-                drawer.draw(tmp);
+                drawer.draw(tmp, false);
 
                 TimeUnit.MILLISECONDS.sleep(400);
             }

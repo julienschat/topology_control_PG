@@ -41,10 +41,13 @@ public class MainWindow{
 //        Graph graph = Graph.readFile("./test_graph.txt");
 
         setupAlgoChooseAndStart();
-
         setupAddRemoveNode();
-
         setupNodeDragging();
+        setupRadiiControl();
+    }
+
+    private void setupRadiiControl() {
+        this.radiiRadioButton.addActionListener(e -> graphDrawer.draw(currentGraph, radiiRadioButton.isSelected()));
     }
 
     private void setupNodeDragging() {
@@ -55,7 +58,7 @@ public class MainWindow{
                 if (graphDrawer.draggedNode != null) {
                     graphDrawer.draggedNode.x = e.getX();
                     graphDrawer.draggedNode.y = e.getY();
-                    graphDrawer.draw(currentGraph);
+                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
                 }
             }
             @Override
@@ -105,7 +108,7 @@ public class MainWindow{
                     Model.Node modelNode = new Model.Node(drawnX, drawnY, radius);
                     currentGraph.insertNode(modelNode);
 
-                    graphDrawer.draw(currentGraph);
+                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
 
                     drawRadius = false;
                 }
@@ -125,7 +128,7 @@ public class MainWindow{
 
         this.clearButton.addActionListener(e -> {
             this.currentGraph = new Graph();
-            this.graphDrawer.draw(this.currentGraph);
+            this.graphDrawer.draw(this.currentGraph, radiiRadioButton.isSelected());
         });
     }
 
@@ -156,6 +159,7 @@ public class MainWindow{
     private JComboBox algoChooser;
     private JButton startButton;
     private JButton clearButton;
+    private JRadioButton radiiRadioButton;
 
 
 }
