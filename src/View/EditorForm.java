@@ -50,6 +50,7 @@ public class EditorForm {
                 if (graphDrawer.draggedNode != null) {
                     graphDrawer.draggedNode.x = e.getX();
                     graphDrawer.draggedNode.y = e.getY();
+                    currentGraph.updateNeighbours(graphDrawer.draggedNode);
                     graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
                 }
             }
@@ -76,7 +77,8 @@ public class EditorForm {
                 super.mouseDragged(e);
                 if (graphDrawer.draggedRadiusNode != null) {
                     Model.Node n = graphDrawer.draggedRadiusNode;
-                    currentGraph.updateRadius(n, sqrt(pow(n.x - e.getX(), 2) + pow(n.y - e.getY(), 2)));
+                    n.radius = sqrt(pow(n.x - e.getX(), 2) + pow(n.y - e.getY(), 2));
+                    currentGraph.updateNeighbours(n);
                     graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
                 }
             }
@@ -84,8 +86,6 @@ public class EditorForm {
     }
 
     private void setupAddRemoveNode() {
-        EditorForm window = this;
-
         this.newNodeButton.addActionListener(e -> drawNode = true);
 
         this.drawPanel.addMouseListener(new MouseAdapter() {
@@ -95,8 +95,8 @@ public class EditorForm {
                 if (drawNode) {
                     drawnX = e.getX();
                     drawnY = e.getY();
-                    Model.Node modelNode = new Model.Node(drawnX, drawnY, 0);
-                    currentGraph.insertNode(modelNode);
+                    drawnNode = new Model.Node(drawnX, drawnY, 0);
+                    currentGraph.insertNode(drawnNode);
 
                     graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
 
@@ -116,7 +116,8 @@ public class EditorForm {
                 super.mouseMoved(e);
                 if (drawRadius) {
                     double radius = sqrt(pow(drawnX - e.getX(), 2) + pow(drawnY - e.getY(), 2));
-                    currentGraph.updateRadius(drawnNode, radius);
+                    drawnNode.radius = radius;
+                    currentGraph.updateNeighbours(drawnNode);
 
                     graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
 

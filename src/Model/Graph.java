@@ -19,6 +19,17 @@ public class Graph {
     public void insertNode(Node node) {
         nodeList.add(node);
 
+        updateNeighbours(node);
+    }
+
+    public void updateNeighbours(Node node) {
+        for (Edge edge: node.edgeList) {
+            edge.getNeighbourOf(node).edgeList.remove(edge);
+        }
+
+        this.edgeList.removeAll(node.edgeList);
+        node.edgeList.clear();
+
         for (Node other: getNodesInRange(node, node.radius)) {
             if (other.isInRange(node)) {
                 connectNodes(node, other);
@@ -26,39 +37,11 @@ public class Graph {
         }
     }
 
-    public void updateRadius(Node node, double radius) {
-        if (radius < node.radius) {
-            for (Node other: node.getNeighbours()) {
-                if (node.distanceTo(other) > radius) {
-                    disconnectNodes(node, other);
-                }
-            }
-        } else {
-            List<Node> neighbours = node.getNeighbours();
-            for (Node other: getNodesInRange(node, node.radius)) {
-                if (other.isInRange(node) && !neighbours.contains(other)) {
-                    connectNodes(node, other);
-                }
-            }
-        }
-
-        node.radius = radius;
-    }
-
     public void connectNodes(Node a, Node b) {
         Edge edge = new Edge(a, b);
         a.edgeList.add(edge);
         b.edgeList.add(edge);
         this.edgeList.add(edge);
-    }
-
-    public void disconnectNodes(Node a, Node b) {
-        Edge edge = a.edgeList.stream().filter(e -> e.getNeighbourOf(a) == b).findFirst().orElse(null);
-        if (edge != null) {
-            a.edgeList.remove(edge);
-            b.edgeList.remove(edge);
-            this.edgeList.remove(edge);
-        }
     }
 
     public Node getNodeById(int idOfNode){
