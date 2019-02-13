@@ -4,7 +4,6 @@ import Model.*;
 
 import java.util.Comparator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -39,39 +38,41 @@ public class LiseAlgorithmController extends AlgorithmController{
     }
 
     @Override
-    public void processState(AlgorithmState algorithmState) {
+    public AlgorithmState processState(AlgorithmState algorithmState) {
 
-        switch(((LiseAlgorithmState)algorithmState).phase) {
+        LiseAlgorithmState state = (LiseAlgorithmState) algorithmState.clone();
+
+        switch(state.phase) {
             case MAXEDGECHOOSING:
                 // Choose Maximum Edge from SortedEdges and remove it
-                ((LiseAlgorithmState) algorithmState).currentEdgeMaxCoverage = ((LiseAlgorithmState) algorithmState).edgesSortedByCoverage.getLast();
-                ((LiseAlgorithmState)algorithmState).phase = LiseAlgorithmPhase.SHORTESTPATHCHECKING;
+                state.currentEdgeMaxCoverage = state.edgesSortedByCoverage.getLast();
+                state.phase = LiseAlgorithmPhase.SHORTESTPATHCHECKING;
             break;
             case SHORTESTPATHCHECKING:
                 // Take saved Maximum Edge e={v,w} and check distance between v and w in shortest path tree
 
-                Node sourceNode = ((LiseAlgorithmState) algorithmState).newTSpannerGraph.getNodeById(((LiseAlgorithmState) algorithmState).currentEdgeMaxCoverage.left.id);
-                Node destinationNode = ((LiseAlgorithmState) algorithmState).newTSpannerGraph.getNodeById(((LiseAlgorithmState) algorithmState).currentEdgeMaxCoverage.right.id);
+                Node sourceNode = state.newTSpannerGraph.getNodeById(state.currentEdgeMaxCoverage.left.id);
+                Node destinationNode = state.newTSpannerGraph.getNodeById(state.currentEdgeMaxCoverage.right.id);
 
 
                 Dijkstra dijkstraAlgorithm = new Dijkstra();
-                ShortestPathTree shortestPathTree = dijkstraAlgorithm.runDijkstra(((LiseAlgorithmState) algorithmState).newTSpannerGraph, sourceNode);
+                ShortestPathTree shortestPathTree = dijkstraAlgorithm.runDijkstra(state.newTSpannerGraph, sourceNode);
 
                 //View: Mark path from source to destination
                 if(destinationNode.key != -1) {
                    // LinkedList<Node> nodesOnShortestPath = shortestPathTree.getPathToSourceFromNode(destinationNode);
                 }
                 if(destinationNode.key == -1 ||
-                        destinationNode.key > ((LiseAlgorithmState) algorithmState).tSpannerMeasure * sourceNode.distanceTo(destinationNode)){
+                        destinationNode.key > state.tSpannerMeasure * sourceNode.distanceTo(destinationNode)){
 
-                    ((LiseAlgorithmState) algorithmState).phase = LiseAlgorithmPhase.MINEDGECHOOSING;
+                    state.phase = LiseAlgorithmPhase.MINEDGECHOOSING;
                 }else{
 
-                    ((LiseAlgorithmState) algorithmState).edgesSortedByCoverage.removeLast();
-                    if(((LiseAlgorithmState) algorithmState).edgesSortedByCoverage.isEmpty()){
-                        ((LiseAlgorithmState)algorithmState).phase = LiseAlgorithmPhase.FINISHED;
+                    state.edgesSortedByCoverage.removeLast();
+                    if(state.edgesSortedByCoverage.isEmpty()){
+                        state.phase = LiseAlgorithmPhase.FINISHED;
                     }else {
-                        ((LiseAlgorithmState) algorithmState).phase = LiseAlgorithmPhase.MAXEDGECHOOSING;
+                        state.phase = LiseAlgorithmPhase.MAXEDGECHOOSING;
                     }
                 }
 
@@ -79,14 +80,14 @@ public class LiseAlgorithmController extends AlgorithmController{
             case MINEDGECHOOSING:
                 // Choose Edge with minimum coverage
 
-                ((LiseAlgorithmState) algorithmState).currentEdgeMinCoverage = ((LiseAlgorithmState) algorithmState).edgesSortedByCoverage.getFirst();
-                ((LiseAlgorithmState) algorithmState).edgesSortedByCoverage.removeFirst();
-                ((LiseAlgorithmState) algorithmState).edgesChosen.add(((LiseAlgorithmState) algorithmState).currentEdgeMinCoverage);
-                addEdgeToTSPanner(algorithmState,((LiseAlgorithmState) algorithmState).currentEdgeMinCoverage);
+                state.currentEdgeMinCoverage = state.edgesSortedByCoverage.getFirst();
+                state.edgesSortedByCoverage.removeFirst();
+                state.edgesChosen.add(state.currentEdgeMinCoverage);
+                addEdgeToTSPanner(algorithmState,state.currentEdgeMinCoverage);
                 // View: Mark the minCoverage Edge
-                ((LiseAlgorithmState)algorithmState).phase = LiseAlgorithmPhase.SAMECOVERAGECHOOSING;
-                if(((LiseAlgorithmState) algorithmState).edgesSortedByCoverage.isEmpty()){
-                    ((LiseAlgorithmState)algorithmState).phase = LiseAlgorithmPhase.FINISHED;
+                state.phase = LiseAlgorithmPhase.SAMECOVERAGECHOOSING;
+                if(state.edgesSortedByCoverage.isEmpty()){
+                    state.phase = LiseAlgorithmPhase.FINISHED;
                 }
 
                 break;
@@ -94,24 +95,25 @@ public class LiseAlgorithmController extends AlgorithmController{
             case SAMECOVERAGECHOOSING:
 
                 //Add all edges with same coverage as currentEdgeMinCoverage and add them to the graph
-                if(((LiseAlgorithmState) algorithmState).edgesSortedByCoverage.getFirst().coverage == ((LiseAlgorithmState) algorithmState).currentEdgeMinCoverage.coverage){
+                if(state.edgesSortedByCoverage.getFirst().coverage == state.currentEdgeMinCoverage.coverage){
                     //View: Mark the Edge
-                    ((LiseAlgorithmState) algorithmState).edgesChosen.add(((LiseAlgorithmState) algorithmState).edgesSortedByCoverage.getFirst());
-                    addEdgeToTSPanner(algorithmState,((LiseAlgorithmState) algorithmState).edgesSortedByCoverage.getFirst());
+                    state.edgesChosen.add(state.edgesSortedByCoverage.getFirst());
+                    addEdgeToTSPanner(algorithmState,state.edgesSortedByCoverage.getFirst());
 
-                    ((LiseAlgorithmState) algorithmState).edgesSortedByCoverage.removeFirst();
+                    state.edgesSortedByCoverage.removeFirst();
 
 
                 }else{
-                    ((LiseAlgorithmState)algorithmState).phase = LiseAlgorithmPhase.MAXEDGECHOOSING;
-                    ((LiseAlgorithmState) algorithmState).edgesSortedByCoverage.removeLast();
+                    state.phase = LiseAlgorithmPhase.MAXEDGECHOOSING;
+                    state.edgesSortedByCoverage.removeLast();
                 }
-                if(((LiseAlgorithmState) algorithmState).edgesSortedByCoverage.isEmpty()){
-                    ((LiseAlgorithmState)algorithmState).phase = LiseAlgorithmPhase.FINISHED;
+                if(state.edgesSortedByCoverage.isEmpty()){
+                    state.phase = LiseAlgorithmPhase.FINISHED;
                 }
 
                 break;
         }
+        return state;
     }
 
     @Override
@@ -120,7 +122,8 @@ public class LiseAlgorithmController extends AlgorithmController{
     }
 
     public void addEdgeToTSPanner(AlgorithmState algorithmState, Edge edge){
-        ((LiseAlgorithmState) algorithmState).newTSpannerGraph.connectNodes(((LiseAlgorithmState) algorithmState).newTSpannerGraph.getNodeById(edge.left.id),((LiseAlgorithmState) algorithmState).newTSpannerGraph.getNodeById(edge.right.id));
+        LiseAlgorithmState state = (LiseAlgorithmState) algorithmState.clone();
+        state.newTSpannerGraph.connectNodes(state.newTSpannerGraph.getNodeById(edge.left.id),state.newTSpannerGraph.getNodeById(edge.right.id));
     }
 
 

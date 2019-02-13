@@ -16,4 +16,9 @@ public class LifeAlgorithmState extends AlgorithmState {
         edgesChosen = new LinkedList<Edge>();
 
     }
+
+    @Override
+    public AlgorithmState clone() {
+        return null;
+    }
 }

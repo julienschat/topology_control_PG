@@ -23,4 +23,9 @@ public class LiseAlgorithmState extends AlgorithmState {
     public List<Node> getCurrentNodes(){
         return newTSpannerGraph.nodeList;
     }
+
+    @Override
+    public AlgorithmState clone() {
+        return null;
+    }
 }

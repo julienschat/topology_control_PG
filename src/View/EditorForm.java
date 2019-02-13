@@ -3,6 +3,7 @@ package View;
 import Model.Graph;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -13,8 +14,7 @@ public class EditorForm {
 
     private boolean drawNode = false;
     private boolean drawRadius = false;
-    private View.Shapes.Node drawnNode = null;
-    private View.Shapes.Radius drawnRadius = null;
+    private Model.Node drawnNode = null;
     private int drawnX, drawnY;
 
     private View.Shapes.Radius hoverRadius;
@@ -95,25 +95,14 @@ public class EditorForm {
                 if (drawNode) {
                     drawnX = e.getX();
                     drawnY = e.getY();
-                    drawnNode = new View.Shapes.Node(drawnX, drawnY);
-                    drawPanel.shapes.add(drawnNode);
+                    Model.Node modelNode = new Model.Node(drawnX, drawnY, 0);
+                    currentGraph.insertNode(modelNode);
 
-                    drawnRadius = new View.Shapes.Radius(drawnX, drawnY, 0);
-                    drawPanel.shapes.add(drawnRadius);
-
-                    drawPanel.update();
+                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
 
                     drawNode = false;
                     drawRadius = true;
                 } else if (drawRadius) {
-                    drawPanel.shapes.remove(drawnNode);
-                    drawPanel.shapes.remove(drawnRadius);
-
-                    double radius = sqrt(pow(drawnX - e.getX(), 2) + pow(drawnY - e.getY(), 2));
-
-                    Model.Node modelNode = new Model.Node(drawnX, drawnY, radius);
-                    currentGraph.insertNode(modelNode);
-
                     graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
 
                     drawRadius = false;
@@ -126,7 +115,14 @@ public class EditorForm {
             public void mouseMoved(MouseEvent e) {
                 super.mouseMoved(e);
                 if (drawRadius) {
-                    drawnRadius.radius = sqrt(pow(drawnX - e.getX(), 2) + pow(drawnY - e.getY(), 2));
+                    double radius = sqrt(pow(drawnX - e.getX(), 2) + pow(drawnY - e.getY(), 2));
+                    currentGraph.updateRadius(drawnNode, radius);
+
+                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
+
+                    View.Shapes.Radius highlight = new View.Shapes.Radius(drawnX, drawnY, radius);
+                    highlight.color = Color.BLUE;
+                    drawPanel.shapes.add(highlight);
                     drawPanel.update();
                 }
             }
