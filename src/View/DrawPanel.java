@@ -33,6 +33,28 @@ public class DrawPanel extends JPanel{
         }
     }
 
+    private void createEnterEvents(MouseEvent e) {
+        for (View.Shapes.Shape shape: this.shapes) {
+            if (shape.isNear(e.getX(), e.getY()) && !shape.hovered) {
+                shape.hovered = true;
+                for (MouseAdapter ma : shape.getMouseListeners()) {
+                    ma.mouseEntered(e);
+                }
+            }
+        }
+    }
+
+    private void createExitEvents(MouseEvent e) {
+        for (View.Shapes.Shape shape: this.shapes) {
+            if (!shape.isNear(e.getX(), e.getY()) && shape.hovered) {
+                shape.hovered = false;
+                for (MouseAdapter ma : shape.getMouseListeners()) {
+                    ma.mouseExited(e);
+                }
+            }
+        }
+    }
+
     public void update() {
         this.revalidate();
         this.repaint();
@@ -40,59 +62,42 @@ public class DrawPanel extends JPanel{
 
     private void attachMouseListener() {
         DrawPanel panel = this;
-        MouseAdapter adapter = new MouseAdapter() {
+
+        this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 panel.redirectMouseEvent(e, ma -> ma.mouseClicked(e));
-                panel.update();
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 panel.redirectMouseEvent(e, ma -> ma.mousePressed(e));
-                panel.update();
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
                 panel.redirectMouseEvent(e, ma -> ma.mouseReleased(e));
-                panel.update();
             }
+        });
 
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                super.mouseEntered(e);
-                panel.redirectMouseEvent(e, ma -> ma.mouseEntered(e));
-                panel.update();
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                super.mouseExited(e);
-                panel.redirectMouseEvent(e, ma -> ma.mouseExited(e));
-                panel.update();
-            }
-
+        this.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
                 super.mouseDragged(e);
                 panel.redirectMouseEvent(e, ma -> ma.mouseDragged(e));
-                panel.update();
             }
 
             @Override
             public void mouseMoved(MouseEvent e) {
                 super.mouseMoved(e);
+                panel.createEnterEvents(e);
                 panel.redirectMouseEvent(e, ma -> ma.mouseMoved(e));
-                panel.update();
+                panel.createExitEvents(e);
             }
-        };
-
-        this.addMouseListener(adapter);
-        this.addMouseMotionListener(adapter);
+        });
     }
 
     @Override

@@ -11,6 +11,8 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Math.pow;
@@ -24,7 +26,7 @@ public class MainWindow{
     private View.Shapes.Radius drawnRadius = null;
     private int drawnX, drawnY;
 
-    private View.Shapes.Node dragged;
+    private View.Shapes.Radius hoverRadius;
 
     private GraphDrawer graphDrawer;
     private Graph currentGraph;
@@ -42,14 +44,31 @@ public class MainWindow{
 
         setupAddNode();
 
-        MainWindow window = this;
+        setupNodeDragging();
+    }
 
+    private void setupNodeDragging() {
         this.drawPanel.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
                 super.mouseDragged(e);
-                if (window.dragged != null) {
-                    window.dragged.updateCoordinates(e.getX(), e.getY());
+                if (graphDrawer.draggedNode != null) {
+                    graphDrawer.draggedNode.x = e.getX();
+                    graphDrawer.draggedNode.y = e.getY();
+                    graphDrawer.draw(currentGraph);
+                }
+            }
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                super.mouseMoved(e);
+                if (graphDrawer.hoveredNode != null && hoverRadius == null) {
+                    hoverRadius = new View.Shapes.Radius(graphDrawer.hoveredNode.x, graphDrawer.hoveredNode.y, graphDrawer.hoveredNode.radius);
+                    drawPanel.shapes.add(hoverRadius);
+                    drawPanel.update();
+                } else if (hoverRadius != null) {
+                    drawPanel.shapes.remove(hoverRadius);
+                    hoverRadius = null;
+                    drawPanel.update();
                 }
             }
         });
@@ -99,7 +118,6 @@ public class MainWindow{
                 super.mouseMoved(e);
                 if (drawRadius) {
                     drawnRadius.radius = sqrt(pow(drawnX - e.getX(), 2) + pow(drawnY - e.getY(), 2));
-
                     drawPanel.update();
                 }
             }
@@ -107,7 +125,6 @@ public class MainWindow{
     }
 
     private void setupAlgoChooseAndStart() {
-        MainWindow window = this;
         algoChooser.addItem("LIFE");
         algoChooser.addItem("LISE");
 
@@ -127,36 +144,10 @@ public class MainWindow{
             }
         });
     }
-//
-//    void addNodeClickExample(Node n) {
-//
-//        MainWindow window = this;
-//        n.addMouseListener(new MouseAdapter() {
-//            // click example
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                super.mouseClicked(e);
-//                window.debugText.append("Node clicked.");
-//            }
-//
-//            //dragging example
-//            @Override
-//            public void mousePressed(MouseEvent e) {
-//                super.mousePressed(e);
-//                window.dragged = n;
-//            }
-//            @Override
-//            public void mouseReleased(MouseEvent e) {
-//                super.mouseReleased(e);
-//                window.dragged = null;
-//            }
-//        });
-//    }
 
     public JPanel mainPanel;
     private DrawPanel drawPanel;
     private JButton newNodeButton;
-    private JTextArea debugText;
     private JComboBox algoChooser;
     private JButton startButton;
 

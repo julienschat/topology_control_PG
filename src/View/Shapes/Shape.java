@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 public abstract class Shape {
 
+    public boolean hovered = false;
+
     private java.util.List<MouseAdapter> mouseListeners = new ArrayList<MouseAdapter>();
 
     public abstract void draw(Graphics g);
