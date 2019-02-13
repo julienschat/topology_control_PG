@@ -19,7 +19,7 @@ public class Node extends HeapableObject {
         this.radius = radius;
     }
 
-    public Node(double x, double y, double radius,int id) {
+    public Node(double x, double y, double radius, int id) {
         this.x = x;
         this.y = y;
         this.radius = radius;
@@ -34,6 +34,10 @@ public class Node extends HeapableObject {
 
     public Node cloneWithoutEdges() {
         return new Node(this.x, this.y, this.radius, this.id);
+    }
+
+    public boolean isInRange(Node other) {
+        return radius >= distanceTo(other);
     }
 
     public double distanceTo(Node other) {

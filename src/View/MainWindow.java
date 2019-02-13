@@ -42,7 +42,7 @@ public class MainWindow{
 
         setupAlgoChooseAndStart();
 
-        setupAddNode();
+        setupAddRemoveNode();
 
         setupNodeDragging();
     }
@@ -74,7 +74,7 @@ public class MainWindow{
         });
     }
 
-    private void setupAddNode() {
+    private void setupAddRemoveNode() {
         MainWindow window = this;
 
         this.newNodeButton.addActionListener(e -> drawNode = true);
@@ -122,6 +122,11 @@ public class MainWindow{
                 }
             }
         });
+
+        this.clearButton.addActionListener(e -> {
+            this.currentGraph = new Graph();
+            this.graphDrawer.draw(this.currentGraph);
+        });
     }
 
     private void setupAlgoChooseAndStart() {
@@ -150,6 +155,7 @@ public class MainWindow{
     private JButton newNodeButton;
     private JComboBox algoChooser;
     private JButton startButton;
+    private JButton clearButton;
 
 
 }

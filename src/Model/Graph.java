@@ -16,11 +16,13 @@ public class Graph {
         edgeList = edges;
     }
 
-    public void insertNode(Node n) {
-        nodeList.add(n);
+    public void insertNode(Node node) {
+        nodeList.add(node);
 
-        for (Node other: getNodesInRange(n, n.radius)) {
-            connectNodes(n, other);
+        for (Node other: getNodesInRange(node, node.radius)) {
+            if (other.isInRange(node)) {
+                connectNodes(node, other);
+            }
         }
     }
 
@@ -31,6 +33,7 @@ public class Graph {
         b.edgeList.add(edge);
         this.edgeList.add(edge);
     }
+
     public Node getNodeById(int idOfNode){
         return nodeList.stream().filter(n->idOfNode==n.id).findFirst().orElse(null);
     }
@@ -41,7 +44,6 @@ public class Graph {
                 .filter(o -> node.distanceTo(o) <= range)
                 .filter(o -> o != node)
                 .collect(Collectors.toList());
-
     }
 
     public Graph cloneGraphWithoutEdges() {
