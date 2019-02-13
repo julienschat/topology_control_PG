@@ -23,9 +23,8 @@ public class Node extends Shape {
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void drawShape(Graphics2D g2d) {
         Ellipse2D.Double circle = new Ellipse2D.Double(x-radius,y-radius,radius*2,radius*2);
-        Graphics2D g2d = (Graphics2D) g;
         g2d.fill(circle);
     }
 

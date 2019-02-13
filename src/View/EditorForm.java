@@ -1,8 +1,5 @@
 package View;
 
-import Controller.LifeAlgorithmController;
-import Controller.LiseAlgorithmController;
-import Controller.AlgorithmRunner;
 import Model.Graph;
 
 import javax.swing.*;
@@ -12,7 +9,7 @@ import java.awt.event.MouseEvent;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
-public class MainWindow{
+public class EditorForm {
 
     private boolean drawNode = false;
     private boolean drawRadius = false;
@@ -23,9 +20,9 @@ public class MainWindow{
     private View.Shapes.Radius hoverRadius;
 
     private GraphDrawer graphDrawer;
-    private Graph currentGraph;
+    public Graph currentGraph;
 
-    public MainWindow() {
+    public EditorForm() {
 
         graphDrawer = new GraphDrawer(drawPanel);
         currentGraph = new Graph();
@@ -38,6 +35,7 @@ public class MainWindow{
         setupAddRemoveNode();
         setupNodeDragging();
         setupRadiiControl();
+        setupRadiusChange();
     }
 
     private void setupRadiiControl() {
@@ -71,8 +69,22 @@ public class MainWindow{
         });
     }
 
+    private void setupRadiusChange() {
+        this.drawPanel.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                super.mouseDragged(e);
+                if (graphDrawer.draggedRadiusNode != null) {
+                    Model.Node n = graphDrawer.draggedRadiusNode;
+                    currentGraph.updateRadius(n, sqrt(pow(n.x - e.getX(), 2) + pow(n.y - e.getY(), 2)));
+                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
+                }
+            }
+        });
+    }
+
     private void setupAddRemoveNode() {
-        MainWindow window = this;
+        EditorForm window = this;
 
         this.newNodeButton.addActionListener(e -> drawNode = true);
 
@@ -127,22 +139,32 @@ public class MainWindow{
     }
 
     private void setupAlgoChooseAndStart() {
-        algoChooser.addItem("LIFE");
-        algoChooser.addItem("LISE");
+        //algoChooser.addItem("LIFE");
+        //algoChooser.addItem("LISE");
+
+        EditorForm editor = this;
 
         this.startButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                String selected = (String)algoChooser.getSelectedItem();
-                switch (selected) {
-                    case "LIFE":
-                        new Thread(new AlgorithmRunner(graphDrawer, currentGraph, new LifeAlgorithmController())).start();
-                        break;
-                    case "LISE":
-                        new Thread(new AlgorithmRunner(graphDrawer, currentGraph, new LiseAlgorithmController())).start();
-                        break;
-                }
+
+                JFrame frame = new JFrame();
+                AlgorithmForm algorithmForm = new AlgorithmForm(editor);
+                frame.setContentPane(algorithmForm.mainPanel);
+
+                frame.pack();
+                frame.setVisible(true);
+
+//                String selected = (String)algoChooser.getSelectedItem();
+//                switch (selected) {
+//                    case "LIFE":
+//                        new Thread(new AlgorithmRunner(graphDrawer, currentGraph, new LifeAlgorithmController())).start();
+//                        break;
+//                    case "LISE":
+//                        new Thread(new AlgorithmRunner(graphDrawer, currentGraph, new LiseAlgorithmController())).start();
+//                        break;
+//                }
             }
         });
     }
@@ -154,6 +176,4 @@ public class MainWindow{
     private JButton startButton;
     private JButton clearButton;
     private JRadioButton radiiRadioButton;
-
-
 }

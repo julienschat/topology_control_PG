@@ -20,14 +20,9 @@ public class Edge extends Shape {
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void drawShape(Graphics2D g2d) {
         Line2D line  = new Line2D.Double(x1, y1, x2, y2);
-        Graphics2D g2d = (Graphics2D) g;
-        if (highlight) {
-            g2d.setColor(Color.BLUE);
-        }
         g2d.draw(line);
-        g2d.setColor(Color.BLACK);
     }
 
     @Override

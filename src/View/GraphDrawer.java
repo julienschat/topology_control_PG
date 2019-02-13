@@ -5,6 +5,7 @@ import View.Shapes.Edge;
 import View.Shapes.Node;
 import View.Shapes.Radius;
 
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Comparator;
@@ -15,21 +16,22 @@ public class GraphDrawer extends Observable {
 
     public Model.Node draggedNode;
     public Model.Node hoveredNode;
+    public Model.Node draggedRadiusNode;
 
     public GraphDrawer(DrawPanel panel) {
         this.panel = panel;
     }
 
     public void draw(Graph graph, boolean radii) {
-        panel.shapes.clear();
-        for (Model.Node node : graph.nodeList) {
-            View.Shapes.Node viewNode = new Node(node.x, node.y);
+        panel.shapes.clear(); // NOTE: should maybe only delete own shapes.
+        for (Model.Node modelNode : graph.nodeList) {
+            View.Shapes.Node viewNode = new View.Shapes.Node(modelNode.x, modelNode.y);
 
             viewNode.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     super.mousePressed(e);
-                    draggedNode = node;
+                    draggedNode = modelNode;
                 }
                 @Override
                 public void mouseReleased(MouseEvent e) {
@@ -39,7 +41,7 @@ public class GraphDrawer extends Observable {
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     super.mouseEntered(e);
-                    hoveredNode = node;
+                    hoveredNode = modelNode;
                 }
                 @Override
                 public void mouseExited(MouseEvent e) {
@@ -51,7 +53,33 @@ public class GraphDrawer extends Observable {
             panel.shapes.add(viewNode);
 
             if (radii) {
-                panel.shapes.add(new Radius(node.x, node.y, node.radius));
+                View.Shapes.Radius radius = new Radius(modelNode.x, modelNode.y, modelNode.radius);
+                panel.shapes.add(radius);
+                radius.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        super.mouseEntered(e);
+                        radius.color = Color.RED;
+                        panel.update();
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        super.mouseExited(e);
+                        radius.color = Color.BLACK;
+                        panel.update();
+                    }
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+                        super.mousePressed(e);
+                        draggedRadiusNode = modelNode;
+                    }
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        super.mouseReleased(e);
+                        draggedRadiusNode = null;
+                    }
+                });
             }
 
 //            double dist = node.edgeList.stream()
