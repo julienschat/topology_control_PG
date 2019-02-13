@@ -3,9 +3,11 @@ package View;
 import Model.Graph;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -36,10 +38,51 @@ public class EditorForm {
         setupNodeDragging();
         setupRadiiControl();
         setupRadiusChange();
+        setupSaveLoad();
+    }
+
+    private void setupSaveLoad() {
+        JFileChooser chooser = new JFileChooser();
+
+        chooser.setFileFilter(new FileNameExtensionFilter(
+                "Graph Text File", "txt"));
+
+        this.saveButton.addActionListener(e -> {
+            int returnVal = chooser.showSaveDialog(this.mainPanel);
+
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                try {
+                    String fileName = chooser.getSelectedFile().getPath();
+                    if (!fileName.endsWith(".txt")) {
+                        fileName += ".txt";
+                    }
+                    Graph.writeFile(currentGraph, fileName);
+                } catch (IOException ex) {
+                    System.out.println("Could not save file.");
+                }
+            }
+        });
+
+        this.loadButton.addActionListener(e -> {
+            int returnVal = chooser.showOpenDialog(this.mainPanel);
+
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                try {
+                    currentGraph = Graph.readFile(chooser.getSelectedFile().getPath());
+                    graphDrawer.draw(currentGraph, this.radiiRadioButton.isSelected());
+                    drawPanel.update();
+                } catch (IOException ex) {
+                    System.out.println("Could not read file.");
+                }
+            }
+        });
     }
 
     private void setupRadiiControl() {
-        this.radiiRadioButton.addActionListener(e -> graphDrawer.draw(currentGraph, radiiRadioButton.isSelected()));
+        this.radiiRadioButton.addActionListener(e -> {
+            graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
+            drawPanel.update();
+        });
     }
 
     private void setupNodeDragging() {
@@ -52,6 +95,7 @@ public class EditorForm {
                     graphDrawer.draggedNode.y = e.getY();
                     currentGraph.updateNeighbours(graphDrawer.draggedNode);
                     graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
+                    drawPanel.update();
                 }
             }
             @Override
@@ -80,6 +124,8 @@ public class EditorForm {
                     n.radius = sqrt(pow(n.x - e.getX(), 2) + pow(n.y - e.getY(), 2));
                     currentGraph.updateNeighbours(n);
                     graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
+                    graphDrawer.drawNode(n, true, Color.BLACK);
+                    drawPanel.update();
                 }
             }
         });
@@ -99,11 +145,13 @@ public class EditorForm {
                     currentGraph.insertNode(drawnNode);
 
                     graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
+                    drawPanel.update();
 
                     drawNode = false;
                     drawRadius = true;
                 } else if (drawRadius) {
                     graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
+                    drawPanel.update();
 
                     drawRadius = false;
                 }
@@ -120,10 +168,8 @@ public class EditorForm {
                     currentGraph.updateNeighbours(drawnNode);
 
                     graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
+                    graphDrawer.drawNode(drawnNode, true, Color.BLACK);
 
-                    View.Shapes.Radius highlight = new View.Shapes.Radius(drawnX, drawnY, radius);
-                    highlight.color = Color.BLUE;
-                    drawPanel.shapes.add(highlight);
                     drawPanel.update();
                 }
             }
@@ -132,6 +178,7 @@ public class EditorForm {
         this.clearButton.addActionListener(e -> {
             this.currentGraph = new Graph();
             this.graphDrawer.draw(this.currentGraph, radiiRadioButton.isSelected());
+            drawPanel.update();
         });
     }
 
@@ -173,4 +220,6 @@ public class EditorForm {
     private JButton startButton;
     private JButton clearButton;
     private JRadioButton radiiRadioButton;
+    private JButton loadButton;
+    private JButton saveButton;
 }

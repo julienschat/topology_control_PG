@@ -22,65 +22,73 @@ public class GraphDrawer extends Observable {
         this.panel = panel;
     }
 
-    public void draw(Graph graph, boolean radii) {
-        panel.shapes.clear(); // NOTE: should maybe only delete own shapes.
-        for (Model.Node modelNode : graph.nodeList) {
-            View.Shapes.Node viewNode = new View.Shapes.Node(modelNode.x, modelNode.y);
+    public void drawNode(Model.Node modelNode, boolean drawRadius, Color color) {
+        View.Shapes.Node viewNode = new View.Shapes.Node(modelNode.x, modelNode.y);
+        viewNode.color = color;
 
-            viewNode.addMouseListener(new MouseAdapter() {
+        viewNode.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                draggedNode = modelNode;
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e);
+                draggedNode = null;
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                hoveredNode = modelNode;
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+                hoveredNode = null;
+            }
+        });
+
+        panel.shapes.add(viewNode);
+
+        if (drawRadius) {
+            View.Shapes.Radius radius = new Radius(modelNode.x, modelNode.y, modelNode.radius);
+            radius.color = color;
+
+            radius.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    super.mouseEntered(e);
+                    radius.color = Color.RED;
+                    panel.update();
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    super.mouseExited(e);
+                    radius.color = Color.BLACK;
+                    panel.update();
+                }
                 @Override
                 public void mousePressed(MouseEvent e) {
                     super.mousePressed(e);
-                    draggedNode = modelNode;
+                    draggedRadiusNode = modelNode;
                 }
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     super.mouseReleased(e);
-                    draggedNode = null;
-                }
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    super.mouseEntered(e);
-                    hoveredNode = modelNode;
-                }
-                @Override
-                public void mouseExited(MouseEvent e) {
-                    super.mouseExited(e);
-                    hoveredNode = null;
+                    draggedRadiusNode = null;
                 }
             });
 
-            panel.shapes.add(viewNode);
+            panel.shapes.add(radius);
+        }
+    }
 
-            if (radii) {
-                View.Shapes.Radius radius = new Radius(modelNode.x, modelNode.y, modelNode.radius);
-                panel.shapes.add(radius);
-                radius.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseEntered(MouseEvent e) {
-                        super.mouseEntered(e);
-                        radius.color = Color.RED;
-                        panel.update();
-                    }
-
-                    @Override
-                    public void mouseExited(MouseEvent e) {
-                        super.mouseExited(e);
-                        radius.color = Color.BLACK;
-                        panel.update();
-                    }
-                    @Override
-                    public void mousePressed(MouseEvent e) {
-                        super.mousePressed(e);
-                        draggedRadiusNode = modelNode;
-                    }
-                    @Override
-                    public void mouseReleased(MouseEvent e) {
-                        super.mouseReleased(e);
-                        draggedRadiusNode = null;
-                    }
-                });
-            }
+    public void draw(Graph graph, boolean radii) {
+        panel.shapes.clear(); // NOTE: should maybe only delete own shapes.
+        for (Model.Node modelNode : graph.nodeList) {
+            drawNode(modelNode, radii, Color.BLACK);
 
 //            double dist = node.edgeList.stream()
 //                    .map(e -> e.left.distanceTo(e.right))
@@ -102,6 +110,5 @@ public class GraphDrawer extends Observable {
         for (Model.Edge edge: graph.edgeList) {
             panel.shapes.add(new Edge(edge.left.x, edge.left.y, edge.right.x, edge.right.y));
         }
-        panel.update();
     }
 }

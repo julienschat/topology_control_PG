@@ -1,6 +1,8 @@
 package Model;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -76,14 +78,31 @@ public class Graph {
 
     public static Graph readFile(String fileName) throws IOException {
         Graph graph = new Graph();
-        Scanner sc = new Scanner(Paths.get(fileName));
+
         int id = 0;
-        while (sc.hasNext()) {
-            graph.insertNode(new Node(sc.nextDouble(), sc.nextDouble(), sc.nextDouble(), id));
-            id++;
+        for (String line: Files.readAllLines(Paths.get(fileName))) {
+            String[] values = line.split(" ");
+            if (values.length > 0) {
+                if (values.length != 3) {
+                    throw new IOException("File has wrong format");
+                }
+                double x = Double.parseDouble(values[0]);
+                double y = Double.parseDouble(values[1]);
+                double r = Double.parseDouble(values[2]);
+                graph.insertNode(new Node(x, y, r, id));
+                id++;
+            }
         }
-        sc.close();
+
         return graph;
+    }
+
+    public static void writeFile(Graph graph, String fileName) throws IOException {
+        List<String> lines = graph.nodeList.stream()
+                .map(n -> String.join(" ", Double.toString(n.x), Double.toString(n.y), Double.toString(n.radius)))
+                .collect(Collectors.toList());
+
+        Files.write(Paths.get(fileName), lines, Charset.defaultCharset());
     }
 
     public void fixNodeIndicies() {
