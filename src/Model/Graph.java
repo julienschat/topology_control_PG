@@ -17,8 +17,13 @@ public class Graph {
     }
 
     public void insertNode(Node n) {
-        this.nodeList.add(n);
+        nodeList.add(n);
+
+        for (Node other: getNodesInRange(n, n.radius)) {
+            connectNodes(n, other);
+        }
     }
+
 
     public void connectNodes(Node a, Node b) {
         Edge edge = new Edge(a, b);
@@ -62,21 +67,10 @@ public class Graph {
         Scanner sc = new Scanner(Paths.get(fileName));
         int id = 0;
         while (sc.hasNext()) {
-
-
-            graph.nodeList.add(new Node(sc.nextDouble(), sc.nextDouble(), sc.nextDouble(),id));
+            graph.insertNode(new Node(sc.nextDouble(), sc.nextDouble(), sc.nextDouble(), id));
             id++;
         }
         sc.close();
-        for (Node node : graph.nodeList) {
-            for (Node other: graph.getNodesInRange(node, node.radius)) {
-                if (!node.getNeighbours().contains(other)) {
-                    graph.connectNodes(node, other);
-                }
-            }
-
-
-        }
         return graph;
     }
 
