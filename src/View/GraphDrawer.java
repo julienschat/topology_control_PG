@@ -2,13 +2,11 @@ package View;
 
 import Model.Graph;
 import View.Shapes.Edge;
-import View.Shapes.Node;
 import View.Shapes.Radius;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Comparator;
 import java.util.Observable;
 
 public class GraphDrawer extends Observable {

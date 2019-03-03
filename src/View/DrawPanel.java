@@ -3,17 +3,12 @@ package View;
 import View.Shapes.Shape;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Ellipse2D;
 import java.util.LinkedList;
 
-public class DrawPanel extends JPanel{
+public class DrawPanel extends JPanel {
 
     public java.util.List<View.Shapes.Shape> shapes = new LinkedList<View.Shapes.Shape>();
     private int i = 0;
@@ -23,22 +18,20 @@ public class DrawPanel extends JPanel{
         void redirect(MouseAdapter ma);
     }
 
-    public DrawPanel(){
+    public DrawPanel() {
         this.attachMouseListener();
-        this.setBackground(Color.CYAN);
     }
 
-    public void registerResize(JPanel mainPanel) {
-        DrawPanel drawPanel = this;
-        mainPanel.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                super.componentResized(e);
-                drawPanel.getLayout().preferredLayoutSize(mainPanel);
-                System.out.println("resize");
-            }
-        });
-    }
+//    public void registerResize(JPanel mainPanel) {
+//        DrawPanel drawComponent = this;
+//        mainPanel.addComponentListener(new ComponentAdapter() {
+//            @Override
+//            public void componentResized(ComponentEvent e) {
+//                super.componentResized(e);
+//                System.out.println("resize");
+//            }
+//        });
+//    }
 
     private void redirectMouseEvent(MouseEvent e, RedirectMouseEvent deferrer) {
         for (View.Shapes.Shape shape: this.shapes) {
@@ -125,19 +118,4 @@ public class DrawPanel extends JPanel{
              shape.draw(g);
         }
     }
-
-
-    public void drawCircle(Graphics g, int x, int y,int radius){
-        Ellipse2D.Double circle = new Ellipse2D.Double(x-radius,y-radius,radius*2,radius*2);
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.fill(circle);
-        //g.drawOval(x,y,radius,radius);
-
-    }
-
-    public void drawEdge(Graphics g,int x1,int y1, int x2, int y2){
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.drawLine(x1,y1,x2,y2);
-    }
-
 }
