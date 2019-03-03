@@ -3,7 +3,7 @@ package Model;
 public class Edge {
     public Node left;
     public Node right;
-    public int coverage = 2;
+    public int coverage = 0;
 
     public Edge(Node left, Node right) {
         this.left = left;
@@ -16,6 +16,10 @@ public class Edge {
         } else {
             return this.left;
         }
+    }
+
+    public double getLength() {
+        return this.left.distanceTo(this.right);
     }
 
     public void remove() {

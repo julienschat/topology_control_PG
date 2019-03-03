@@ -3,7 +3,11 @@ package View;
 import View.Shapes.Shape;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
@@ -21,6 +25,19 @@ public class DrawPanel extends JPanel{
 
     public DrawPanel(){
         this.attachMouseListener();
+        this.setBackground(Color.CYAN);
+    }
+
+    public void registerResize(JPanel mainPanel) {
+        DrawPanel drawPanel = this;
+        mainPanel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+                drawPanel.getLayout().preferredLayoutSize(mainPanel);
+                System.out.println("resize");
+            }
+        });
     }
 
     private void redirectMouseEvent(MouseEvent e, RedirectMouseEvent deferrer) {

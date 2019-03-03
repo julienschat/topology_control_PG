@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Graph {
     public List<Node> nodeList = new ArrayList<>();
@@ -32,7 +33,7 @@ public class Graph {
         this.edgeList.removeAll(node.edgeList);
         node.edgeList.clear();
 
-        for (Node other: getNodesInRange(node, node.radius)) {
+        for (Node other: getNodesInRange(node, node.radius).collect(Collectors.toList())) {
             if (other.isInRange(node)) {
                 connectNodes(node, other);
             }
@@ -50,12 +51,11 @@ public class Graph {
         return nodeList.stream().filter(n->idOfNode==n.id).findFirst().orElse(null);
     }
 
-    public List<Node> getNodesInRange(Node node, double range) {
+    public Stream<Node> getNodesInRange(Node node, double range) {
         // this could be improved by using a spatial tree
         return this.nodeList.stream()
                 .filter(o -> node.distanceTo(o) <= range)
-                .filter(o -> o != node)
-                .collect(Collectors.toList());
+                .filter(o -> o != node);
     }
 
     public Graph cloneGraphWithoutEdges() {
@@ -114,11 +114,11 @@ public class Graph {
     }
 
     public void calculateCoverages() {
-        for (Node node: nodeList) {
-            node.edgeList.sort(Comparator.comparingDouble(e -> e.left.distanceTo(e.right)));
-            for (int i = 1; i < node.edgeList.size(); i++) {
-                node.edgeList.get(i).coverage += i;
-            }
+        for (Edge edge: edgeList) {
+            double length = edge.getLength();
+            Set<Node> nodes = this.getNodesInRange(edge.left, length).collect(Collectors.toSet());
+            nodes.addAll(this.getNodesInRange(edge.right, length).collect(Collectors.toSet()));
+            edge.coverage = nodes.size();
         }
     }
 }
