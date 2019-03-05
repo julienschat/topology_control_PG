@@ -65,6 +65,16 @@ public class Graph {
                 .collect(Collectors.toList());
         return newGraph;
     }
+    public Graph cloneGraphWithEdges(){
+        fixNodeIDs();
+        Graph newGraph = cloneGraphWithoutEdges();
+        for(Edge e: edgeList){
+
+            newGraph.connectNodes(newGraph.getNodeById(e.left.id),newGraph.getNodeById(e.right.id));
+
+        }
+        return newGraph;
+    }
 
     public Graph reducedGraph(List<Edge> edges) {
         Graph newGraph = cloneGraphWithoutEdges();
@@ -113,12 +123,35 @@ public class Graph {
         }
     }
 
+    public void fixNodeIDs(){
+        int id = 0;
+        for (Node node: nodeList) {
+            node.id = id;
+            id++;
+        }
+    }
+
     public void calculateCoverages() {
         for (Edge edge: edgeList) {
             double length = edge.getLength();
             Set<Node> nodes = this.getNodesInRange(edge.left, length).collect(Collectors.toSet());
             nodes.addAll(this.getNodesInRange(edge.right, length).collect(Collectors.toSet()));
             edge.coverage = nodes.size();
+        }
+    }
+
+    public void printGraph(){
+        System.out.println("Printing graph:");
+        System.out.println("#Knoten: "+nodeList.size());
+        System.out.println("#Kanten: "+edgeList.size());
+        for(Node node : nodeList) {
+            System.out.print("Knoten ID: "+node.id+", ");
+            System.out.print("Kanten zu: ");
+
+            for(Edge edge : node.edgeList){
+                System.out.print(edge.getNeighbourOf(node).id+", ");
+            }
+            System.out.println("");
         }
     }
 }

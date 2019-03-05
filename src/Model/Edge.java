@@ -18,6 +18,7 @@ public class Edge {
         }
     }
 
+
     public double getLength() {
         return this.left.distanceTo(this.right);
     }

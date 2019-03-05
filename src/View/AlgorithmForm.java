@@ -1,16 +1,77 @@
 package View;
 
+import Controller.AlgorithmController;
+import Controller.AlgorithmRunner;
+import Controller.LifeAlgorithmController;
+import Controller.LiseAlgorithmController;
+import Model.Graph;
+
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class AlgorithmForm {
     EditorForm editor;
     GraphDrawer graphDrawer;
+    Graph currentGraph;
 
     public AlgorithmForm(EditorForm editor) {
         super();
         this.editor = editor;
         graphDrawer = new GraphDrawer(drawPanel);
-        graphDrawer.draw(editor.currentGraph.cloneGraphWithoutEdges(),true);
+        currentGraph = editor.currentGraph.cloneGraphWithEdges();
+        graphDrawer.draw(currentGraph,true);
+
+        setupReloadButton();
+        setupStartButton();
+        setupStepButton();
+        setupStopButton();
+        setupAlgoChooser();
+
+    }
+
+    public void setupReloadButton(){
+        this.reloadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                currentGraph = editor.currentGraph.cloneGraphWithEdges();
+                graphDrawer.draw(currentGraph, true);
+
+            }
+        });
+    }
+
+    public void setupStartButton(){
+
+    }
+    public void setupStepButton(){
+
+    }
+    public void setupStopButton(){
+
+    }
+
+    public void setupAlgoChooser(){
+        algoChooser.addItem("LIFE");
+        algoChooser.addItem("LISE");
+
+        startButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                switch((String)algoChooser.getSelectedItem()){
+                    case "LIFE":
+                        new Thread(new AlgorithmRunner(graphDrawer,currentGraph,new LifeAlgorithmController())).start();
+                        break;
+                    case "LISE":
+                        new Thread(new AlgorithmRunner(graphDrawer,currentGraph,new LiseAlgorithmController())).start();
+                        break;
+                }
+            }
+        });
+
     }
 
     public JPanel mainPanel;
