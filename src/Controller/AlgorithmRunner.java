@@ -6,6 +6,7 @@ import Model.AlgorithmState;
 import Model.Graph;
 import Model.LifeAlgorithmState;
 import Model.LiseAlgorithmState;
+import View.AlgorithmDrawer;
 import View.GraphDrawer;
 import View.Shapes.Edge;
 import View.Shapes.Node;
@@ -17,10 +18,10 @@ import java.util.concurrent.TimeUnit;
 
 public class AlgorithmRunner implements Runnable {
     private AlgorithmController algorithmController;
-    private GraphDrawer drawer;
+    private AlgorithmDrawer drawer;
     private Graph graph;
 
-    public AlgorithmRunner(GraphDrawer drawer, Graph graph, AlgorithmController algorithmController) {
+    public AlgorithmRunner(AlgorithmDrawer drawer, Graph graph, AlgorithmController algorithmController) {
         this.drawer = drawer;
         this.graph = graph;
         this.algorithmController = algorithmController;
@@ -40,9 +41,10 @@ public class AlgorithmRunner implements Runnable {
 
                 Graph tmp = new Graph(state.origin.nodeList, state.edgesChosen);
                 drawer.draw(tmp, false);
-
+                tmp.printGraph();
                 TimeUnit.MILLISECONDS.sleep(400);
             }
+
             System.out.println("Finished");
         }
         catch (InterruptedException e) {

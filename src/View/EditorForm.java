@@ -203,10 +203,10 @@ public class EditorForm {
 //                String selected = (String)algoChooser.getSelectedItem();
 //                switch (selected) {
 //                    case "LIFE":
-//                        new Thread(new AlgorithmRunner(graphDrawer, currentGraph, new LifeAlgorithmController())).start();
+//                        new Thread(new AlgorithmRunner(algorithmDrawer, currentGraph, new LifeAlgorithmController())).start();
 //                        break;
 //                    case "LISE":
-//                        new Thread(new AlgorithmRunner(graphDrawer, currentGraph, new LiseAlgorithmController())).start();
+//                        new Thread(new AlgorithmRunner(algorithmDrawer, currentGraph, new LiseAlgorithmController())).start();
 //                        break;
 //                }
             }

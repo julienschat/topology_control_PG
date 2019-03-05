@@ -1,6 +1,5 @@
 package View;
 
-import Controller.AlgorithmController;
 import Controller.AlgorithmRunner;
 import Controller.LifeAlgorithmController;
 import Controller.LiseAlgorithmController;
@@ -14,15 +13,15 @@ import java.awt.event.MouseEvent;
 
 public class AlgorithmForm {
     EditorForm editor;
-    GraphDrawer graphDrawer;
+    AlgorithmDrawer algorithmDrawer;
     Graph currentGraph;
 
     public AlgorithmForm(EditorForm editor) {
         super();
         this.editor = editor;
-        graphDrawer = new GraphDrawer(drawPanel);
+        algorithmDrawer = new AlgorithmDrawer(drawPanel);
         currentGraph = editor.currentGraph.cloneGraphWithEdges();
-        graphDrawer.draw(currentGraph,true);
+        algorithmDrawer.draw(currentGraph,true);
 
         setupReloadButton();
         setupStartButton();
@@ -37,7 +36,7 @@ public class AlgorithmForm {
             @Override
             public void actionPerformed(ActionEvent e) {
                 currentGraph = editor.currentGraph.cloneGraphWithEdges();
-                graphDrawer.draw(currentGraph, true);
+                algorithmDrawer.draw(currentGraph, true);
 
             }
         });
@@ -63,10 +62,10 @@ public class AlgorithmForm {
                 super.mouseClicked(e);
                 switch((String)algoChooser.getSelectedItem()){
                     case "LIFE":
-                        new Thread(new AlgorithmRunner(graphDrawer,currentGraph,new LifeAlgorithmController())).start();
+                        new Thread(new AlgorithmRunner(algorithmDrawer,currentGraph,new LifeAlgorithmController())).start();
                         break;
                     case "LISE":
-                        new Thread(new AlgorithmRunner(graphDrawer,currentGraph,new LiseAlgorithmController())).start();
+                        new Thread(new AlgorithmRunner(algorithmDrawer,currentGraph,new LiseAlgorithmController())).start();
                         break;
                 }
             }

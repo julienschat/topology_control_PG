@@ -104,8 +104,8 @@ public class LiseAlgorithmController extends AlgorithmController{
 
 
                 }else{
-                    state.phase = LiseAlgorithmPhase.MAXEDGECHOOSING;
-                    state.edgesSortedByCoverage.removeLast();
+                    state.phase = LiseAlgorithmPhase.SHORTESTPATHCHECKING;
+
                 }
                 if(state.edgesSortedByCoverage.isEmpty()){
                     state.phase = LiseAlgorithmPhase.FINISHED;
