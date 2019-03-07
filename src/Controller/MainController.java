@@ -1,8 +1,10 @@
 package Controller;
 
+import Model.Graph;
 import View.EditorForm;
 
 import javax.swing.*;
+import java.io.IOException;
 
 public class MainController {
 
@@ -11,9 +13,17 @@ public class MainController {
          EditorForm editorForm = new EditorForm();
          mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
          mainFrame.setContentPane(editorForm.mainPanel);
-
          mainFrame.pack();
          mainFrame.setVisible(true);
+
+         // For faster testing:
+        try {
+            Graph currentGraph = Graph.readFile("graph1.txt");
+            editorForm.currentGraph = currentGraph;
+            editorForm.graphDrawer.draw(currentGraph, false);
+        }catch(IOException ex){
+            System.out.println("Could not load graph");
+        }
     }
 }
 
