@@ -6,6 +6,7 @@ import Controller.LiseAlgorithmController;
 import Model.Graph;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -21,7 +22,7 @@ public class AlgorithmForm {
         this.editor = editor;
         algorithmDrawer = new AlgorithmDrawer(drawPanel);
         currentGraph = editor.currentGraph.cloneGraphWithEdges();
-        algorithmDrawer.draw(currentGraph,true);
+        algorithmDrawer.draw(currentGraph,true, Color.black);
 
         setupReloadButton();
         setupStartButton();
@@ -36,7 +37,8 @@ public class AlgorithmForm {
             @Override
             public void actionPerformed(ActionEvent e) {
                 currentGraph = editor.currentGraph.cloneGraphWithEdges();
-                algorithmDrawer.draw(currentGraph, true);
+                drawPanel.shapes.clear();
+                algorithmDrawer.draw(currentGraph, true,Color.black);
 
             }
         });
