@@ -40,6 +40,13 @@ public class Graph {
         }
     }
 
+    public List<Node> getCoveredNodesByEdge(Edge edge){
+        double length = edge.getLength();
+        List<Node> coveredNodes = this.getNodesInRange(edge.left,length).collect(Collectors.toList());
+        coveredNodes.addAll(this.getNodesInRange(edge.right,length).collect(Collectors.toList()));
+        return coveredNodes;
+    }
+
     public void connectNodes(Node a, Node b) {
         Edge edge = new Edge(a, b);
         a.edgeList.add(edge);
