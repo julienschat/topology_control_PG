@@ -1,8 +1,10 @@
 package View;
 
+import Controller.AlgorithmController;
 import Controller.AlgorithmRunner;
 import Controller.LifeAlgorithmController;
 import Controller.LiseAlgorithmController;
+import Model.AlgorithmState;
 import Model.Graph;
 
 import javax.swing.*;
@@ -16,6 +18,9 @@ public class AlgorithmForm {
     EditorForm editor;
     AlgorithmDrawer algorithmDrawer;
     Graph currentGraph;
+    boolean algorithmRunning = false;
+    AlgorithmState algorithmState;
+    AlgorithmController algorithmController;
 
     public AlgorithmForm(EditorForm editor) {
         super();
@@ -48,8 +53,29 @@ public class AlgorithmForm {
 
     }
     public void setupStepButton(){
-
+        stepButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(algorithmRunning){
+                    algorithmController.processState(algorithmState);
+                    algorithmDrawer.drawAlgorithmState(algorithmState);
+                }else {
+                    switch ((String) algoChooser.getSelectedItem()) {
+                        case "LIFE":
+                            algorithmController = new LifeAlgorithmController();
+                            break;
+                        case "LISE":
+                            algorithmController = new LiseAlgorithmController();
+                            break;
+                    }
+                    algorithmState = algorithmController.init(currentGraph);
+                    algorithmDrawer.drawAlgorithmState(algorithmState);
+                    algorithmRunning = true;
+                }
+            }
+        });
     }
+
     public void setupStopButton(){
 
     }
