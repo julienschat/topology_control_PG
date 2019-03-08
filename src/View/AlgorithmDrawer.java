@@ -39,10 +39,10 @@ public class AlgorithmDrawer {
         drawPanel.update();
     }
 
-    public void drawCoverage(Model.Edge edge,Model.Graph graph){
+    public void drawCoverage(Model.Edge edge,Model.Graph graph,Color color){
         View.Shapes.Circle circle1 = new Circle(edge.left.x,edge.left.y,edge.getLength());
         View.Shapes.Circle circle2 = new Circle(edge.right.x,edge.right.y,edge.getLength());
-        Color color = new Color(255,247,247);
+
         circle1.color = color;
         circle2.color = color;
         drawPanel.shapes.add(circle1);
@@ -54,29 +54,44 @@ public class AlgorithmDrawer {
 
     public void drawAlgorithmState(AlgorithmState state){
 
+        Color colorMax = new Color(255,247,247);
+        Color colorMin = new Color(255,235,235);
+
         if(state instanceof LiseAlgorithmState){
 
             drawPanel.shapes.clear();
             LiseAlgorithmState liseState = (LiseAlgorithmState)state;
 
-            //Pre origin
-            drawCoverage(liseState.currentEdgeMaxCoverage,liseState.origin);
+            //Pre drawing of origin
+
+
+            if (liseState.currentEdgeMaxCoverage!=null) drawCoverage(liseState.currentEdgeMaxCoverage,liseState.origin,colorMax);
+            if (liseState.currentEdgeMinCoverage!=null) drawCoverage(liseState.currentEdgeMinCoverage,liseState.origin,colorMin);
 
             draw(state.origin,false,new Color(120,120,120));
 
-            //Post origin
+            //Post drawing of origin
 
             for(Model.Edge modelEdge : state.edgesChosen){
                 drawEdge(modelEdge,new Color(0,0,0));
             }
-
-            for(Model.Node modelNode : liseState.origin.getCoveredNodesByEdge(liseState.currentEdgeMaxCoverage)){
-                drawNode(modelNode,false,Color.red);
+            if(liseState.currentEdgeMaxCoverage!=null) {
+                for (Model.Node modelNode : liseState.origin.getCoveredNodesByEdge(liseState.currentEdgeMaxCoverage)) {
+                    drawNode(modelNode, false, Color.red);
+                }
             }
 
-            drawEdge(liseState.currentEdgeMaxCoverage,Color.red);
+            if(liseState.phase == SHORTESTPATHCHECKING){
+                if(liseState.nodesOnShortestPath!=null) {
+                    for (int i = 0; i < liseState.nodesOnShortestPath.size() - 1; i++) {
+                        Edge newEdge = new Edge(liseState.nodesOnShortestPath.get(i), liseState.nodesOnShortestPath.get(i + 1));
+                        drawEdge(newEdge, Color.green);
+                    }
+                }
+            }
+            if(liseState.currentEdgeMaxCoverage!=null) drawEdge(liseState.currentEdgeMaxCoverage,Color.red);
 
-            drawPanel.update();
+
 
             if(liseState.phase == FINISHED){
                 drawFinishedState(liseState);
@@ -106,7 +121,7 @@ public class AlgorithmDrawer {
 
             //Pre origin
             if(!lifeState.edgesChosen.isEmpty()) {
-                drawCoverage(lifeState.edgesChosen.getFirst(), lifeState.origin);
+                drawCoverage(lifeState.edgesChosen.getFirst(), lifeState.origin,colorMin);
             }
 
             draw(state.origin,false,new Color(120,120,120));
@@ -129,12 +144,9 @@ public class AlgorithmDrawer {
                 drawFinishedState(lifeState);
             }
 
-            drawPanel.update();
+
         }
-
-
-
-
+        drawPanel.update();
     }
 
     public void drawFinishedState(AlgorithmState state){

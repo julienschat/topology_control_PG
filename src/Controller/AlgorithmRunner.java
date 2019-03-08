@@ -12,6 +12,7 @@ import View.Shapes.Edge;
 import View.Shapes.Node;
 import View.Shapes.Radius;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +31,7 @@ public class AlgorithmRunner implements Runnable {
     @Override
     public void run() {
         try {
-            drawer.draw(graph, false);
+            drawer.draw(graph, false,Color.black);
 
             AlgorithmState state = algorithmController.init(graph);
 
@@ -39,9 +40,7 @@ public class AlgorithmRunner implements Runnable {
             while (!algorithmController.isFinished(state)) {
                 algorithmController.processState(state);
 
-                Graph tmp = new Graph(state.origin.nodeList, state.edgesChosen);
-                drawer.draw(tmp, false);
-                tmp.printGraph();
+                drawer.drawAlgorithmState(state);
                 TimeUnit.MILLISECONDS.sleep(400);
             }
 
