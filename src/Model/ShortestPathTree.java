@@ -23,7 +23,7 @@ public class ShortestPathTree {
     public LinkedList<Node> getPathToSourceFromNode(Node destinationNode){
         LinkedList<Node> path = new LinkedList<Node>();
         Node currentNode = destinationNode;
-
+        path.add(currentNode);
         while(currentNode.id != sourceId){
             path.add(previousNode[currentNode.id]);
             currentNode = previousNode[currentNode.id];

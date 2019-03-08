@@ -12,6 +12,7 @@ public class LiseAlgorithmState extends AlgorithmState {
     public Graph newTSpannerGraph;
     public double tSpannerMeasure;
     public LiseAlgorithmPhase phase;
+    public LinkedList<Node> nodesOnShortestPath;
 
     public LiseAlgorithmState(Graph _origin, double tSpannerMeasure){
         super(_origin);

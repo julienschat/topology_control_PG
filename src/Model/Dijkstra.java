@@ -30,6 +30,7 @@ public class Dijkstra {
                     if(neighbour.key == -1){
 
                         neighbour.key = currentNode.key + currentNode.distanceTo(neighbour);
+                        shortestPathTree.previousNode[neighbour.id] = currentNode;
                         distanceHeap.insert(neighbour);
 
                     }else{
