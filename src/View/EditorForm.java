@@ -21,7 +21,7 @@ public class EditorForm {
 
     private View.Shapes.Radius hoverRadius;
 
-    private GraphDrawer graphDrawer;
+    public GraphDrawer graphDrawer;
     public Graph currentGraph;
 
     public EditorForm() {
@@ -70,7 +70,6 @@ public class EditorForm {
                 try {
                     currentGraph = Graph.readFile(chooser.getSelectedFile().getPath());
                     graphDrawer.draw(currentGraph, this.radiiRadioButton.isSelected());
-                    drawPanel.update();
                 } catch (IOException ex) {
                     System.out.println("Could not read file.");
                 }
@@ -81,7 +80,6 @@ public class EditorForm {
     private void setupRadiiControl() {
         this.radiiRadioButton.addActionListener(e -> {
             graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
-            drawPanel.update();
         });
     }
 
@@ -95,7 +93,6 @@ public class EditorForm {
                     graphDrawer.draggedNode.y = e.getY();
                     currentGraph.updateNeighbours(graphDrawer.draggedNode);
                     graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
-                    drawPanel.update();
                 }
             }
             @Override
@@ -145,14 +142,10 @@ public class EditorForm {
                     currentGraph.insertNode(drawnNode);
 
                     graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
-                    drawPanel.update();
-
                     drawNode = false;
                     drawRadius = true;
                 } else if (drawRadius) {
                     graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
-                    drawPanel.update();
-
                     drawRadius = false;
                 }
             }
@@ -178,7 +171,6 @@ public class EditorForm {
         this.clearButton.addActionListener(e -> {
             this.currentGraph = new Graph();
             this.graphDrawer.draw(this.currentGraph, radiiRadioButton.isSelected());
-            drawPanel.update();
         });
     }
 

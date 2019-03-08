@@ -23,7 +23,7 @@ public class LiseAlgorithmController extends AlgorithmController{
         }else{
             initState = new LiseAlgorithmState(origin, 40);
         }
-
+        origin.fixNodeIDs();
         initState.newTSpannerGraph = origin.cloneGraphWithoutEdges();
 
         // Create Edgelist for State with sorted (by coverage) Edges of graph
@@ -60,7 +60,7 @@ public class LiseAlgorithmController extends AlgorithmController{
 
                 //View: Mark path from source to destination
                 if(destinationNode.key != -1) {
-                   // LinkedList<Node> nodesOnShortestPath = shortestPathTree.getPathToSourceFromNode(destinationNode);
+                   state.nodesOnShortestPath = shortestPathTree.getPathToSourceFromNode(destinationNode);
                 }
                 if(destinationNode.key == -1 ||
                         destinationNode.key > state.tSpannerMeasure * sourceNode.distanceTo(destinationNode)){
@@ -84,7 +84,7 @@ public class LiseAlgorithmController extends AlgorithmController{
                 state.edgesSortedByCoverage.removeFirst();
                 state.edgesChosen.add(state.currentEdgeMinCoverage);
                 addEdgeToTSPanner(algorithmState,state.currentEdgeMinCoverage);
-                // View: Mark the minCoverage Edge
+
                 state.phase = LiseAlgorithmPhase.SAMECOVERAGECHOOSING;
                 if(state.edgesSortedByCoverage.isEmpty()){
                     state.phase = LiseAlgorithmPhase.FINISHED;
