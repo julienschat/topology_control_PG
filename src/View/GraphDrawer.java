@@ -12,12 +12,26 @@ import java.util.Observable;
 public class GraphDrawer extends Observable {
     private DrawPanel panel;
 
+    private boolean nodeClick = false;
+
     public Model.Node draggedNode;
     public Model.Node hoveredNode;
+    public Model.Node clickedNode;
     public Model.Node draggedRadiusNode;
 
     public GraphDrawer(DrawPanel panel) {
         this.panel = panel;
+        panel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if (nodeClick) {
+                    nodeClick = false;
+                } else {
+                    clickedNode = null;
+                }
+            }
+        });
     }
 
     public void drawNode(Model.Node modelNode, boolean drawRadius, Color color) {
@@ -44,6 +58,12 @@ public class GraphDrawer extends Observable {
             public void mouseExited(MouseEvent e) {
                 super.mouseExited(e);
                 hoveredNode = null;
+            }
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                clickedNode = modelNode;
+                nodeClick = true;
             }
         });
 

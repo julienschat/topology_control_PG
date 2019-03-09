@@ -161,4 +161,12 @@ public class Graph {
             System.out.println("");
         }
     }
+
+    public void removeNode(Node node) {
+        for (Edge edge: node.edgeList) {
+            edge.getNeighbourOf(node).edgeList.remove(edge);
+            edgeList.remove(edge);
+        }
+        nodeList.remove(node);
+    }
 }
