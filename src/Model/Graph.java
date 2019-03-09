@@ -122,14 +122,6 @@ public class Graph {
         Files.write(Paths.get(fileName), lines, Charset.defaultCharset());
     }
 
-    public void fixNodeIndicies() {
-        int index = 0;
-        for (Node node: nodeList) {
-            node.index = index;
-            index++;
-        }
-    }
-
     public void fixNodeIDs(){
         int id = 0;
         for (Node node: nodeList) {
