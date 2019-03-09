@@ -23,7 +23,7 @@ public class UnionFind {
     }
 
     public Node find(Node node) {
-        InternalNode iNode = this.universe.get(node.index);
+        InternalNode iNode = this.universe.get(node.id);
         while (iNode.parent != null) {
             if (iNode.parent.parent != null) {
                 iNode.parent = iNode.parent.parent;
@@ -34,8 +34,8 @@ public class UnionFind {
     }
 
     public void union(Node node1, Node node2) {
-        InternalNode iNode1 = universe.get(find(node1).index);
-        InternalNode iNode2 = universe.get(find(node2).index);
+        InternalNode iNode1 = universe.get(find(node1).id);
+        InternalNode iNode2 = universe.get(find(node2).id);
 
         if (iNode1 != iNode2) {
             if (iNode1.rank > iNode2.rank) {
