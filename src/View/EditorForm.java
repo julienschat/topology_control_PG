@@ -121,14 +121,16 @@ public class EditorForm {
             @Override
             public void mouseMoved(MouseEvent e) {
                 super.mouseMoved(e);
-                if (graphDrawer.hoveredNode != null && hoverRadius == null) {
-                    hoverRadius = new View.Shapes.Radius(graphDrawer.hoveredNode.x, graphDrawer.hoveredNode.y, graphDrawer.hoveredNode.radius);
-                    drawPanel.shapes.add(hoverRadius);
-                    drawPanel.update();
-                } else if (hoverRadius != null) {
-                    drawPanel.shapes.remove(hoverRadius);
-                    hoverRadius = null;
-                    drawPanel.update();
+                if (!radiiRadioButton.isSelected()) {
+                    if (graphDrawer.hoveredNode != null && hoverRadius == null) {
+                        hoverRadius = new View.Shapes.Radius(graphDrawer.hoveredNode.x, graphDrawer.hoveredNode.y, graphDrawer.hoveredNode.radius);
+                        drawPanel.shapes.add(hoverRadius);
+                        drawPanel.update();
+                    } else if (graphDrawer.hoveredNode == null && hoverRadius != null) {
+                        drawPanel.shapes.remove(hoverRadius);
+                        drawPanel.update();
+                        hoverRadius = null;
+                    }
                 }
             }
         });
@@ -172,7 +174,6 @@ public class EditorForm {
                     nodeDrawing = false;
 
                     graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
-                    drawPanel.update();
                 }
             }
         };
@@ -238,7 +239,6 @@ public class EditorForm {
                 if (nodeDeleting && editorForm.graphDrawer.clickedNode != null) {
                     currentGraph.removeNode(editorForm.graphDrawer.clickedNode);
                     graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
-                    drawPanel.update();
                     editorForm.deleteNodeButton.setBackground(buttonColor);
                     nodeDeleting = false;
                 }
@@ -250,7 +250,6 @@ public class EditorForm {
             public void actionPerformed(ActionEvent e) {
                 currentGraph = new Graph();
                 graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
-                drawPanel.update();
             }
         };
 
