@@ -143,8 +143,6 @@ public class AlgorithmDrawer {
             if(lifeState.phase == LifeAlgorithmPhase.FINISHED){
                 drawFinishedState(lifeState);
             }
-
-
         }
         drawPanel.update();
     }

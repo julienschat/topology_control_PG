@@ -44,6 +44,7 @@ public class AlgorithmForm {
                 currentGraph = editor.currentGraph.cloneGraphWithEdges();
                 drawPanel.shapes.clear();
                 algorithmDrawer.draw(currentGraph, true,Color.black);
+                algorithmRunning = false;
 
             }
         });
@@ -63,12 +64,20 @@ public class AlgorithmForm {
                     switch ((String) algoChooser.getSelectedItem()) {
                         case "LIFE":
                             algorithmController = new LifeAlgorithmController();
+                            algorithmState = algorithmController.init(currentGraph);
                             break;
                         case "LISE":
                             algorithmController = new LiseAlgorithmController();
+                            int t = 1;
+                            try {
+                                t = Integer.parseInt(tSpan.getText());
+                            }catch(NumberFormatException exc){
+                                System.out.println("Chosen t not an int");
+                            }
+                            algorithmState = algorithmController.init(currentGraph,t);
                             break;
                     }
-                    algorithmState = algorithmController.init(currentGraph);
+
                     algorithmDrawer.drawAlgorithmState(algorithmState);
                     algorithmRunning = true;
                 }
