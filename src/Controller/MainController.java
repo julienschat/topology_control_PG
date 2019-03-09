@@ -16,14 +16,14 @@ public class MainController {
          mainFrame.pack();
          mainFrame.setVisible(true);
 
-         // For faster testing:
-        try {
-            Graph currentGraph = Graph.readFile("graph1.txt");
-            editorForm.currentGraph = currentGraph;
-            editorForm.graphDrawer.draw(currentGraph, false);
-        }catch(IOException ex){
-            System.out.println("Could not load graph");
-        }
+//         // For faster testing:
+//        try {
+//            Graph currentGraph = Graph.readFile("graph1.txt");
+//            editorForm.currentGraph = currentGraph;
+//            editorForm.graphDrawer.draw(currentGraph, false);
+//        }catch(IOException ex){
+//            System.out.println("Could not load graph");
+//        }
     }
 }
 

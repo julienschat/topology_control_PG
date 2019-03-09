@@ -50,57 +50,54 @@ public class EditorForm {
         chooser.setFileFilter(new FileNameExtensionFilter(
                 "Graph Text File", "txt"));
 
-        Runnable save = () -> {
-            int returnVal = chooser.showSaveDialog(this.mainPanel);
-
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                try {
-                    String fileName = chooser.getSelectedFile().getPath();
-                    if (!fileName.endsWith(".txt")) {
-                        fileName += ".txt";
-                    }
-                    Graph.writeFile(currentGraph, fileName);
-                } catch (IOException ex) {
-                    System.out.println("Could not save file.");
-                }
-            }
-        };
-
-        Runnable load = () -> {
-            int returnVal = chooser.showOpenDialog(this.mainPanel);
-
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                try {
-                    currentGraph = Graph.readFile(chooser.getSelectedFile().getPath());
-                    graphDrawer.draw(currentGraph, this.radiiRadioButton.isSelected());
-                } catch (IOException ex) {
-                    System.out.println("Could not read file.");
-                }
-            }
-        };
-
-        this.saveButton.addActionListener(e -> {
-            save.run();
-        });
-
-        this.loadButton.addActionListener(e -> {
-            load.run();
-        });
-
-        this.frame.addKeyListener(new KeyAdapter() {
+        Action save = new AbstractAction() {
             @Override
-            public void keyTyped(KeyEvent e) {
-                super.keyTyped(e);
-                switch (e.getKeyChar()) {
-                    case 's':
-                        save.run();
-                        break;
-                    case 'l':
-                        load.run();
-                        break;
+            public void actionPerformed(ActionEvent e) {
+                int returnVal = chooser.showSaveDialog(mainPanel);
+
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        String fileName = chooser.getSelectedFile().getPath();
+                        if (!fileName.endsWith(".txt")) {
+                            fileName += ".txt";
+                        }
+                        Graph.writeFile(currentGraph, fileName);
+                    } catch (IOException ex) {
+                        System.out.println("Could not save file.");
+                    }
                 }
             }
-        });
+        };
+
+        Action load = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int returnVal = chooser.showOpenDialog(mainPanel);
+
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        currentGraph = Graph.readFile(chooser.getSelectedFile().getPath());
+                        graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
+                    } catch (IOException ex) {
+                        System.out.println("Could not read file.");
+                    }
+                }
+            }
+        };
+
+        this.mainPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke('s'), "saveGraph");
+
+        this.mainPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke('l'), "loadGraph");
+
+        this.mainPanel.getActionMap().put("saveGraph", save);
+
+        this.mainPanel.getActionMap().put("loadGraph", load);
+
+        this.saveButton.addActionListener(save);
+
+        this.loadButton.addActionListener(load);
     }
 
     private void setupRadiiControl() {
