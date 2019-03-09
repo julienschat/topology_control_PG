@@ -39,6 +39,7 @@ public class EditorForm {
         setupRadiiControl();
         setupRadiusChange();
         setupSaveLoad();
+        setUpHeatmapControl();
     }
 
     private void setupSaveLoad() {
@@ -69,7 +70,7 @@ public class EditorForm {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 try {
                     currentGraph = Graph.readFile(chooser.getSelectedFile().getPath());
-                    graphDrawer.draw(currentGraph, this.radiiRadioButton.isSelected());
+                    graphDrawer.draw(currentGraph, this.radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
                 } catch (IOException ex) {
                     System.out.println("Could not read file.");
                 }
@@ -79,7 +80,13 @@ public class EditorForm {
 
     private void setupRadiiControl() {
         this.radiiRadioButton.addActionListener(e -> {
-            graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
+            graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
+        });
+    }
+
+    private void setUpHeatmapControl(){
+        this.heatmapRadioButton.addActionListener(e->{
+            graphDrawer.draw(currentGraph,radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
         });
     }
 
@@ -92,7 +99,7 @@ public class EditorForm {
                     graphDrawer.draggedNode.x = e.getX();
                     graphDrawer.draggedNode.y = e.getY();
                     currentGraph.updateNeighbours(graphDrawer.draggedNode);
-                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
+                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
                 }
             }
             @Override
@@ -120,7 +127,7 @@ public class EditorForm {
                     Model.Node n = graphDrawer.draggedRadiusNode;
                     n.radius = sqrt(pow(n.x - e.getX(), 2) + pow(n.y - e.getY(), 2));
                     currentGraph.updateNeighbours(n);
-                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
+                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
                     graphDrawer.drawNode(n, true, Color.BLACK);
                     drawPanel.update();
                 }
@@ -141,11 +148,11 @@ public class EditorForm {
                     drawnNode = new Model.Node(drawnX, drawnY, 0);
                     currentGraph.insertNode(drawnNode);
 
-                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
+                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
                     drawNode = false;
                     drawRadius = true;
                 } else if (drawRadius) {
-                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
+                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
                     drawRadius = false;
                 }
             }
@@ -160,7 +167,7 @@ public class EditorForm {
                     drawnNode.radius = radius;
                     currentGraph.updateNeighbours(drawnNode);
 
-                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected());
+                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
                     graphDrawer.drawNode(drawnNode, true, Color.BLACK);
 
                     drawPanel.update();
@@ -170,7 +177,7 @@ public class EditorForm {
 
         this.clearButton.addActionListener(e -> {
             this.currentGraph = new Graph();
-            this.graphDrawer.draw(this.currentGraph, radiiRadioButton.isSelected());
+            this.graphDrawer.draw(this.currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
         });
     }
 
@@ -214,4 +221,5 @@ public class EditorForm {
     private JRadioButton radiiRadioButton;
     private JButton loadButton;
     private JButton saveButton;
+    private JRadioButton heatmapRadioButton;
 }
