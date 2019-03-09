@@ -122,14 +122,6 @@ public class Graph {
         Files.write(Paths.get(fileName), lines, Charset.defaultCharset());
     }
 
-    public void fixNodeIndicies() {
-        int index = 0;
-        for (Node node: nodeList) {
-            node.index = index;
-            index++;
-        }
-    }
-
     public void fixNodeIDs(){
         int id = 0;
         for (Node node: nodeList) {
@@ -160,5 +152,13 @@ public class Graph {
             }
             System.out.println("");
         }
+    }
+
+    public void removeNode(Node node) {
+        for (Edge edge: node.edgeList) {
+            edge.getNeighbourOf(node).edgeList.remove(edge);
+            edgeList.remove(edge);
+        }
+        nodeList.remove(node);
     }
 }

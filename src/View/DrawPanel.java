@@ -11,7 +11,6 @@ import java.util.LinkedList;
 public class DrawPanel extends JPanel {
 
     public java.util.List<View.Shapes.Shape> shapes = new LinkedList<View.Shapes.Shape>();
-    private int i = 0;
 
     @FunctionalInterface
     private interface RedirectMouseEvent {
@@ -21,17 +20,6 @@ public class DrawPanel extends JPanel {
     public DrawPanel() {
         this.attachMouseListener();
     }
-
-//    public void registerResize(JPanel mainPanel) {
-//        DrawPanel drawComponent = this;
-//        mainPanel.addComponentListener(new ComponentAdapter() {
-//            @Override
-//            public void componentResized(ComponentEvent e) {
-//                super.componentResized(e);
-//                System.out.println("resize");
-//            }
-//        });
-//    }
 
     private void redirectMouseEvent(MouseEvent e, RedirectMouseEvent deferrer) {
         for (View.Shapes.Shape shape: this.shapes) {

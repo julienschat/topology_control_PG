@@ -13,13 +13,27 @@ import java.util.Observable;
 public class GraphDrawer extends Observable {
     private DrawPanel drawPanel;
 
+    private boolean nodeClick = false;
+
     public Model.Node draggedNode;
     public Model.Node hoveredNode;
+    public Model.Node clickedNode;
     public Model.Node draggedRadiusNode;
     private boolean drawHeatMap = false;
 
     public GraphDrawer(DrawPanel panel) {
         this.drawPanel = panel;
+        panel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if (nodeClick) {
+                    nodeClick = false;
+                } else {
+                    clickedNode = null;
+                }
+            }
+        });
     }
 
     public void drawNode(Model.Node modelNode, boolean drawRadius, Color color) {
@@ -46,6 +60,12 @@ public class GraphDrawer extends Observable {
             public void mouseExited(MouseEvent e) {
                 super.mouseExited(e);
                 hoveredNode = null;
+            }
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                clickedNode = modelNode;
+                nodeClick = true;
             }
         });
 
@@ -89,7 +109,6 @@ public class GraphDrawer extends Observable {
         int height = drawPanel.getHeight();
         int width = drawPanel.getWidth();
         int precision = 10;
-        System.out.println("Height: "+height+" width: "+width);
         int numberOfEdges = graph.edgeList.size();
 
         for(int i = 0; i < width; i+=10){
@@ -100,9 +119,6 @@ public class GraphDrawer extends Observable {
                     if(modelEdge.checkIfPointIsCovered(i+precision/2,j+precision/2)) count +=1;
                 }
                 float heatValue = ((float)count/numberOfEdges);
-
-                if(heatValue>0 && heatValue < 255) System.out.println("HeatValue for x: "+i+" and y: "+j+" is "+heatValue);
-
                 viewRect.color = new Color(heatValue,0f,1-heatValue);
                 drawPanel.shapes.add(viewRect);
             }
