@@ -23,6 +23,8 @@ public class GraphDrawer extends Observable {
     public Model.Node draggedRadiusNode;
     private boolean drawHeatMap = false;
 
+    private HeatmapDrawer heatmapDrawer;
+
     public GraphDrawer(DrawPanel panel) {
         this.drawPanel = panel;
         panel.addMouseListener(new MouseAdapter() {
@@ -36,6 +38,7 @@ public class GraphDrawer extends Observable {
                 }
             }
         });
+        heatmapDrawer = new HeatmapDrawer(panel);
     }
 
     public void drawNode(Model.Node modelNode, boolean drawRadius, Color color) {
@@ -107,81 +110,11 @@ public class GraphDrawer extends Observable {
         }
     }
 
-    private void updateMap(int[][] map, int gridSize, Model.Edge edge) {
-        // check which grid cells are affected by the edge
-        double radius = edge.getLength();
-        double radiusSq = Math.pow(radius, 2);
-        int boxLeft = Math.max(0, (int)(Math.min(edge.left.x, edge.right.x) - radius) / gridSize);
-        int boxTop =  Math.max(0, (int)(Math.min(edge.left.y, edge.right.y) - radius) / gridSize);
-        int maxBoxSize = 3 * (int) radius / gridSize;
-        int boxXSize = Math.min(boxLeft + maxBoxSize, map.length) - boxLeft;
-        int boxYSize = Math.min(boxTop + maxBoxSize, map[0].length) - boxTop;
-
-        for (int i = 0; i < boxXSize; i++) {
-            double x = (boxLeft + i) * gridSize + gridSize / 2d;
-            double distXLeft = Math.pow(x - edge.left.x, 2);
-            double distXRight = Math.pow(x - edge.right.x, 2);
-            for (int j = 0; j < boxYSize; j++) {
-                double y = (boxTop + j) * gridSize + gridSize / 2d;
-                double distYLeft = Math.pow(y - edge.left.y, 2);
-                double distYRight = Math.pow(y - edge.right.y, 2);
-                if (distXLeft + distYLeft < radiusSq || distXRight + distYRight < radiusSq) {
-                    map[boxLeft + i][boxTop + j] += 1;
-                }
-            }
-        }
-    }
-
-    public void drawHeatMap(Graph graph){
-        int height = drawPanel.getHeight();
-        int width = drawPanel.getWidth();
-        int gridSize = 2;
-
-        // map stores how many edges affect the grid cell
-        int[][] map = new int[width / gridSize + 1][height / gridSize + 1];
-        for (Model.Edge edge: graph.edgeList) {
-            updateMap(map, gridSize, edge);
-        }
-        // possibility 1
-        int scaling = Arrays.stream(map).map(row -> Arrays.stream(row).max().orElse(0)).max(Comparator.naturalOrder()).orElse(0);
-        // possibility 2
-//        int scaling = graph.nodeList.size() * 2;
-
-        for (int i = 0; i < width / gridSize + 1; i++) {
-            for (int j = 0; j < height / gridSize + 1; j ++) {
-                if (map[i][j] > 0) {
-                    View.Shapes.Rectangle viewRect = new Rectangle(i * gridSize, j * gridSize, gridSize, gridSize);
-                    float heatValue = ((float) map[i][j] / scaling);
-                    float hue = 0.6f - (heatValue * 0.6f);
-                    viewRect.color = new Color(Color.HSBtoRGB(hue, 1, 0.5f));
-                    drawPanel.shapes.add(viewRect);
-                }
-            }
-        }
-
-//        for (int i = 0; i < width; i += gridSize) {
-//            for (int j = 0; j < height; j += gridSize) {
-//                int centerX = i + gridSize / 2;
-//                int centerY = j + gridSize / 2;
-//                long count = graph.edgeList.stream()
-//                        .filter(e -> e.checkIfPointIsCovered(centerX, centerY))
-//                        .count();
-//                if (count > 0) {
-//                    View.Shapes.Rectangle viewRect = new Rectangle(i, j, gridSize, gridSize);
-//                    float heatValue = ((float) count / maxCoverage);
-//                    float hue = 0.6f - (heatValue * 0.6f);
-//                    viewRect.color = new Color(Color.HSBtoRGB(hue, 1, 0.5f));
-//                    drawPanel.shapes.add(viewRect);
-//                }
-//            }
-//        }
-    }
-
     public void draw(Graph graph, boolean radii, boolean heatMap) {
         drawPanel.shapes.clear(); // NOTE: should maybe only delete own shapes.
 
         if(heatMap) {
-            drawHeatMap(graph);
+            this.heatmapDrawer.drawHeatMap(graph.edgeList);
         }
 
         for (Model.Node modelNode : graph.nodeList) {
