@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 public class Rectangle extends Shape {
-    private double x,y,height,width;
+    private double x, y, height, width;
 
     public Rectangle(double x, double y, double height, double width){
         this.x = x;
@@ -15,7 +15,7 @@ public class Rectangle extends Shape {
 
     @Override
     public void drawShape(Graphics2D g2d) {
-        Rectangle2D.Double rect = new Rectangle2D.Double(this.x,this.y,this.width,this.height);
+        Rectangle2D.Double rect = new Rectangle2D.Double(this.x, this.y, this.width, this.height);
         g2d.fill(rect);
         g2d.draw(rect);
     }
