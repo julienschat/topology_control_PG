@@ -19,6 +19,9 @@ public class LifeAlgorithmState extends AlgorithmState {
 
     @Override
     public AlgorithmState clone() {
-        return this;
+        LifeAlgorithmState state = new LifeAlgorithmState(origin);
+        state.edgesChosen.addAll(this.edgesChosen);
+        state.edgesByCoverage.addAll(this.edgesByCoverage);
+        return state;
     }
 }
