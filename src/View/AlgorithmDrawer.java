@@ -54,42 +54,54 @@ public class AlgorithmDrawer {
 
     public void drawAlgorithmState(AlgorithmState state){
 
-        Color colorMax = new Color(255,247,247);
-        Color colorMin = new Color(255,235,235);
+        Color colorMax = new Color(255, 153, 153);
+        Color colorMin = new Color(204, 229, 255);
 
         if(state instanceof LiseAlgorithmState){
 
             drawPanel.shapes.clear();
             LiseAlgorithmState liseState = (LiseAlgorithmState)state;
 
-            //Pre drawing of origin
+            //Pre drawing of origin:
 
-
+            // Draw the coverages of Min and Max Edge
             if (liseState.currentEdgeMaxCoverage!=null) drawCoverage(liseState.currentEdgeMaxCoverage,liseState.origin,colorMax);
-            if (liseState.currentEdgeMinCoverage!=null) drawCoverage(liseState.currentEdgeMinCoverage,liseState.origin,colorMin);
+            if (liseState.currentStatesPhase == MINEDGECHOOSING || liseState.currentStatesPhase == SAMECOVERAGECHOOSING ) drawCoverage(liseState.currentEdgeMinCoverage,liseState.origin,colorMin);
 
             draw(state.origin,false,new Color(120,120,120));
 
-            //Post drawing of origin
+            //Post drawing of origin:
 
+            //Mark Edges already chosen for new network
             for(Model.Edge modelEdge : state.edgesChosen){
                 drawEdge(modelEdge,new Color(0,0,0));
             }
+
+            // Mark nodes covered by Min and Max Edge
             if(liseState.currentEdgeMaxCoverage!=null) {
                 for (Model.Node modelNode : liseState.origin.getCoveredNodesByEdge(liseState.currentEdgeMaxCoverage)) {
                     drawNode(modelNode, false, Color.red);
                 }
             }
+            if(liseState.currentStatesPhase == MINEDGECHOOSING || liseState.currentStatesPhase == SAMECOVERAGECHOOSING ) {
+                for (Model.Node modelNode : liseState.origin.getCoveredNodesByEdge(liseState.currentEdgeMinCoverage)) {
+                    drawNode(modelNode, false, Color.blue);
+                }
+            }
 
-            if(liseState.phase == SHORTESTPATHCHECKING){
-                if(liseState.nodesOnShortestPath!=null) {
+            // Mark the shortest path between v,w of current Max Edge
+            if(liseState.currentStatesPhase == SHORTESTPATHCHECKING) {
+                if (liseState.nodesOnShortestPath != null) {
                     for (int i = 0; i < liseState.nodesOnShortestPath.size() - 1; i++) {
                         Edge newEdge = new Edge(liseState.nodesOnShortestPath.get(i), liseState.nodesOnShortestPath.get(i + 1));
                         drawEdge(newEdge, Color.green);
                     }
                 }
             }
+
+            // Mark current Max and Min Edge
             if(liseState.currentEdgeMaxCoverage!=null) drawEdge(liseState.currentEdgeMaxCoverage,Color.red);
+            if (liseState.currentStatesPhase == MINEDGECHOOSING || liseState.currentStatesPhase == SAMECOVERAGECHOOSING ) drawEdge(liseState.currentEdgeMinCoverage,Color.blue);
 
 
 
