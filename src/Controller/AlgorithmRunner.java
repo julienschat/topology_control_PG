@@ -21,6 +21,7 @@ public class AlgorithmRunner implements Runnable {
     private AlgorithmController algorithmController;
     private AlgorithmDrawer drawer;
     private Graph graph;
+    private int tSpannerMeasure;
 
     public AlgorithmRunner(AlgorithmDrawer drawer, Graph graph, AlgorithmController algorithmController) {
         this.drawer = drawer;
@@ -28,12 +29,20 @@ public class AlgorithmRunner implements Runnable {
         this.algorithmController = algorithmController;
     }
 
+    public void settSpannerMeasure(int t){
+        this.tSpannerMeasure = t;
+    }
+
     @Override
     public void run() {
         try {
             drawer.draw(graph, false,Color.black);
-
-            AlgorithmState state = algorithmController.init(graph);
+            AlgorithmState state;
+            if(algorithmController instanceof LiseAlgorithmController) {
+                state = algorithmController.init(graph,tSpannerMeasure);
+            }else {
+                state = algorithmController.init(graph);
+            }
 
             // running algorithm stepwise
 

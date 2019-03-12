@@ -102,7 +102,15 @@ public class AlgorithmForm {
                         new Thread(new AlgorithmRunner(algorithmDrawer,currentGraph,new LifeAlgorithmController())).start();
                         break;
                     case "LISE":
-                        new Thread(new AlgorithmRunner(algorithmDrawer,currentGraph,new LiseAlgorithmController())).start();
+                        int t = 1;
+                        try {
+                            t = Integer.parseInt(tSpan.getText());
+                        }catch(NumberFormatException exc){
+                            System.out.println("Chosen t not an int");
+                        }
+                        AlgorithmRunner runner = new AlgorithmRunner(algorithmDrawer,currentGraph,new LiseAlgorithmController());
+                        runner.settSpannerMeasure(t);
+                        new Thread(runner).start();
                         break;
                 }
             }
