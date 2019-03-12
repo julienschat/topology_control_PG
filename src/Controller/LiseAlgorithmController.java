@@ -61,7 +61,12 @@ public class LiseAlgorithmController extends AlgorithmController{
                 //View: Mark path from source to destination
                 if(destinationNode.key != -1) {
                    state.nodesOnShortestPath = shortestPathTree.getPathToSourceFromNode(destinationNode);
+                   System.out.println("Found path");
+                }else{
+                    // Better would be the ~ best possible path so far
+                    state.nodesOnShortestPath = null;
                 }
+
                 if(destinationNode.key == -1 ||
                         destinationNode.key > state.tSpannerMeasure * sourceNode.distanceTo(destinationNode)){
 
