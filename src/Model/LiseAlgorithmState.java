@@ -19,7 +19,6 @@ public class LiseAlgorithmState extends AlgorithmState {
         super(_origin);
         this.tSpannerMeasure = tSpannerMeasure;
         edgesChosen = new LinkedList<Edge>();
-
     }
 
     public List<Node> getCurrentNodes(){

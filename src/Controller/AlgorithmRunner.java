@@ -47,7 +47,7 @@ public class AlgorithmRunner implements Runnable {
             // running algorithm stepwise
 
             while (!algorithmController.isFinished(state)) {
-                algorithmController.processState(state);
+                state = algorithmController.next(state);
 
                 drawer.drawAlgorithmState(state);
                 TimeUnit.MILLISECONDS.sleep(400);

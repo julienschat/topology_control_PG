@@ -108,19 +108,25 @@ public class GraphDrawer extends Observable {
     }
 
     private void updateMap(int[][] map, int gridSize, Model.Edge edge) {
+        // check which grid cells are affected by the edge
         double radius = edge.getLength();
         double radiusSq = Math.pow(radius, 2);
-        int gridBoxLeft = Math.max(0, (int)(Math.min(edge.left.x, edge.right.x) - radius) / gridSize);
-        int gridBoxTop =  Math.max(0, (int)(Math.min(edge.left.y, edge.right.y) - radius) / gridSize);
-        int gridRadius = (int)radius / gridSize;
-        for (int x = gridBoxLeft; x < Math.min(gridBoxLeft + 3 * gridRadius, map.length); x++) {
-            double distXLeftSq = Math.pow((x + 0.5) * gridSize - edge.left.x, 2);
-            double distXRightSq = Math.pow((x + 0.5) * gridSize - edge.right.x, 2);
-            for (int y = gridBoxTop; y < Math.min(gridBoxTop + 3 * gridRadius, map[x].length); y++) {
-                double distYLeftSq = Math.pow((y + 0.5) * gridSize - edge.left.y, 2);
-                double distYRightSq = Math.pow((y + 0.5) * gridSize - edge.right.y, 2);
-                if (distXLeftSq + distYLeftSq < radiusSq || distXRightSq + distYRightSq < radiusSq) {
-                    map[x][y] += 1;
+        int boxLeft = Math.max(0, (int)(Math.min(edge.left.x, edge.right.x) - radius) / gridSize);
+        int boxTop =  Math.max(0, (int)(Math.min(edge.left.y, edge.right.y) - radius) / gridSize);
+        int maxBoxSize = 3 * (int) radius / gridSize;
+        int boxXSize = Math.min(boxLeft + maxBoxSize, map.length) - boxLeft;
+        int boxYSize = Math.min(boxTop + maxBoxSize, map[0].length) - boxTop;
+
+        for (int i = 0; i < boxXSize; i++) {
+            double x = (boxLeft + i) * gridSize + gridSize / 2d;
+            double distXLeft = Math.pow(x - edge.left.x, 2);
+            double distXRight = Math.pow(x - edge.right.x, 2);
+            for (int j = 0; j < boxYSize; j++) {
+                double y = (boxTop + j) * gridSize + gridSize / 2d;
+                double distYLeft = Math.pow(y - edge.left.y, 2);
+                double distYRight = Math.pow(y - edge.right.y, 2);
+                if (distXLeft + distYLeft < radiusSq || distXRight + distYRight < radiusSq) {
+                    map[boxLeft + i][boxTop + j] += 1;
                 }
             }
         }
@@ -131,6 +137,7 @@ public class GraphDrawer extends Observable {
         int width = drawPanel.getWidth();
         int gridSize = 2;
 
+        // map stores how many edges affect the grid cell
         int[][] map = new int[width / gridSize + 1][height / gridSize + 1];
         for (Model.Edge edge: graph.edgeList) {
             updateMap(map, gridSize, edge);

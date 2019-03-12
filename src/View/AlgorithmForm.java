@@ -33,7 +33,7 @@ public class AlgorithmForm {
         setupStartButton();
         setupStepButton();
         setupStopButton();
-        setupAlgoChooser();
+        setupBackButton();
 
     }
 
@@ -50,15 +50,12 @@ public class AlgorithmForm {
         });
     }
 
-    public void setupStartButton(){
-
-    }
     public void setupStepButton(){
         stepButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(algorithmRunning){
-                    algorithmController.processState(algorithmState);
+                    algorithmState = algorithmController.next(algorithmState);
                     algorithmDrawer.drawAlgorithmState(algorithmState);
                 }else {
                     switch ((String) algoChooser.getSelectedItem()) {
@@ -89,14 +86,25 @@ public class AlgorithmForm {
 
     }
 
-    public void setupAlgoChooser(){
+    public void setupBackButton() {
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (algorithmRunning) {
+                    algorithmState = algorithmController.back(algorithmState);
+                    algorithmDrawer.drawAlgorithmState(algorithmState);
+                }
+            }
+        });
+    }
+
+    public void setupStartButton(){
         algoChooser.addItem("LIFE");
         algoChooser.addItem("LISE");
 
-        startButton.addMouseListener(new MouseAdapter() {
+        startButton.addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
+            public void actionPerformed(ActionEvent e) {
                 switch((String)algoChooser.getSelectedItem()){
                     case "LIFE":
                         new Thread(new AlgorithmRunner(algorithmDrawer,currentGraph,new LifeAlgorithmController())).start();
@@ -115,7 +123,6 @@ public class AlgorithmForm {
                 }
             }
         });
-
     }
 
     public JPanel mainPanel;
@@ -126,4 +133,5 @@ public class AlgorithmForm {
     private JButton stepButton;
     private JButton reloadButton;
     private JTextField tSpan;
+    private JButton backButton;
 }
