@@ -9,14 +9,8 @@ import java.util.stream.Collectors;
 
 
 public class LiseAlgorithmController extends AlgorithmController{
-
-
-
-
     @Override
     public AlgorithmState init(Graph origin, double... params){
-
-
         LiseAlgorithmState initState;
         if(params.length>0) {
             initState = new LiseAlgorithmState(origin, params[0]);
@@ -39,7 +33,7 @@ public class LiseAlgorithmController extends AlgorithmController{
     }
 
     @Override
-    public AlgorithmState processState(AlgorithmState algorithmState) {
+    protected AlgorithmState processState(AlgorithmState algorithmState) {
 
         LiseAlgorithmState state = (LiseAlgorithmState) algorithmState;
 
@@ -136,6 +130,4 @@ public class LiseAlgorithmController extends AlgorithmController{
         LiseAlgorithmState state = (LiseAlgorithmState) algorithmState;
         state.newTSpannerGraph.connectNodes(state.newTSpannerGraph.getNodeById(edge.left.id),state.newTSpannerGraph.getNodeById(edge.right.id));
     }
-
-
 }

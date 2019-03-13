@@ -11,9 +11,11 @@ import static Model.LiseAlgorithmPhase.*;
 public class AlgorithmDrawer {
 
     private DrawPanel drawPanel;
+    private HeatmapDrawer heatMapDrawer;
 
     public AlgorithmDrawer(DrawPanel panel){
         this.drawPanel = panel;
+        heatMapDrawer = new HeatmapDrawer(panel);
     }
     public void drawNode(Model.Node modelNode, boolean drawRadius, Color color){
         View.Shapes.Node viewNode = new View.Shapes.Node(modelNode.x,modelNode.y);
@@ -28,7 +30,6 @@ public class AlgorithmDrawer {
     }
 
     public void draw(Graph graph, boolean radii, Color color){
-
         for(Model.Node modelNode : graph.nodeList){
             drawNode(modelNode,true,color);
         }
@@ -52,7 +53,7 @@ public class AlgorithmDrawer {
 
     }
 
-    public void drawAlgorithmState(AlgorithmState state){
+    public void drawAlgorithmState(AlgorithmState state, boolean heatMap){
 
         Color colorMax = new Color(255, 153, 153);
         Color colorMin = new Color(204, 229, 255);
@@ -106,7 +107,7 @@ public class AlgorithmDrawer {
 
 
             if(liseState.phase == FINISHED){
-                drawFinishedState(liseState);
+                drawFinishedState(liseState, heatMap);
             }
 
 //            switch(liseState.phase){
@@ -153,15 +154,18 @@ public class AlgorithmDrawer {
             }
 
             if(lifeState.phase == LifeAlgorithmPhase.FINISHED){
-                drawFinishedState(lifeState);
+                drawFinishedState(lifeState, heatMap);
             }
         }
         drawPanel.update();
     }
 
-    public void drawFinishedState(AlgorithmState state){
+    public void drawFinishedState(AlgorithmState state, boolean heatMap){
         drawPanel.shapes.clear();
-        draw(state.origin,false,new Color(120,120,120));
+        if (heatMap) {
+            this.heatMapDrawer.drawHeatMap(state.edgesChosen);
+        }
+        draw(state.origin,false, new Color(120,120,120));
         for(Model.Edge modelEdge : state.edgesChosen){
             drawEdge(modelEdge,Color.black);
         }

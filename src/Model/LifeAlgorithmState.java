@@ -13,15 +13,16 @@ public class LifeAlgorithmState extends AlgorithmState {
 
     public LifeAlgorithmState(Graph _origin) {
         super(_origin);
-        edgesChosen = new LinkedList<Edge>();
-
+        edgesChosen = new LinkedList<>();
     }
 
     @Override
     public AlgorithmState clone() {
         LifeAlgorithmState state = new LifeAlgorithmState(origin);
         state.edgesChosen.addAll(this.edgesChosen);
-        state.edgesByCoverage.addAll(this.edgesByCoverage);
+        state.edgesByCoverage = this.edgesByCoverage;
+        state.phase = this.phase;
+        state.unionFind = this.unionFind;
         return state;
     }
 }

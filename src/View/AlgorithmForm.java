@@ -33,8 +33,8 @@ public class AlgorithmForm {
         setupStartButton();
         setupStepButton();
         setupStopButton();
-        setupAlgoChooser();
-
+        setupBackButton();
+        setupTSpanChooser();
     }
 
     public void setupReloadButton(){
@@ -50,16 +50,13 @@ public class AlgorithmForm {
         });
     }
 
-    public void setupStartButton(){
-
-    }
     public void setupStepButton(){
         stepButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(algorithmRunning){
-                    algorithmController.processState(algorithmState);
-                    algorithmDrawer.drawAlgorithmState(algorithmState);
+                    algorithmState = algorithmController.next(algorithmState);
+                    algorithmDrawer.drawAlgorithmState(algorithmState, heatmapRadioButton.isSelected());
                 }else {
                     switch ((String) algoChooser.getSelectedItem()) {
                         case "LIFE":
@@ -78,7 +75,7 @@ public class AlgorithmForm {
                             break;
                     }
 
-                    algorithmDrawer.drawAlgorithmState(algorithmState);
+                    algorithmDrawer.drawAlgorithmState(algorithmState, heatmapRadioButton.isSelected());
                     algorithmRunning = true;
                 }
             }
@@ -89,33 +86,45 @@ public class AlgorithmForm {
 
     }
 
-    public void setupAlgoChooser(){
+    public void setupBackButton() {
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (algorithmRunning) {
+                    algorithmState = algorithmController.back(algorithmState);
+                    algorithmDrawer.drawAlgorithmState(algorithmState, heatmapRadioButton.isSelected());
+                }
+            }
+        });
+    }
+
+    public void setupStartButton(){
         algoChooser.addItem("LIFE");
         algoChooser.addItem("LISE");
 
-        startButton.addMouseListener(new MouseAdapter() {
+        startButton.addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
+            public void actionPerformed(ActionEvent e) {
                 switch((String)algoChooser.getSelectedItem()){
                     case "LIFE":
                         new Thread(new AlgorithmRunner(algorithmDrawer,currentGraph,new LifeAlgorithmController())).start();
                         break;
                     case "LISE":
-                        int t = 1;
-                        try {
-                            t = Integer.parseInt(tSpan.getText());
-                        }catch(NumberFormatException exc){
-                            System.out.println("Chosen t not an int");
-                        }
                         AlgorithmRunner runner = new AlgorithmRunner(algorithmDrawer,currentGraph,new LiseAlgorithmController());
-                        runner.settSpannerMeasure(t);
+                        runner.settSpannerMeasure((double)tSpanChooser.getModel().getValue());
                         new Thread(runner).start();
                         break;
                 }
             }
         });
+    }
 
+    public void setupTSpanChooser() {
+        SpinnerNumberModel model = new SpinnerNumberModel();
+        model.setMinimum(1);
+        model.setStepSize(1);
+        model.setValue(1);
+        tSpanChooser.setModel(model);
     }
 
     public JPanel mainPanel;
@@ -126,4 +135,7 @@ public class AlgorithmForm {
     private JButton stepButton;
     private JButton reloadButton;
     private JTextField tSpan;
+    private JButton backButton;
+    private JRadioButton heatmapRadioButton;
+    private JSpinner tSpanChooser;
 }
