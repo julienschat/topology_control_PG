@@ -142,7 +142,7 @@ public class AlgorithmDrawer {
             //Post origin
             if(!lifeState.edgesChosen.isEmpty()) {
                 for (Model.Node modelNode : lifeState.origin.getCoveredNodesByEdge(lifeState.edgesChosen.getFirst())) {
-                    drawNode(modelNode, false, Color.red);
+                    drawNode(modelNode, false, Color.blue);
                 }
             }
 

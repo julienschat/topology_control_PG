@@ -65,13 +65,7 @@ public class AlgorithmForm {
                             break;
                         case "LISE":
                             algorithmController = new LiseAlgorithmController();
-                            int t = 1;
-                            try {
-                                t = Integer.parseInt(tSpan.getText());
-                            }catch(NumberFormatException exc){
-                                System.out.println("Chosen t not an int");
-                            }
-                            algorithmState = algorithmController.init(currentGraph,t);
+                            algorithmState = algorithmController.init(currentGraph,((Number)(tSpanChooser.getModel().getValue())).doubleValue());
                             break;
                     }
 
@@ -111,7 +105,7 @@ public class AlgorithmForm {
                         break;
                     case "LISE":
                         AlgorithmRunner runner = new AlgorithmRunner(algorithmDrawer,currentGraph,new LiseAlgorithmController());
-                        runner.settSpannerMeasure((double)tSpanChooser.getModel().getValue());
+                        runner.settSpannerMeasure(((Number)(tSpanChooser.getModel().getValue())).doubleValue());
                         new Thread(runner).start();
                         break;
                 }
