@@ -1,7 +1,6 @@
 package View;
 
 import View.Shapes.Rectangle;
-
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -9,12 +8,14 @@ import java.util.List;
 
 public class HeatmapDrawer {
     private DrawPanel drawPanel;
-
+    private int[][] map;
+    private int gridSize;
     public HeatmapDrawer(DrawPanel panel) {
         this.drawPanel = panel;
+        this.gridSize = 2;
     }
 
-    private void updateMap(int[][] map, int gridSize, Model.Edge edge) {
+    private void updateMap(int gridSize, Model.Edge edge) {
         // check which grid cells are affected by the edge
         double radius = edge.getLength();
         double radiusSq = Math.pow(radius, 2);
@@ -42,12 +43,10 @@ public class HeatmapDrawer {
     public void drawHeatMap(List<Model.Edge> edgeList){
         int height = drawPanel.getHeight();
         int width = drawPanel.getWidth();
-        int gridSize = 2;
-
         // map stores how many edges affect the grid cell
-        int[][] map = new int[width / gridSize + 1][height / gridSize + 1];
+        map = new int[width / gridSize + 1][height / gridSize + 1];
         for (Model.Edge edge: edgeList) {
-            updateMap(map, gridSize, edge);
+            updateMap(gridSize, edge);
         }
         // possibility 1
         int scaling = Arrays.stream(map).map(row -> Arrays.stream(row).max().orElse(0)).max(Comparator.naturalOrder()).orElse(0);
@@ -55,16 +54,18 @@ public class HeatmapDrawer {
 //        int scaling = graph.nodeList.size() * 2;
 
         for (int i = 0; i < width / gridSize + 1; i++) {
-            for (int j = 0; j < height / gridSize + 1; j ++) {
+            for (int j = 0; j < height / gridSize + 1; j++) {
                 if (map[i][j] > 0) {
                     View.Shapes.Rectangle viewRect = new Rectangle(i * gridSize, j * gridSize, gridSize, gridSize);
                     float heatValue = ((float) map[i][j] / scaling);
                     float hue = 0.6f - (heatValue * 0.6f);
-                    viewRect.color = new Color(Color.HSBtoRGB(hue, 1, 0.5f));
+                    viewRect.color = new Color(Color.HSBtoRGB(hue, 1, 0.7f));
                     drawPanel.shapes.add(viewRect);
                 }
             }
         }
+
+
 
 //        for (int i = 0; i < width; i += gridSize) {
 //            for (int j = 0; j < height; j += gridSize) {
@@ -82,5 +83,19 @@ public class HeatmapDrawer {
 //                }
 //            }
 //        }
+    }
+
+    public void drawCurrentHeatOfNodes(List<Model.Node> nodes){
+        int scaling = Arrays.stream(map).map(row -> Arrays.stream(row).max().orElse(0)).max(Comparator.naturalOrder()).orElse(0);
+        for(Model.Node modelNode : nodes){
+            int x = (int)(modelNode.x);
+            int y = (int)(modelNode.y);
+            float heatValue = ((float) map[x/gridSize][y/gridSize] / scaling);
+            float hue = 0.6f - (heatValue * 0.6f);
+            View.Shapes.Node viewNode = new View.Shapes.Node(modelNode.x,modelNode.y);
+            viewNode.color = new Color(Color.HSBtoRGB(hue, 1, 0.7f));
+            viewNode.drawBorder = true;
+            drawPanel.shapes.add(viewNode);
+        }
     }
 }

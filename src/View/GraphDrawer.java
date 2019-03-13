@@ -139,6 +139,11 @@ public class GraphDrawer extends Observable {
         for (Model.Edge edge: graph.edgeList) {
             drawPanel.shapes.add(new Edge(edge.left.x, edge.left.y, edge.right.x, edge.right.y));
         }
+
+        if(heatMap) {
+            this.heatmapDrawer.drawCurrentHeatOfNodes(graph.nodeList);
+        }
+
         drawPanel.update();
     }
 }

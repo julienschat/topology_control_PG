@@ -169,5 +169,9 @@ public class AlgorithmDrawer {
         for(Model.Edge modelEdge : state.edgesChosen){
             drawEdge(modelEdge,Color.black);
         }
+
+        if(heatMap) {
+            this.heatMapDrawer.drawCurrentHeatOfNodes(state.origin.nodeList);
+        }
     }
 }
