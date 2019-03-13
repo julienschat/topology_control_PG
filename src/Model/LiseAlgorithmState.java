@@ -19,6 +19,7 @@ public class LiseAlgorithmState extends AlgorithmState {
         super(_origin);
         this.tSpannerMeasure = tSpannerMeasure;
         edgesChosen = new LinkedList<Edge>();
+        nodesOnShortestPath = new LinkedList<Node>();
     }
 
     public List<Node> getCurrentNodes(){
@@ -28,11 +29,14 @@ public class LiseAlgorithmState extends AlgorithmState {
     @Override
     public AlgorithmState clone() {
         LiseAlgorithmState newState = new LiseAlgorithmState(this.origin,this.tSpannerMeasure);
+        newState.currentEdgeMaxCoverage = this.currentEdgeMaxCoverage;
+        newState.currentEdgeMinCoverage = this.currentEdgeMinCoverage;
         newState.edgesChosen.addAll(this.edgesChosen);
         newState.currentStatesPhase = this.currentStatesPhase;
         newState.phase = this.phase;
         newState.newTSpannerGraph = this.newTSpannerGraph.cloneGraphWithEdges();
-        newState.nodesOnShortestPath.addAll(this.nodesOnShortestPath);
+        newState.edgesSortedByCoverage.addAll(this.edgesSortedByCoverage);
+        if(this.nodesOnShortestPath!=null) newState.nodesOnShortestPath.addAll(this.nodesOnShortestPath);
         return newState;
 
     }
