@@ -39,7 +39,7 @@ public class AlgorithmForm {
         this.editor = editor;
         algorithmDrawer = new AlgorithmDrawer(drawPanel);
         currentGraph = editor.currentGraph.cloneGraphWithEdges();
-        algorithmDrawer.draw(currentGraph,true, Color.black);
+        algorithmDrawer.draw(currentGraph, Color.black, false);
 
         setupReloadButton();
         setupStartButton();
@@ -47,15 +47,28 @@ public class AlgorithmForm {
         setupStopButton();
         setupBackButton();
         setupTSpanChooser();
+        setUpHeatmapControl();
+    }
+
+    private void setUpHeatmapControl(){
+        this.heatmapRadioButton.addActionListener(e->{
+            if (algorithmState == null) {
+                algorithmDrawer.draw(currentGraph, Color.black, heatmapRadioButton.isSelected());
+            } else if (algorithmController.isFinished(algorithmState)) {
+                algorithmDrawer.drawAlgorithmState(algorithmState, heatmapRadioButton.isSelected());
+            }
+        });
     }
 
     private void setupReloadButton(){
         this.reloadButton.addActionListener(e -> {
             currentGraph = editor.currentGraph.cloneGraphWithEdges();
             drawPanel.shapes.clear();
-            algorithmDrawer.draw(currentGraph, true,Color.black);
+            algorithmDrawer.draw(currentGraph, Color.black, heatmapRadioButton.isSelected());
             algorithmRunning = false;
-
+            algorithmState = null;
+            threadRunning.set(false);
+            statusText.setText("Ready");
         });
     }
 

@@ -21,7 +21,6 @@ public class GraphDrawer extends Observable {
     public Model.Node hoveredNode;
     public Model.Node clickedNode;
     public Model.Node draggedRadiusNode;
-    private boolean drawHeatMap = false;
 
     private HeatmapDrawer heatmapDrawer;
 

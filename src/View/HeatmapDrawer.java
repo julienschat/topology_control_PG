@@ -10,6 +10,7 @@ public class HeatmapDrawer {
     private DrawPanel drawPanel;
     private int[][] map;
     private int gridSize;
+
     public HeatmapDrawer(DrawPanel panel) {
         this.drawPanel = panel;
         this.gridSize = 2;
@@ -64,8 +65,6 @@ public class HeatmapDrawer {
                 }
             }
         }
-
-
 
 //        for (int i = 0; i < width; i += gridSize) {
 //            for (int j = 0; j < height; j += gridSize) {

@@ -19,7 +19,8 @@
           <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Stop"/>
+          <icon value="icons/baseline_pause_black_18dp.png"/>
+          <text value=""/>
         </properties>
       </component>
       <component id="8d8d7" class="javax.swing.JButton" binding="startButton" default-binding="true">
@@ -27,15 +28,18 @@
           <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Start"/>
+          <hideActionText value="true"/>
+          <icon value="icons/baseline_play_arrow_black_18dp.png"/>
+          <text value=""/>
         </properties>
       </component>
       <component id="41a46" class="javax.swing.JButton" binding="stepButton" default-binding="true">
         <constraints>
-          <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Step"/>
+          <icon value="icons/baseline_skip_next_black_18dp.png"/>
+          <text value=""/>
         </properties>
       </component>
       <component id="b59bc" class="javax.swing.JButton" binding="reloadButton" default-binding="true">
@@ -43,7 +47,8 @@
           <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Reload"/>
+          <icon value="icons/baseline_replay_black_18dp.png"/>
+          <text value=""/>
         </properties>
       </component>
       <scrollpane id="e1a6">
@@ -63,14 +68,6 @@
           </component>
         </children>
       </scrollpane>
-      <component id="c467" class="javax.swing.JButton" binding="backButton">
-        <constraints>
-          <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Back"/>
-        </properties>
-      </component>
       <component id="ecd17" class="javax.swing.JRadioButton" binding="heatmapRadioButton">
         <constraints>
           <grid row="0" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -101,6 +98,15 @@
         </constraints>
         <properties>
           <text value="Ready"/>
+        </properties>
+      </component>
+      <component id="c467" class="javax.swing.JButton" binding="backButton">
+        <constraints>
+          <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <icon value="icons/baseline_skip_previous_black_18dp.png"/>
+          <text value=""/>
         </properties>
       </component>
     </children>

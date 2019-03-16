@@ -17,7 +17,7 @@ public class AlgorithmDrawer {
         this.drawPanel = panel;
         heatMapDrawer = new HeatmapDrawer(panel);
     }
-    public void drawNode(Model.Node modelNode, boolean drawRadius, Color color){
+    public void drawNode(Model.Node modelNode, Color color){
         View.Shapes.Node viewNode = new View.Shapes.Node(modelNode.x,modelNode.y);
         viewNode.color = color;
         drawPanel.shapes.add(viewNode);
@@ -29,18 +29,25 @@ public class AlgorithmDrawer {
         drawPanel.shapes.add(viewEdge);
     }
 
-    public void draw(Graph graph, boolean radii, Color color){
+    public void draw(Graph graph, Color color, Boolean heatMap){
+        drawPanel.shapes.clear();
+
+        if (heatMap) {
+            heatMapDrawer.drawHeatMap(graph.edgeList);
+        }
+
         for(Model.Node modelNode : graph.nodeList){
-            drawNode(modelNode,true,color);
+            drawNode(modelNode,color);
         }
 
         for(Edge edge: graph.edgeList){
             drawEdge(edge,color);
         }
+
         drawPanel.update();
     }
 
-    public void drawCoverage(Model.Edge edge,Model.Graph graph,Color color){
+    public void drawCoverage(Model.Edge edge, Model.Graph graph, Color color){
         View.Shapes.Circle circle1 = new Circle(edge.left.x,edge.left.y,edge.getLength());
         View.Shapes.Circle circle2 = new Circle(edge.right.x,edge.right.y,edge.getLength());
 
@@ -50,7 +57,6 @@ public class AlgorithmDrawer {
         drawPanel.shapes.add(circle2);
 
         drawPanel.update();
-
     }
 
     public void drawAlgorithmState(AlgorithmState state, boolean heatMap){
@@ -69,7 +75,7 @@ public class AlgorithmDrawer {
             if (liseState.currentEdgeMaxCoverage!=null) drawCoverage(liseState.currentEdgeMaxCoverage,liseState.origin,colorMax);
             if (liseState.currentStatesPhase == MINEDGECHOOSING || liseState.currentStatesPhase == SAMECOVERAGECHOOSING ) drawCoverage(liseState.currentEdgeMinCoverage,liseState.origin,colorMin);
 
-            draw(state.origin,false,new Color(120,120,120));
+            draw(state.origin, new Color(120,120,120), false);
 
             //Post drawing of origin:
 
@@ -81,12 +87,12 @@ public class AlgorithmDrawer {
             // Mark nodes covered by Min and Max Edge
             if(liseState.currentEdgeMaxCoverage!=null) {
                 for (Model.Node modelNode : liseState.origin.getCoveredNodesByEdge(liseState.currentEdgeMaxCoverage)) {
-                    drawNode(modelNode, false, Color.red);
+                    drawNode(modelNode, Color.red);
                 }
             }
             if(liseState.currentStatesPhase == MINEDGECHOOSING || liseState.currentStatesPhase == SAMECOVERAGECHOOSING ) {
                 for (Model.Node modelNode : liseState.origin.getCoveredNodesByEdge(liseState.currentEdgeMinCoverage)) {
-                    drawNode(modelNode, false, Color.blue);
+                    drawNode(modelNode, Color.blue);
                 }
             }
 
@@ -137,12 +143,12 @@ public class AlgorithmDrawer {
                 drawCoverage(lifeState.edgesChosen.getFirst(), lifeState.origin,colorMin);
             }
 
-            draw(state.origin,false,new Color(120,120,120));
+            draw(state.origin,new Color(120,120,120), false);
 
             //Post origin
             if(!lifeState.edgesChosen.isEmpty()) {
                 for (Model.Node modelNode : lifeState.origin.getCoveredNodesByEdge(lifeState.edgesChosen.getFirst())) {
-                    drawNode(modelNode, false, Color.blue);
+                    drawNode(modelNode, Color.blue);
                 }
             }
 
@@ -165,13 +171,9 @@ public class AlgorithmDrawer {
         if (heatMap) {
             this.heatMapDrawer.drawHeatMap(state.edgesChosen);
         }
-        draw(state.origin,false, new Color(120,120,120));
+        draw(state.origin, new Color(120,120,120), false);
         for(Model.Edge modelEdge : state.edgesChosen){
             drawEdge(modelEdge,Color.black);
-        }
-
-        if(heatMap) {
-            this.heatMapDrawer.drawCurrentHeatOfNodes(state.origin.nodeList);
         }
     }
 }
