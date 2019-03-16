@@ -3,13 +3,10 @@ package View;
 import Model.Graph;
 import View.Shapes.Edge;
 import View.Shapes.Radius;
-import View.Shapes.Rectangle;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Observable;
 
 public class GraphDrawer extends Observable {
@@ -112,8 +109,8 @@ public class GraphDrawer extends Observable {
     public void draw(Graph graph, boolean radii, boolean heatMap) {
         drawPanel.shapes.clear(); // NOTE: should maybe only delete own shapes.
 
-        if(heatMap) {
-            this.heatmapDrawer.drawHeatMap(graph.edgeList);
+        if (heatMap) {
+            this.heatmapDrawer.scaleAndDrawMap(graph.edgeList);
         }
 
         for (Model.Node modelNode : graph.nodeList) {

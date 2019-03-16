@@ -33,9 +33,13 @@ public class AlgorithmDrawer {
         drawPanel.shapes.clear();
 
         if (heatMap) {
-            heatMapDrawer.drawHeatMap(graph.edgeList);
+            heatMapDrawer.draw(graph.edgeList);
         }
 
+        draw(graph, color);
+    }
+
+    private void draw(Graph graph, Color color){
         for(Model.Node modelNode : graph.nodeList){
             drawNode(modelNode,color);
         }
@@ -60,59 +64,64 @@ public class AlgorithmDrawer {
     }
 
     public void drawAlgorithmState(AlgorithmState state, boolean heatMap){
+        drawPanel.shapes.clear();
+
+        if (heatMap) {
+            heatMapDrawer.draw(state.edgesChosen);
+        }
 
         Color colorMax = new Color(255, 153, 153);
         Color colorMin = new Color(204, 229, 255);
 
         if(state instanceof LiseAlgorithmState){
-
-            drawPanel.shapes.clear();
             LiseAlgorithmState liseState = (LiseAlgorithmState)state;
 
-            //Pre drawing of origin:
+            if (liseState.phase != FINISHED) {
+                //Pre drawing of origin:
 
-            // Draw the coverages of Min and Max Edge
-            if (liseState.currentEdgeMaxCoverage!=null) drawCoverage(liseState.currentEdgeMaxCoverage,liseState.origin,colorMax);
-            if (liseState.currentStatesPhase == MINEDGECHOOSING || liseState.currentStatesPhase == SAMECOVERAGECHOOSING ) drawCoverage(liseState.currentEdgeMinCoverage,liseState.origin,colorMin);
+                // Draw the coverages of Min and Max Edge
+                if (liseState.currentEdgeMaxCoverage != null)
+                    drawCoverage(liseState.currentEdgeMaxCoverage, liseState.origin, colorMax);
+                if (liseState.currentStatesPhase == MINEDGECHOOSING || liseState.currentStatesPhase == SAMECOVERAGECHOOSING)
+                    drawCoverage(liseState.currentEdgeMinCoverage, liseState.origin, colorMin);
 
-            draw(state.origin, new Color(120,120,120), false);
+                draw(state.origin, new Color(120, 120, 120));
 
-            //Post drawing of origin:
+                //Post drawing of origin:
 
-            //Mark Edges already chosen for new network
-            for(Model.Edge modelEdge : state.edgesChosen){
-                drawEdge(modelEdge,new Color(0,0,0));
-            }
-
-            // Mark nodes covered by Min and Max Edge
-            if(liseState.currentEdgeMaxCoverage!=null) {
-                for (Model.Node modelNode : liseState.origin.getCoveredNodesByEdge(liseState.currentEdgeMaxCoverage)) {
-                    drawNode(modelNode, Color.red);
+                //Mark Edges already chosen for new network
+                for (Model.Edge modelEdge : state.edgesChosen) {
+                    drawEdge(modelEdge, new Color(0, 0, 0));
                 }
-            }
-            if(liseState.currentStatesPhase == MINEDGECHOOSING || liseState.currentStatesPhase == SAMECOVERAGECHOOSING ) {
-                for (Model.Node modelNode : liseState.origin.getCoveredNodesByEdge(liseState.currentEdgeMinCoverage)) {
-                    drawNode(modelNode, Color.blue);
-                }
-            }
 
-            // Mark the shortest path between v,w of current Max Edge
-            if(liseState.currentStatesPhase == SHORTESTPATHCHECKING) {
-                if (liseState.nodesOnShortestPath != null) {
-                    for (int i = 0; i < liseState.nodesOnShortestPath.size() - 1; i++) {
-                        Edge newEdge = new Edge(liseState.nodesOnShortestPath.get(i), liseState.nodesOnShortestPath.get(i + 1));
-                        drawEdge(newEdge, Color.green);
+                // Mark nodes covered by Min and Max Edge
+                if (liseState.currentEdgeMaxCoverage != null) {
+                    for (Model.Node modelNode : liseState.origin.getCoveredNodesByEdge(liseState.currentEdgeMaxCoverage)) {
+                        drawNode(modelNode, Color.red);
                     }
                 }
-            }
+                if (liseState.currentStatesPhase == MINEDGECHOOSING || liseState.currentStatesPhase == SAMECOVERAGECHOOSING) {
+                    for (Model.Node modelNode : liseState.origin.getCoveredNodesByEdge(liseState.currentEdgeMinCoverage)) {
+                        drawNode(modelNode, Color.blue);
+                    }
+                }
 
-            // Mark current Max and Min Edge
-            if(liseState.currentEdgeMaxCoverage!=null) drawEdge(liseState.currentEdgeMaxCoverage,Color.red);
-            if (liseState.currentStatesPhase == MINEDGECHOOSING || liseState.currentStatesPhase == SAMECOVERAGECHOOSING ) drawEdge(liseState.currentEdgeMinCoverage,Color.blue);
+                // Mark the shortest path between v,w of current Max Edge
+                if (liseState.currentStatesPhase == SHORTESTPATHCHECKING) {
+                    if (liseState.nodesOnShortestPath != null) {
+                        for (int i = 0; i < liseState.nodesOnShortestPath.size() - 1; i++) {
+                            Edge newEdge = new Edge(liseState.nodesOnShortestPath.get(i), liseState.nodesOnShortestPath.get(i + 1));
+                            drawEdge(newEdge, Color.green);
+                        }
+                    }
+                }
 
+                // Mark current Max and Min Edge
+                if (liseState.currentEdgeMaxCoverage != null) drawEdge(liseState.currentEdgeMaxCoverage, Color.red);
+                if (liseState.currentStatesPhase == MINEDGECHOOSING || liseState.currentStatesPhase == SAMECOVERAGECHOOSING)
+                    drawEdge(liseState.currentEdgeMinCoverage, Color.blue);
 
-
-            if(liseState.phase == FINISHED){
+            } else {
                 drawFinishedState(liseState, heatMap);
             }
 
@@ -135,45 +144,45 @@ public class AlgorithmDrawer {
 //            }
 
         }else if(state instanceof LifeAlgorithmState){
-            drawPanel.shapes.clear();
             LifeAlgorithmState lifeState = (LifeAlgorithmState)state;
 
-            //Pre origin
-            if(!lifeState.edgesChosen.isEmpty()) {
-                drawCoverage(lifeState.edgesChosen.getFirst(), lifeState.origin,colorMin);
-            }
-
-            draw(state.origin,new Color(120,120,120), false);
-
-            //Post origin
-            if(!lifeState.edgesChosen.isEmpty()) {
-                for (Model.Node modelNode : lifeState.origin.getCoveredNodesByEdge(lifeState.edgesChosen.getFirst())) {
-                    drawNode(modelNode, Color.blue);
+            if (lifeState.phase != LifeAlgorithmPhase.FINISHED) {
+                //Pre origin
+                if (!lifeState.edgesChosen.isEmpty()) {
+                    drawCoverage(lifeState.edgesChosen.getFirst(), lifeState.origin, colorMin);
                 }
-            }
 
-            for(Model.Edge modelEdge : lifeState.edgesChosen){
-                drawEdge(modelEdge,Color.black);
-            }
-            if(!lifeState.edgesChosen.isEmpty()) {
-                drawEdge(lifeState.edgesChosen.getFirst(), Color.red);
-            }
+                draw(state.origin, new Color(120, 120, 120));
 
-            if(lifeState.phase == LifeAlgorithmPhase.FINISHED){
+                //Post origin
+                if (!lifeState.edgesChosen.isEmpty()) {
+                    for (Model.Node modelNode : lifeState.origin.getCoveredNodesByEdge(lifeState.edgesChosen.getFirst())) {
+                        drawNode(modelNode, Color.blue);
+                    }
+                }
+
+                for (Model.Edge modelEdge : lifeState.edgesChosen) {
+                    drawEdge(modelEdge, Color.black);
+                }
+                if (!lifeState.edgesChosen.isEmpty()) {
+                    drawEdge(lifeState.edgesChosen.getFirst(), Color.red);
+                }
+
+            } else {
                 drawFinishedState(lifeState, heatMap);
             }
         }
         drawPanel.update();
     }
 
-    public void drawFinishedState(AlgorithmState state, boolean heatMap){
-        drawPanel.shapes.clear();
-        if (heatMap) {
-            this.heatMapDrawer.drawHeatMap(state.edgesChosen);
-        }
-        draw(state.origin, new Color(120,120,120), false);
+    private void drawFinishedState(AlgorithmState state, boolean heatMap){
+        draw(state.origin, new Color(120,120,120));
         for(Model.Edge modelEdge : state.edgesChosen){
             drawEdge(modelEdge,Color.black);
         }
+    }
+
+    public void updateScaling(java.util.List<Model.Edge> edgeList) {
+        this.heatMapDrawer.updateScaling(edgeList);
     }
 }

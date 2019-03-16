@@ -9,6 +9,8 @@ import Model.Graph;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AlgorithmForm {
@@ -38,8 +40,7 @@ public class AlgorithmForm {
         super();
         this.editor = editor;
         algorithmDrawer = new AlgorithmDrawer(drawPanel);
-        currentGraph = editor.currentGraph.cloneGraphWithEdges();
-        algorithmDrawer.draw(currentGraph, Color.black, false);
+        loadGraph();
 
         setupReloadButton();
         setupStartButton();
@@ -50,11 +51,29 @@ public class AlgorithmForm {
         setUpHeatmapControl();
     }
 
+    private void loadGraph() {
+        currentGraph = editor.currentGraph.cloneGraphWithEdges();
+        algorithmDrawer.updateScaling(currentGraph.edgeList);
+        drawPanel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+                algorithmDrawer.updateScaling(currentGraph.edgeList);
+            }
+        });
+        drawPanel.shapes.clear();
+        algorithmDrawer.draw(currentGraph, Color.black, heatmapRadioButton.isSelected());
+        algorithmRunning = false;
+        algorithmState = null;
+        threadRunning.set(false);
+        statusText.setText("Ready");
+    }
+
     private void setUpHeatmapControl(){
         this.heatmapRadioButton.addActionListener(e->{
             if (algorithmState == null) {
                 algorithmDrawer.draw(currentGraph, Color.black, heatmapRadioButton.isSelected());
-            } else if (algorithmController.isFinished(algorithmState)) {
+            } else {
                 algorithmDrawer.drawAlgorithmState(algorithmState, heatmapRadioButton.isSelected());
             }
         });
@@ -62,13 +81,7 @@ public class AlgorithmForm {
 
     private void setupReloadButton(){
         this.reloadButton.addActionListener(e -> {
-            currentGraph = editor.currentGraph.cloneGraphWithEdges();
-            drawPanel.shapes.clear();
-            algorithmDrawer.draw(currentGraph, Color.black, heatmapRadioButton.isSelected());
-            algorithmRunning = false;
-            algorithmState = null;
-            threadRunning.set(false);
-            statusText.setText("Ready");
+            loadGraph();
         });
     }
 
