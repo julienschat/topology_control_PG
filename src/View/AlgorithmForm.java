@@ -133,7 +133,7 @@ public class AlgorithmForm {
                         break;
                     case "LISE":
                         algorithmController = new LiseAlgorithmController();
-                        setState(algorithmController.init(currentGraph, (double)tSpanChooser.getModel().getValue()));
+                        setState(algorithmController.init(currentGraph, ((Number)tSpanChooser.getModel().getValue()).doubleValue()));
                         break;
                 }
             }
