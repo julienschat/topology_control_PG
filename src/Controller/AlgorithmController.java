@@ -12,6 +12,7 @@ abstract public class AlgorithmController {
         }
         AlgorithmState nextState = state.clone();
         processState(nextState);
+        nextState.step = state.step + 1;
         nextState.previous = state;
         state.next = nextState;
         return nextState;

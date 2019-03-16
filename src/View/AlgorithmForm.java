@@ -23,6 +23,7 @@ public class AlgorithmForm {
     private JButton backButton;
     private JRadioButton heatmapRadioButton;
     private JSpinner tSpanChooser;
+    private JLabel statusText;
 
     private EditorForm editor;
     private AlgorithmDrawer algorithmDrawer;
@@ -86,8 +87,7 @@ public class AlgorithmForm {
     private void setupBackButton() {
         backButton.addActionListener(e -> {
             if (algorithmRunning) {
-                algorithmState = algorithmController.back(algorithmState);
-                algorithmDrawer.drawAlgorithmState(algorithmState, heatmapRadioButton.isSelected());
+                setState(algorithmController.back(algorithmState));
             }
         });
     }
@@ -129,6 +129,13 @@ public class AlgorithmForm {
         synchronized (stateLock) {
             this.algorithmState = state;
             algorithmDrawer.drawAlgorithmState(algorithmState, heatmapRadioButton.isSelected());
+            if (state.step == 0) {
+                statusText.setText("Algorithm initialized");
+            } else if (!algorithmController.isFinished(state)) {
+                statusText.setText(String.format("Step %d", state.step));
+            } else {
+                statusText.setText(String.format("Algorithm finished in %d steps", state.step));
+            }
         }
     }
 }
