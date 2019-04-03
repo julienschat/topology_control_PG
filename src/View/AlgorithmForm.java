@@ -9,118 +9,11 @@ import Model.Graph;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AlgorithmForm {
-    EditorForm editor;
-    AlgorithmDrawer algorithmDrawer;
-    Graph currentGraph;
-    boolean algorithmRunning = false;
-    AlgorithmState algorithmState;
-    AlgorithmController algorithmController;
-
-    public AlgorithmForm(EditorForm editor) {
-        super();
-        this.editor = editor;
-        algorithmDrawer = new AlgorithmDrawer(drawPanel);
-        currentGraph = editor.currentGraph.cloneGraphWithEdges();
-        algorithmDrawer.draw(currentGraph,true, Color.black);
-
-        setupReloadButton();
-        setupStartButton();
-        setupStepButton();
-        setupStopButton();
-        setupBackButton();
-        setupTSpanChooser();
-    }
-
-    public void setupReloadButton(){
-        this.reloadButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                currentGraph = editor.currentGraph.cloneGraphWithEdges();
-                drawPanel.shapes.clear();
-                algorithmDrawer.draw(currentGraph, true,Color.black);
-                algorithmRunning = false;
-
-            }
-        });
-    }
-
-    public void setupStepButton(){
-        stepButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(algorithmRunning){
-                    algorithmState = algorithmController.next(algorithmState);
-                    algorithmDrawer.drawAlgorithmState(algorithmState, heatmapRadioButton.isSelected());
-                }else {
-                    switch ((String) algoChooser.getSelectedItem()) {
-                        case "LIFE":
-                            algorithmController = new LifeAlgorithmController();
-                            algorithmState = algorithmController.init(currentGraph);
-                            break;
-                        case "LISE":
-                            algorithmController = new LiseAlgorithmController();
-                            algorithmState = algorithmController.init(currentGraph,((Number)(tSpanChooser.getModel().getValue())).doubleValue());
-                            break;
-                    }
-
-                    algorithmDrawer.drawAlgorithmState(algorithmState, heatmapRadioButton.isSelected());
-                    algorithmRunning = true;
-                }
-            }
-        });
-    }
-
-    public void setupStopButton(){
-
-    }
-
-    public void setupBackButton() {
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (algorithmRunning) {
-                    algorithmState = algorithmController.back(algorithmState);
-                    algorithmDrawer.drawAlgorithmState(algorithmState, heatmapRadioButton.isSelected());
-                }
-            }
-        });
-    }
-
-    public void setupStartButton(){
-        algoChooser.addItem("LIFE");
-        algoChooser.addItem("LISE");
-
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switch((String)algoChooser.getSelectedItem()){
-                    case "LIFE":
-                        new Thread(new AlgorithmRunner(algorithmDrawer,currentGraph,new LifeAlgorithmController())).start();
-                        break;
-                    case "LISE":
-                        AlgorithmRunner runner = new AlgorithmRunner(algorithmDrawer,currentGraph,new LiseAlgorithmController());
-                        runner.settSpannerMeasure(((Number)(tSpanChooser.getModel().getValue())).doubleValue());
-                        new Thread(runner).start();
-                        break;
-                }
-            }
-        });
-    }
-
-    public void setupTSpanChooser() {
-        SpinnerNumberModel model = new SpinnerNumberModel();
-        model.setMinimum(1);
-        model.setStepSize(1);
-        model.setValue(1);
-        tSpanChooser.setModel(model);
-    }
-
     public JPanel mainPanel;
     private DrawPanel drawPanel;
     private JComboBox algoChooser;
@@ -132,4 +25,143 @@ public class AlgorithmForm {
     private JButton backButton;
     private JRadioButton heatmapRadioButton;
     private JSpinner tSpanChooser;
+    private JLabel statusText;
+
+    private EditorForm editor;
+    private AlgorithmDrawer algorithmDrawer;
+    private Graph currentGraph;
+    private boolean algorithmRunning = false;
+    private AlgorithmState algorithmState;
+    private AlgorithmController algorithmController;
+    public AtomicBoolean threadRunning = new AtomicBoolean(false);
+    private final Object stateLock = new Object();
+
+    public AlgorithmForm(EditorForm editor) {
+        super();
+        this.editor = editor;
+        algorithmDrawer = new AlgorithmDrawer(drawPanel);
+        loadGraph();
+
+        setupReloadButton();
+        setupStartButton();
+        setupStepButton();
+        setupStopButton();
+        setupBackButton();
+        setupTSpanChooser();
+        setUpHeatmapControl();
+    }
+
+    private void loadGraph() {
+        currentGraph = editor.currentGraph.cloneGraphWithEdges();
+        algorithmDrawer.updateScaling(currentGraph.edgeList);
+        drawPanel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+                algorithmDrawer.updateScaling(currentGraph.edgeList);
+            }
+        });
+        drawPanel.shapes.clear();
+        algorithmDrawer.draw(currentGraph, Color.black, heatmapRadioButton.isSelected());
+        algorithmRunning = false;
+        algorithmState = null;
+        threadRunning.set(false);
+        statusText.setText("Ready");
+    }
+
+    private void setUpHeatmapControl(){
+        this.heatmapRadioButton.addActionListener(e->{
+            if (algorithmState == null) {
+                algorithmDrawer.draw(currentGraph, Color.black, heatmapRadioButton.isSelected());
+            } else {
+                algorithmDrawer.drawAlgorithmState(algorithmState, heatmapRadioButton.isSelected());
+            }
+        });
+    }
+
+    private void setupReloadButton(){
+        this.reloadButton.addActionListener(e -> {
+            loadGraph();
+        });
+    }
+
+    private void setupStepButton(){
+        stepButton.addActionListener(e -> {
+            if(algorithmRunning){
+                setState(algorithmController.next(algorithmState));
+            } else {
+                switch ((String) algoChooser.getSelectedItem()) {
+                    case "LIFE":
+                        algorithmController = new LifeAlgorithmController();
+                        setState(algorithmController.init(currentGraph));
+                        break;
+                    case "LISE":
+                        algorithmController = new LiseAlgorithmController();
+                        setState(algorithmController.init(currentGraph,((Number)(tSpanChooser.getModel().getValue())).doubleValue()));
+                        break;
+                }
+
+                algorithmRunning = true;
+            }
+        });
+    }
+
+    private void setupStopButton(){
+        stopButton.addActionListener(e -> threadRunning.set(false));
+    }
+
+    private void setupBackButton() {
+        backButton.addActionListener(e -> {
+            if (algorithmRunning) {
+                setState(algorithmController.back(algorithmState));
+            }
+        });
+    }
+
+    private void setupStartButton(){
+        algoChooser.addItem("LIFE");
+        algoChooser.addItem("LISE");
+
+        startButton.addActionListener(e -> {
+            if (!algorithmRunning) {
+                algorithmRunning = true;
+
+                switch((String)algoChooser.getSelectedItem()){
+                    case "LIFE":
+                        algorithmController = new LifeAlgorithmController();
+                        setState(algorithmController.init(currentGraph));
+                        break;
+                    case "LISE":
+                        algorithmController = new LiseAlgorithmController();
+                        setState(algorithmController.init(currentGraph, ((Number)tSpanChooser.getModel().getValue()).doubleValue()));
+                        break;
+                }
+            }
+
+            threadRunning.set(true);
+            new Thread(new AlgorithmRunner(this, algorithmController, algorithmState)).start();
+        });
+    }
+
+    private void setupTSpanChooser() {
+        SpinnerNumberModel model = new SpinnerNumberModel();
+        model.setMinimum(1);
+        model.setStepSize(1);
+        model.setValue(1);
+        tSpanChooser.setModel(model);
+    }
+
+    public void setState(AlgorithmState state) {
+        synchronized (stateLock) {
+            this.algorithmState = state;
+            algorithmDrawer.drawAlgorithmState(algorithmState, heatmapRadioButton.isSelected());
+            if (state.step == 0) {
+                statusText.setText("Algorithm initialized");
+            } else if (!algorithmController.isFinished(state)) {
+                statusText.setText(String.format("Step %d", state.step));
+            } else {
+                statusText.setText(String.format("Algorithm finished in %d steps", state.step));
+            }
+        }
+    }
 }

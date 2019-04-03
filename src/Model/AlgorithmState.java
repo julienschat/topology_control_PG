@@ -8,6 +8,7 @@ public abstract class AlgorithmState {
     public LinkedList<Edge> edgesChosen;
     public AlgorithmState previous = null;
     public AlgorithmState next = null;
+    public int step = 0;
 
     public AlgorithmState(Graph _origin) {
         origin = _origin;
