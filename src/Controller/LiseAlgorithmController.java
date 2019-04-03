@@ -73,7 +73,7 @@ public class LiseAlgorithmController extends AlgorithmController{
 
                     state.edgesSortedByCoverage.removeLast();
                     if(state.edgesSortedByCoverage.isEmpty()){
-                        state.phase = LiseAlgorithmPhase.FINISHED;
+                        state.phase = LiseAlgorithmPhase.PREFINISHED;
                     }else {
                         state.phase = LiseAlgorithmPhase.MAXEDGECHOOSING;
 
@@ -92,7 +92,7 @@ public class LiseAlgorithmController extends AlgorithmController{
 
                 state.phase = LiseAlgorithmPhase.SAMECOVERAGECHOOSING;
                 if(state.edgesSortedByCoverage.isEmpty()){
-                    state.phase = LiseAlgorithmPhase.FINISHED;
+                    state.phase = LiseAlgorithmPhase.PREFINISHED;
                 }
 
                 break;
@@ -113,9 +113,14 @@ public class LiseAlgorithmController extends AlgorithmController{
 
                 }
                 if(state.edgesSortedByCoverage.isEmpty()){
-                    state.phase = LiseAlgorithmPhase.FINISHED;
+                    state.phase = LiseAlgorithmPhase.PREFINISHED;
                 }
 
+                break;
+
+            case PREFINISHED:
+                calculateFinishedNetwork(state);
+                state.phase = LiseAlgorithmPhase.FINISHED;
                 break;
         }
         return state;

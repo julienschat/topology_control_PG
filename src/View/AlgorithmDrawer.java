@@ -110,24 +110,6 @@ public class AlgorithmDrawer {
                 drawFinishedState(liseState, heatMap);
             }
 
-//            switch(liseState.phase){
-//                case MAXEDGECHOOSING:
-//                    //drawEdge(liseState.currentEdgeMaxCoverage,Color.red);
-//                    //drawCoverage(liseState.currentEdgeMaxCoverage,liseState.origin);
-//                    break;
-//                case SHORTESTPATHCHECKING:
-//                    drawEdge(liseState.currentEdgeMaxCoverage,Color.red);
-//                    break;
-//                case MINEDGECHOOSING:
-//                    drawEdge(liseState.currentEdgeMaxCoverage,Color.red);
-//                    break;
-//                case SAMECOVERAGECHOOSING:
-//                    drawEdge(liseState.currentEdgeMaxCoverage,Color.red);
-//                    break;
-//
-//
-//            }
-
         }else if(state instanceof LifeAlgorithmState){
             drawPanel.shapes.clear();
             LifeAlgorithmState lifeState = (LifeAlgorithmState)state;
