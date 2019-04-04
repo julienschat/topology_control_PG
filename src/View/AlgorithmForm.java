@@ -1,9 +1,6 @@
 package View;
 
-import Controller.AlgorithmController;
-import Controller.AlgorithmRunner;
-import Controller.LifeAlgorithmController;
-import Controller.LiseAlgorithmController;
+import Controller.*;
 import Model.AlgorithmState;
 import Model.Graph;
 
@@ -99,6 +96,10 @@ public class AlgorithmForm {
                         algorithmController = new LiseAlgorithmController();
                         setState(algorithmController.init(currentGraph,((Number)(tSpanChooser.getModel().getValue())).doubleValue()));
                         break;
+                    case "Llise":
+                        algorithmController = new LliseAlgorithmController();
+                        setState(algorithmController.init(currentGraph,((Number)(tSpanChooser.getModel().getValue())).doubleValue()));
+                        break;
                 }
 
                 algorithmRunning = true;
@@ -121,7 +122,7 @@ public class AlgorithmForm {
     private void setupStartButton(){
         algoChooser.addItem("LIFE");
         algoChooser.addItem("LISE");
-
+        algoChooser.addItem("Llise");
         startButton.addActionListener(e -> {
             if (!algorithmRunning) {
                 algorithmRunning = true;
@@ -135,6 +136,10 @@ public class AlgorithmForm {
                         algorithmController = new LiseAlgorithmController();
                         setState(algorithmController.init(currentGraph, ((Number)tSpanChooser.getModel().getValue()).doubleValue()));
                         break;
+                    case "Llise":
+                        algorithmController = new LliseAlgorithmController();
+                        setState(algorithmController.init(currentGraph,((Number)tSpanChooser.getModel().getValue()).doubleValue()));
+                        break;
                 }
             }
 
@@ -145,9 +150,9 @@ public class AlgorithmForm {
 
     private void setupTSpanChooser() {
         SpinnerNumberModel model = new SpinnerNumberModel();
-        model.setMinimum(1);
-        model.setStepSize(1);
-        model.setValue(1);
+        model.setMinimum(1.0);
+        model.setStepSize(0.1);
+        model.setValue(1.0);
         tSpanChooser.setModel(model);
     }
 
