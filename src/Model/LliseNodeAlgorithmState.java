@@ -10,7 +10,9 @@ public class LliseNodeAlgorithmState extends AlgorithmState {
     public Node currentNode;
     public Edge currentEdge,currentEdgeMinCoverage;
 
+    public Graph floodedGraph;
     public Graph newTSpannerGraph;
+
     public double tSpannerMeasure;
 
     public LliseNodeAlgorithmPhase currentStatesPhase;
