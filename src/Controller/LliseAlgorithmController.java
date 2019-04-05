@@ -4,36 +4,54 @@ import Model.*;
 
 import java.util.LinkedList;
 
-public class LliseAlgorithmController extends AlgorithmController {
-    private LinkedList<LliseNodeAlgorithmState> states = new LinkedList<>();
-    private LliseNodeController nodeController = new LliseNodeController();
+import static Model.LliseAlgorithmPhase.FINISHED;
+import static Model.LliseAlgorithmPhase.RUNNING;
+
+public class LliseAlgorithmController extends AlgorithmController{
+    private LliseNodeController nodeController;
+
+    private int currentNodeID;
     @Override
     public AlgorithmState init(Graph origin, double... params) {
+
         double tMeasure;
         if(params.length>0) {
             tMeasure = params[0];
         }else{
             tMeasure = 1;
         }
+
+        nodeController = new LliseNodeController();
+        LliseAlgorithmState state = new LliseAlgorithmState(origin);
+
         origin.fixNodeIDs();
-        for(Node node : origin.nodeList){
+        currentNodeID = origin.nodeList.size()-1;
 
-            LliseNodeAlgorithmState state = (LliseNodeAlgorithmState)nodeController.init(origin,node.id);
-            state.tSpannerMeasure = tMeasure;
-            states.add(state);
+        state.nodeState = ((LliseNodeAlgorithmState)nodeController.init(origin,currentNodeID));
+        state.nodeState.tSpannerMeasure = tMeasure;
+        state.phase = RUNNING;
 
-        }
-        return states.getFirst();
+        return state;
     }
 
     @Override
     protected AlgorithmState processState(AlgorithmState algorithmState) {
-        LliseNodeAlgorithmState currentState = (LliseNodeAlgorithmState)algorithmState;
-        if(nodeController.isFinished(currentState)){
-            states.removeFirst();
-            currentState = states.getFirst();
+        LliseAlgorithmState currentState = (LliseAlgorithmState)algorithmState;
+        if(nodeController.isFinished(currentState.nodeState)){
+
+            if(isFinished(currentState)){
+                currentState.phase = FINISHED;
+            }else {
+                currentNodeID -= 1;
+                LinkedList<Edge> tmpEdges = new LinkedList<>();
+                tmpEdges.addAll(currentState.nodeState.edgesChosen);
+
+
+                currentState.nodeState = (LliseNodeAlgorithmState) nodeController.init(currentState.nodeState.origin, currentNodeID);
+                currentState.edgesChosen = tmpEdges;
+            }
         }else {
-            nodeController.processState(currentState);
+            nodeController.processState(currentState.nodeState);
         }
 
         return currentState;
@@ -41,6 +59,6 @@ public class LliseAlgorithmController extends AlgorithmController {
 
     @Override
     public boolean isFinished(AlgorithmState algorithmState) {
-        return states.isEmpty();
+        return currentNodeID <= 0;
     }
 }

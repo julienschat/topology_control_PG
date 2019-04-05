@@ -65,7 +65,8 @@ public class Dijkstra {
             for (Edge adjacentEdge: currentNode.edgeList) {
                 double edgeLength = adjacentEdge.getLength();
                 if (!graph.edgeList.contains(adjacentEdge) && currentNode.key + edgeLength < k) {
-                    neighbourhood.edgeList.add(adjacentEdge);
+                   // neighbourhood.edgeList.add(adjacentEdge);
+                    neighbourhood.connectNodes(adjacentEdge.left,adjacentEdge.right);
 
                     Node neighbour = adjacentEdge.getNeighbourOf(currentNode);
                     if (neighbour.key == -1) {

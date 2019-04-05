@@ -10,27 +10,18 @@ import java.util.stream.Collectors;
 public class LliseNodeController extends AlgorithmController{
 
 
-    public Graph getFloodedNeighborhood(Edge edge,LliseNodeAlgorithmState state){
-        Graph neighborhood = new Graph();
-        double currentFlood = 0;
-        double maxDistance = state.tSpannerMeasure / 2;
 
-
-    public Graph getFloodedNeighborhood(Graph graph, Edge edge, double t){
-        return Dijkstra.getKNeighbourhood(graph, edge, edge.getLength() * t / 2);
-    }
 
     @Override
     public AlgorithmState init(Graph origin, double... params) {
         LliseNodeAlgorithmState state = new LliseNodeAlgorithmState(null);
 
-        if(params.length > 1){
+        if(params.length > 0){
             state.currentNode = origin.getNodeById((int)params[0]);
 
         }else{
             state.currentNode = origin.getNodeById(0);
         }
-
 
         state.origin = origin;
 
@@ -57,7 +48,7 @@ public class LliseNodeController extends AlgorithmController{
                 }
                 break;
             case FLOODING:
-                state.origin = getFloodedNeighborhood(state.origin, state.currentEdge, state.tSpannerMeasure);
+                state.floodedGraph = getFloodedNeighborhood(state.origin, state.currentEdge, state.tSpannerMeasure);
 
                 state.floodedGraph.calculateCoverages();
 
@@ -67,6 +58,11 @@ public class LliseNodeController extends AlgorithmController{
 
                 //Use already chosen Edges in newTSpanner
                 state.newTSpannerGraph = state.floodedGraph.cloneGraphWithoutEdges();
+                for(Edge e : state.edgesChosen){
+                    if(state.newTSpannerGraph.getNodeById(e.left.id)!=null&&state.newTSpannerGraph.getNodeById(e.left.id)!=null){
+                        state.newTSpannerGraph.connectNodes(state.newTSpannerGraph.getNodeById(e.left.id),state.newTSpannerGraph.getNodeById(e.right.id));
+                    }
+                }
                 state.phase = LliseNodeAlgorithmPhase.SHORTESTPATHCHECKING;
 
                 break;
@@ -118,7 +114,11 @@ public class LliseNodeController extends AlgorithmController{
 //                }
                 break;
         }
-        return null;
+        return state;
+    }
+
+    public Graph getFloodedNeighborhood(Graph graph, Edge edge, double t){
+        return Dijkstra.getKNeighbourhood(graph, edge, edge.getLength() * t / 2);
     }
 
     @Override
