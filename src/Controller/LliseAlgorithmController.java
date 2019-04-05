@@ -1,9 +1,6 @@
 package Controller;
 
-import Model.AlgorithmState;
-import Model.Graph;
-import Model.LliseNodeAlgorithmState;
-import Model.Node;
+import Model.*;
 
 import java.util.LinkedList;
 
@@ -18,7 +15,7 @@ public class LliseAlgorithmController extends AlgorithmController {
         }else{
             tMeasure = 1;
         }
-
+        origin.fixNodeIDs();
         for(Node node : origin.nodeList){
 
             LliseNodeAlgorithmState state = (LliseNodeAlgorithmState)nodeController.init(origin,node.id);
@@ -26,19 +23,24 @@ public class LliseAlgorithmController extends AlgorithmController {
             states.add(state);
 
         }
-        return null;
+        return states.getFirst();
     }
 
     @Override
     protected AlgorithmState processState(AlgorithmState algorithmState) {
-        for(LliseNodeAlgorithmState state : states){
-            state = (LliseNodeAlgorithmState)nodeController.processState(state);
+        LliseNodeAlgorithmState currentState = (LliseNodeAlgorithmState)algorithmState;
+        if(nodeController.isFinished(currentState)){
+            states.removeFirst();
+            currentState = states.getFirst();
+        }else {
+            nodeController.processState(currentState);
         }
-        return null;
+
+        return currentState;
     }
 
     @Override
     public boolean isFinished(AlgorithmState algorithmState) {
-        return false;
+        return states.isEmpty();
     }
 }

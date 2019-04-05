@@ -158,11 +158,62 @@ public class AlgorithmDrawer {
                     drawEdge(modelEdge, Color.black);
                 }
                 if (!lifeState.edgesChosen.isEmpty()) {
-                    drawEdge(lifeState.edgesChosen.getFirst(), Color.red);
+                    drawEdge(lifeState.edgesChosen.getFirst(), Color.blue);
                 }
 
             } else {
                 drawFinishedState(lifeState, heatMap);
+            }
+        }else if(state instanceof LliseNodeAlgorithmState){
+            LliseNodeAlgorithmState lliseState = (LliseNodeAlgorithmState) state;
+
+            if (lliseState.phase != LliseNodeAlgorithmPhase.FINISHED) {
+                //Pre drawing of origin:
+
+                // Draw the coverages of Min and Max Edge
+                if (lliseState.currentEdge != null)
+                    drawCoverage(lliseState.currentEdge, lliseState.origin, colorMax);
+                if (lliseState.currentStatesPhase == LliseNodeAlgorithmPhase.MINEDGECHOOSING || lliseState.currentStatesPhase == LliseNodeAlgorithmPhase.SAMECOVERAGECHOOSING)
+                    drawCoverage(lliseState.currentEdgeMinCoverage, lliseState.origin, colorMin);
+
+                draw(state.origin, new Color(120, 120, 120));
+
+                //Post drawing of origin:
+
+                //Mark Edges already chosen for new network
+                for (Model.Edge modelEdge : state.edgesChosen) {
+                    drawEdge(modelEdge, new Color(0, 0, 0));
+                }
+
+                // Mark nodes covered by Min and Max Edge
+                if (lliseState.currentEdge != null) {
+                    for (Model.Node modelNode : lliseState.origin.getCoveredNodesByEdge(lliseState.currentEdge)) {
+                        drawNode(modelNode, Color.red);
+                    }
+                }
+                if (lliseState.currentStatesPhase == LliseNodeAlgorithmPhase.MINEDGECHOOSING || lliseState.currentStatesPhase == LliseNodeAlgorithmPhase.SAMECOVERAGECHOOSING) {
+                    for (Model.Node modelNode : lliseState.origin.getCoveredNodesByEdge(lliseState.currentEdgeMinCoverage)) {
+                        drawNode(modelNode, Color.blue);
+                    }
+                }
+
+                // Mark the shortest path between v,w of current Max Edge
+                if (lliseState.currentStatesPhase == LliseNodeAlgorithmPhase.SHORTESTPATHCHECKING) {
+                    if (lliseState.nodesOnShortestPath != null) {
+                        for (int i = 0; i < lliseState.nodesOnShortestPath.size() - 1; i++) {
+                            Edge newEdge = new Edge(lliseState.nodesOnShortestPath.get(i), lliseState.nodesOnShortestPath.get(i + 1));
+                            drawEdge(newEdge, Color.green);
+                        }
+                    }
+                }
+
+                // Mark current Max and Min Edge
+                if (lliseState.currentEdge != null) drawEdge(lliseState.currentEdge, Color.red);
+                if (lliseState.currentStatesPhase == LliseNodeAlgorithmPhase.MINEDGECHOOSING || lliseState.currentStatesPhase == LliseNodeAlgorithmPhase.SAMECOVERAGECHOOSING)
+                    drawEdge(lliseState.currentEdgeMinCoverage, Color.blue);
+
+            } else {
+                drawFinishedState(lliseState, heatMap);
             }
         }
 
