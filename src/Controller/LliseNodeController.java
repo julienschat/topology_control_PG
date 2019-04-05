@@ -4,6 +4,7 @@ import Model.*;
 
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 public class LliseNodeController extends AlgorithmController{
@@ -12,10 +13,8 @@ public class LliseNodeController extends AlgorithmController{
 
 
 
-    public Graph getFloodedNeighborhood(Edge edge){
-        Graph neighborhood = new Graph();
-        // Implement flooding
-        return neighborhood;
+    public Graph getFloodedNeighborhood(Graph graph, Edge edge, double t){
+        return Dijkstra.getKNeighbourhood(graph, edge, edge.getLength() * t / 2);
     }
 
     @Override
@@ -51,7 +50,7 @@ public class LliseNodeController extends AlgorithmController{
                 }
                 break;
             case FLOODING:
-                state.origin = getFloodedNeighborhood(state.currentEdge);
+                state.origin = getFloodedNeighborhood(state.origin, state.currentEdge, state.tSpannerMeasure);
 
                 state.origin.calculateCoverages();
 
@@ -68,8 +67,7 @@ public class LliseNodeController extends AlgorithmController{
                 Node sourceNode = state.newTSpannerGraph.getNodeById(state.currentNode.id);
                 Node destinationNode = state.newTSpannerGraph.getNodeById(state.currentEdge.getNeighbourOf(sourceNode).id);
 
-                Dijkstra dijkstra = new Dijkstra();
-                ShortestPathTree shortestPathTree = dijkstra.runDijkstra(state.newTSpannerGraph,sourceNode);
+                ShortestPathTree shortestPathTree = Dijkstra.runDijkstra(state.newTSpannerGraph,sourceNode);
 
                 if(destinationNode.key != -1){
                     state.nodesOnShortestPath = shortestPathTree.getPathToSourceFromNode(destinationNode);

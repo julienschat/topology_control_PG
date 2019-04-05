@@ -6,7 +6,16 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
+/**
+ *
+ */
 public class LifeAlgorithmController extends AlgorithmController {
+    /**
+     *
+     * @param origin intial graph on which the algorithm runs
+     * @param params additional parameters unused
+     * @return initial state
+     */
     @Override
     public AlgorithmState init(Graph origin, double... params) {
         LifeAlgorithmState state = new LifeAlgorithmState(origin);
