@@ -3,6 +3,7 @@ package View;
 import Model.*;
 import View.Shapes.Circle;
 import View.Shapes.Node;
+import View.Shapes.Text;
 
 import java.awt.*;
 
@@ -29,7 +30,13 @@ public class AlgorithmDrawer {
         drawPanel.shapes.add(viewEdge);
     }
 
-    public void draw(Graph graph, Color color, Boolean heatMap){
+    public void drawCoverageText(Graph graph) {
+        for (Model.Edge edge : graph.edgeList) {
+            drawPanel.shapes.add(new Text("" + edge.coverage, edge.left.x + (edge.right.x - edge.left.x) / 2,edge.left.y + (edge.right.y - edge.left.y) / 2));
+        }
+    }
+
+    public void draw(Graph graph, Color color, boolean heatMap, boolean coverage){
         drawPanel.shapes.clear();
 
         if (heatMap) {
@@ -37,6 +44,10 @@ public class AlgorithmDrawer {
         }
 
         draw(graph, color);
+
+        if (coverage) {
+            drawCoverageText(graph);
+        }
     }
 
     private void draw(Graph graph, Color color){
@@ -63,7 +74,7 @@ public class AlgorithmDrawer {
         drawPanel.update();
     }
 
-    public void drawAlgorithmState(AlgorithmState state, boolean heatMap){
+    public void drawAlgorithmState(AlgorithmState state, boolean heatMap, boolean coverage){
         drawPanel.shapes.clear();
 
         if (heatMap) {
@@ -153,6 +164,10 @@ public class AlgorithmDrawer {
             } else {
                 drawFinishedState(lifeState, heatMap);
             }
+        }
+
+        if (coverage) {
+            drawCoverageText(state.origin);
         }
         drawPanel.update();
     }

@@ -9,6 +9,7 @@ import Model.Graph;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -26,6 +27,7 @@ public class AlgorithmForm {
     private JRadioButton heatmapRadioButton;
     private JSpinner tSpanChooser;
     private JLabel statusText;
+    private JRadioButton coverageRadioButton;
 
     private EditorForm editor;
     private AlgorithmDrawer algorithmDrawer;
@@ -48,7 +50,7 @@ public class AlgorithmForm {
         setupStopButton();
         setupBackButton();
         setupTSpanChooser();
-        setUpHeatmapControl();
+        setUpRadioControls();
     }
 
     private void loadGraph() {
@@ -62,21 +64,23 @@ public class AlgorithmForm {
             }
         });
         drawPanel.shapes.clear();
-        algorithmDrawer.draw(currentGraph, Color.black, heatmapRadioButton.isSelected());
+        algorithmDrawer.draw(currentGraph, Color.black, heatmapRadioButton.isSelected(), coverageRadioButton.isSelected());
         algorithmRunning = false;
         algorithmState = null;
         threadRunning.set(false);
         statusText.setText("Ready");
     }
 
-    private void setUpHeatmapControl(){
-        this.heatmapRadioButton.addActionListener(e->{
+    private void setUpRadioControls(){
+        ActionListener update = e->{
             if (algorithmState == null) {
-                algorithmDrawer.draw(currentGraph, Color.black, heatmapRadioButton.isSelected());
+                algorithmDrawer.draw(currentGraph, Color.black, heatmapRadioButton.isSelected(), coverageRadioButton.isSelected());
             } else {
-                algorithmDrawer.drawAlgorithmState(algorithmState, heatmapRadioButton.isSelected());
+                algorithmDrawer.drawAlgorithmState(algorithmState, heatmapRadioButton.isSelected(), coverageRadioButton.isSelected());
             }
-        });
+        };
+        this.heatmapRadioButton.addActionListener(update);
+        this.coverageRadioButton.addActionListener(update);
     }
 
     private void setupReloadButton(){
@@ -146,7 +150,7 @@ public class AlgorithmForm {
     private void setupTSpanChooser() {
         SpinnerNumberModel model = new SpinnerNumberModel();
         model.setMinimum(1);
-        model.setStepSize(1);
+        model.setStepSize(0.1);
         model.setValue(1);
         tSpanChooser.setModel(model);
     }
@@ -154,7 +158,7 @@ public class AlgorithmForm {
     public void setState(AlgorithmState state) {
         synchronized (stateLock) {
             this.algorithmState = state;
-            algorithmDrawer.drawAlgorithmState(algorithmState, heatmapRadioButton.isSelected());
+            algorithmDrawer.drawAlgorithmState(algorithmState, heatmapRadioButton.isSelected(), coverageRadioButton.isSelected());
             if (state.step == 0) {
                 statusText.setText("Algorithm initialized");
             } else if (!algorithmController.isFinished(state)) {
