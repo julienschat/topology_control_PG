@@ -7,6 +7,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Paths;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -47,6 +49,7 @@ public class EditorForm {
     private void setupSaveLoad() {
         JFileChooser chooser = new JFileChooser();
 
+        chooser.setCurrentDirectory(Paths.get(".").toAbsolutePath().normalize().toFile());
         chooser.setFileFilter(new FileNameExtensionFilter(
                 "Graph Text File", "txt"));
 
