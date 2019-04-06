@@ -8,25 +8,27 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AlgorithmRunner implements Runnable {
     private AlgorithmState state;
+    private int sleep;
     private final AlgorithmForm algoForm;
     private final AlgorithmController algorithmController;
 
-    public AlgorithmRunner(AlgorithmForm algoForm, AlgorithmController algorithmController, AlgorithmState state) {
+    public AlgorithmRunner(AlgorithmForm algoForm, AlgorithmController algorithmController, AlgorithmState state, int sleep) {
         this.algoForm = algoForm;
         this.algorithmController = algorithmController;
         this.state = state;
+        this.sleep = sleep;
     }
 
     @Override
     public void run() {
         try {
-            TimeUnit.MILLISECONDS.sleep(400); // have sleep two times to ask running.get() right before next execution
+            TimeUnit.MILLISECONDS.sleep(this.sleep); // have sleep two times to ask running.get() right before next execution
 
             // running algorithm stepwise
             while (!algorithmController.isFinished(state) && algoForm.threadRunning.get()) {
                 state = algorithmController.next(state);
                 algoForm.setState(state);
-                TimeUnit.MILLISECONDS.sleep(400);
+                TimeUnit.MILLISECONDS.sleep(this.sleep);
             }
         }
         catch (InterruptedException e) {

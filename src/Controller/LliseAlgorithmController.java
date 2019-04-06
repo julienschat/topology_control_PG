@@ -38,20 +38,20 @@ public class LliseAlgorithmController extends AlgorithmController{
         LliseAlgorithmState currentState = (LliseAlgorithmState)algorithmState;
         if (currentState.phase == RUN_PARALLEL) {
             if (nodeController.isFinished(currentState.nodeState)) {
-                currentState.edgesChosenByNodes.add(currentState.edgesChosen);
+                currentState.edgesChosenByNodes.add(currentState.nodeState.edgesChosen);
                 if (currentState.currentNodeID <= 0) {
                     currentState.edgesChosen = new LinkedList<>();
                     currentState.phase = MERGING;
                 } else {
                     currentState.currentNodeID -= 1;
                     LinkedList<Edge> tmpEdges = new LinkedList<>();
-                    tmpEdges.addAll(currentState.nodeState.edgesChosen);
+//                    tmpEdges.addAll(currentState.nodeState.edgesChosen);
                     double tSpannerMeasure = currentState.nodeState.tSpannerMeasure;
 
                     nodeController.setNode(currentState.nodeState.origin.getNodeById(currentState.currentNodeID));
                     currentState.nodeState = (LliseNodeAlgorithmState) nodeController.init(currentState.nodeState.origin);
                     currentState.nodeState.tSpannerMeasure = tSpannerMeasure;
-                    currentState.edgesChosen = tmpEdges;
+//                    currentState.edgesChosen = tmpEdges;
                 }
             } else {
                 nodeController.processState(currentState.nodeState);

@@ -25,6 +25,7 @@ public class AlgorithmForm {
     private JSpinner tSpanChooser;
     private JLabel statusText;
     private JRadioButton coverageRadioButton;
+    private JButton fastForwardButton;
 
     private EditorForm editor;
     private AlgorithmDrawer algorithmDrawer;
@@ -46,6 +47,7 @@ public class AlgorithmForm {
         setupStepButton();
         setupStopButton();
         setupBackButton();
+        setupFastForwardButton();
         setupTSpanChooser();
         setUpRadioControls();
     }
@@ -98,6 +100,21 @@ public class AlgorithmForm {
         });
     }
 
+    private void setupFastForwardButton() {
+        fastForwardButton.addActionListener(e -> {
+            if (!algorithmRunning) {
+                algorithmRunning = true;
+                initAlgorithmController();
+            }
+
+            while (!algorithmController.isFinished(algorithmState)) {
+                algorithmState = algorithmController.next(algorithmState);
+            }
+
+            setState(algorithmState);
+        });
+    }
+
     private void setupStopButton(){
         stopButton.addActionListener(e -> threadRunning.set(false));
     }
@@ -140,7 +157,7 @@ public class AlgorithmForm {
             }
 
             threadRunning.set(true);
-            new Thread(new AlgorithmRunner(this, algorithmController, algorithmState)).start();
+            new Thread(new AlgorithmRunner(this, algorithmController, algorithmState, 400)).start();
         });
     }
 
