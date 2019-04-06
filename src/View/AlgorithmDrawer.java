@@ -177,9 +177,11 @@ public class AlgorithmDrawer {
 
                 //Post drawing of origin:
 
-                //Mark Edges already chosen for new network
-                for (Model.Edge modelEdge : lliseState.nodeState.edgesChosen) {
-                    drawEdge(modelEdge, new Color(0, 0, 0));
+                if (lliseState.nodeState.newTSpannerGraph != null) {
+                    //Show current network in which calculations are made
+                    for (Model.Edge modelEdge : lliseState.nodeState.newTSpannerGraph.edgeList) {
+                        drawEdge(modelEdge, new Color(0, 0, 0));
+                    }
                 }
 
                 // Mark nodes covered by current Edge

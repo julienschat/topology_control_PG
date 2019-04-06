@@ -67,7 +67,6 @@ public class LliseNodeController extends AlgorithmController{
                     while (!state.edgesSortedByCoverage.isEmpty() &&
                         state.edgesSortedByCoverage.getFirst().coverage == state.currentEdgeMinCoverage.coverage) {
                         Edge sameCoverage = state.edgesSortedByCoverage.pop();
-                        state.edgesChosen.add(sameCoverage);
                         addEdgeToTSPanner(algorithmState, sameCoverage);
                     }
 
