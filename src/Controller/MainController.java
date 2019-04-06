@@ -18,7 +18,7 @@ public class MainController {
 
          // For faster testing:
         try {
-            Graph currentGraph = Graph.readFile("graph1.txt");
+            Graph currentGraph = Graph.readFile("examples/graph1.txt");
             editorForm.currentGraph = currentGraph;
             editorForm.graphDrawer.draw(currentGraph, true,false, false);
         }catch(IOException ex){
