@@ -106,7 +106,7 @@ public class GraphDrawer extends Observable {
         }
     }
 
-    public void draw(Graph graph, boolean radii, boolean heatMap) {
+    public void draw(Graph graph, boolean radii, boolean heatMap, boolean coverage) {
         drawPanel.shapes.clear(); // NOTE: should maybe only delete own shapes.
 
         if (heatMap) {
@@ -138,6 +138,10 @@ public class GraphDrawer extends Observable {
 
         if(heatMap) {
             this.heatmapDrawer.drawCurrentHeatOfNodes(graph.nodeList);
+        }
+
+        if (coverage) {
+            CoverageDrawer.drawTextLabels(drawPanel, graph);
         }
 
         drawPanel.update();

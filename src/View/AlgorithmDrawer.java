@@ -30,12 +30,6 @@ public class AlgorithmDrawer {
         drawPanel.shapes.add(viewEdge);
     }
 
-    public void drawCoverageText(Graph graph) {
-        for (Model.Edge edge : graph.edgeList) {
-            drawPanel.shapes.add(new Text("" + edge.coverage, edge.left.x + (edge.right.x - edge.left.x) / 2,edge.left.y + (edge.right.y - edge.left.y) / 2));
-        }
-    }
-
     public void draw(Graph graph, Color color, boolean heatMap, boolean coverage){
         drawPanel.shapes.clear();
 
@@ -46,7 +40,7 @@ public class AlgorithmDrawer {
         draw(graph, color);
 
         if (coverage) {
-            drawCoverageText(graph);
+            CoverageDrawer.drawTextLabels(drawPanel, graph);
         }
     }
 
@@ -218,7 +212,7 @@ public class AlgorithmDrawer {
         }
 
         if (coverage) {
-            drawCoverageText(state.origin);
+            CoverageDrawer.drawTextLabels(drawPanel, state.origin);
         }
         drawPanel.update();
     }

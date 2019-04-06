@@ -6,7 +6,6 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
 import static java.lang.Math.pow;
@@ -40,10 +39,9 @@ public class EditorForm {
         setupAlgoChooseAndStart();
         setupAddDeleteNodeButton();
         setupNodeDragging();
-        setupRadiiControl();
+        setupRadioControls();
         setupRadiusChange();
         setupSaveLoad();
-        setUpHeatmapControl();
     }
 
     private void setupSaveLoad() {
@@ -79,7 +77,7 @@ public class EditorForm {
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
                         currentGraph = Graph.readFile(chooser.getSelectedFile().getPath());
-                        graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(), heatmapRadioButton.isSelected());
+                        drawGraph();
                     } catch (IOException ex) {
                         System.out.println("Could not read file.");
                     }
@@ -102,17 +100,11 @@ public class EditorForm {
         this.loadButton.addActionListener(load);
     }
 
-
-    private void setupRadiiControl() {
-        this.radiiRadioButton.addActionListener(e -> {
-            graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
-        });
-    }
-
-    private void setUpHeatmapControl(){
-        this.heatmapRadioButton.addActionListener(e->{
-            graphDrawer.draw(currentGraph,radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
-        });
+    private void setupRadioControls() {
+        ActionListener updateGraph = e -> drawGraph();
+        this.radiiRadioButton.addActionListener(updateGraph);
+        this.heatmapRadioButton.addActionListener(updateGraph);
+        this.coverageRadioButton.addActionListener(updateGraph);
     }
 
     private void setupNodeDragging() {
@@ -124,7 +116,7 @@ public class EditorForm {
                     graphDrawer.draggedNode.x = e.getX();
                     graphDrawer.draggedNode.y = e.getY();
                     currentGraph.updateNeighbours(graphDrawer.draggedNode);
-                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
+                    drawGraph();
                 }
             }
             @Override
@@ -145,6 +137,14 @@ public class EditorForm {
         });
     }
 
+    private void drawGraph() {
+        if (coverageRadioButton.isSelected()) {
+            currentGraph.calculateCoverages();
+        }
+        graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected(),
+                coverageRadioButton.isSelected());
+    }
+
     private void setupRadiusChange() {
         this.drawPanel.addMouseMotionListener(new MouseAdapter() {
             @Override
@@ -154,7 +154,7 @@ public class EditorForm {
                     Model.Node n = graphDrawer.draggedRadiusNode;
                     n.radius = sqrt(pow(n.x - e.getX(), 2) + pow(n.y - e.getY(), 2));
                     currentGraph.updateNeighbours(n);
-                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
+                    drawGraph();
                     graphDrawer.drawNode(n, true, Color.BLACK);
                     drawPanel.update();
                 }
@@ -182,7 +182,7 @@ public class EditorForm {
                     editorForm.newNodeButton.repaint();
                     nodeDrawing = false;
 
-                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
+                    drawGraph();
                 }
             }
         };
@@ -197,11 +197,11 @@ public class EditorForm {
                     drawnNode = new Model.Node(drawnX, drawnY, 0);
                     currentGraph.insertNode(drawnNode);
 
-                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
+                    drawGraph();
                     nodeDrawing = false;
                     radiusDrawing = true;
                 } else if (radiusDrawing) {
-                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
+                    drawGraph();
                     editorForm.newNodeButton.setBackground(buttonColor);
                     editorForm.newNodeButton.repaint();
                     radiusDrawing = false;
@@ -218,7 +218,7 @@ public class EditorForm {
                     drawnNode.radius = radius;
                     currentGraph.updateNeighbours(drawnNode);
 
-                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
+                    drawGraph();
                     graphDrawer.drawNode(drawnNode, true, Color.BLACK);
 
                     drawPanel.update();
@@ -247,7 +247,7 @@ public class EditorForm {
                 super.mouseClicked(e);
                 if (nodeDeleting && editorForm.graphDrawer.clickedNode != null) {
                     currentGraph.removeNode(editorForm.graphDrawer.clickedNode);
-                    graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
+                    drawGraph();
                     editorForm.deleteNodeButton.setBackground(buttonColor);
                     nodeDeleting = false;
                 }
@@ -258,7 +258,7 @@ public class EditorForm {
             @Override
             public void actionPerformed(ActionEvent e) {
                 currentGraph = new Graph();
-                graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected());
+                drawGraph();
             }
         };
 
@@ -326,4 +326,5 @@ public class EditorForm {
     private JButton saveButton;
     private JRadioButton heatmapRadioButton;
     private JButton deleteNodeButton;
+    private JRadioButton coverageRadioButton;
 }

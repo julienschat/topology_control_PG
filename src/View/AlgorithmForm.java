@@ -61,6 +61,7 @@ public class AlgorithmForm {
             }
         });
         drawPanel.shapes.clear();
+        currentGraph.calculateCoverages();
         algorithmDrawer.draw(currentGraph, Color.black, heatmapRadioButton.isSelected(), coverageRadioButton.isSelected());
         algorithmRunning = false;
         algorithmState = null;

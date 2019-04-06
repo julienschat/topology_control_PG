@@ -9,13 +9,6 @@ import java.util.stream.Collectors;
 
 public class LliseNodeController extends AlgorithmController{
 
-
-    public Graph getFloodedNeighborhood(Edge edge,LliseNodeAlgorithmState state){
-        Graph neighborhood = new Graph();
-        double currentFlood = 0;
-        double maxDistance = state.tSpannerMeasure / 2;
-
-
     public Graph getFloodedNeighborhood(Graph graph, Edge edge, double t){
         return Dijkstra.getKNeighbourhood(graph, edge, edge.getLength() * t / 2);
     }
