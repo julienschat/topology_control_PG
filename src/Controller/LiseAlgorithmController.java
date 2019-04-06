@@ -54,9 +54,7 @@ public class LiseAlgorithmController extends AlgorithmController{
                 Node sourceNode = state.newTSpannerGraph.getNodeById(state.currentEdgeMaxCoverage.left.id);
                 Node destinationNode = state.newTSpannerGraph.getNodeById(state.currentEdgeMaxCoverage.right.id);
 
-
-                Dijkstra dijkstraAlgorithm = new Dijkstra();
-                ShortestPathTree shortestPathTree = dijkstraAlgorithm.runDijkstra(state.newTSpannerGraph, sourceNode);
+                ShortestPathTree shortestPathTree = Dijkstra.runDijkstra(state.newTSpannerGraph, sourceNode);
 
                 //View: Mark path from source to destination
                 if(destinationNode.key != -1) {
@@ -92,8 +90,10 @@ public class LiseAlgorithmController extends AlgorithmController{
                 state.edgesChosen.add(state.currentEdgeMinCoverage);
                 addEdgeToTSPanner(algorithmState,state.currentEdgeMinCoverage);
 
-                state.phase = LiseAlgorithmPhase.SAMECOVERAGECHOOSING;
-                if(state.edgesSortedByCoverage.isEmpty()){
+
+                if(!state.edgesSortedByCoverage.isEmpty()){
+                    state.phase = LiseAlgorithmPhase.SAMECOVERAGECHOOSING;
+                } else {
                     state.phase = LiseAlgorithmPhase.PREFINISHED;
                 }
 
@@ -108,8 +108,6 @@ public class LiseAlgorithmController extends AlgorithmController{
                     addEdgeToTSPanner(algorithmState,state.edgesSortedByCoverage.getFirst());
 
                     state.edgesSortedByCoverage.removeFirst();
-
-
                 }else{
                     state.phase = LiseAlgorithmPhase.SHORTESTPATHCHECKING;
 

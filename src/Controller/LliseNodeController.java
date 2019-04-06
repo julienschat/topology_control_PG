@@ -52,59 +52,46 @@ public class LliseNodeController extends AlgorithmController{
                 //Use already chosen Edges in newTSpanner
                 state.newTSpannerGraph = state.floodedGraph.cloneGraphWithoutEdges();
                 for(Edge e : state.edgesChosen){
-                    if(state.newTSpannerGraph.getNodeById(e.left.id)!=null&&state.newTSpannerGraph.getNodeById(e.left.id)!=null){
+                    if(state.newTSpannerGraph.getNodeById(e.left.id) != null && state.newTSpannerGraph.getNodeById(e.left.id) != null){
                         state.newTSpannerGraph.connectNodes(state.newTSpannerGraph.getNodeById(e.left.id),state.newTSpannerGraph.getNodeById(e.right.id));
                     }
                 }
-                state.phase = LliseNodeAlgorithmPhase.SHORTESTPATHCHECKING;
+                state.phase = LliseNodeAlgorithmPhase.MINCOVERAGEADDING;
 
                 break;
-            case SHORTESTPATHCHECKING:
-                Node sourceNode = state.newTSpannerGraph.getNodeById(state.currentNode.id);
-                Node destinationNode = state.newTSpannerGraph.getNodeById(state.currentEdge.getNeighbourOf(sourceNode).id);
+            case MINCOVERAGEADDING:
+                if(!state.edgesSortedByCoverage.isEmpty()) {
+                    state.currentEdgeMinCoverage = state.edgesSortedByCoverage.pop();
+                    addEdgeToTSPanner(algorithmState, state.currentEdgeMinCoverage);
 
-                ShortestPathTree shortestPathTree = Dijkstra.runDijkstra(state.newTSpannerGraph,sourceNode);
+                    while (!state.edgesSortedByCoverage.isEmpty() &&
+                        state.edgesSortedByCoverage.getFirst().coverage == state.currentEdgeMinCoverage.coverage) {
+                        Edge sameCoverage = state.edgesSortedByCoverage.pop();
+                        state.edgesChosen.add(sameCoverage);
+                        addEdgeToTSPanner(algorithmState, sameCoverage);
+                    }
 
-                if(destinationNode.key != -1){
-                    state.nodesOnShortestPath = shortestPathTree.getPathToSourceFromNode(destinationNode);
-                }else{
-                    state.nodesOnShortestPath = null;
-                }
+                    Node sourceNode = state.newTSpannerGraph.getNodeById(state.currentNode.id);
+                    Node destinationNode = state.newTSpannerGraph.getNodeById(state.currentEdge.getNeighbourOf(state.currentNode).id);
 
-                if(destinationNode.key == -1 ||
-                        destinationNode.key > state.tSpannerMeasure * state.currentEdge.getLength()){
-                    state.phase = LliseNodeAlgorithmPhase.MINEDGECHOOSING;
-                }else{
+                    ShortestPathTree shortestPathTree = Dijkstra.runDijkstra(state.newTSpannerGraph,sourceNode);
+
+                    if(destinationNode.key == -1 ||
+                            destinationNode.key > state.tSpannerMeasure * state.currentEdge.getLength()){
+                        state.phase = LliseNodeAlgorithmPhase.MINCOVERAGEADDING;
+                    }else{
+                        state.nodesOnShortestPath = shortestPathTree.getPathToSourceFromNode(destinationNode);
+                        for (int i = 0; i < state.nodesOnShortestPath.size() - 1; i++) {
+                            Node left = state.nodesOnShortestPath.get(i);
+                            Node right = state.nodesOnShortestPath.get(i + 1);
+                            state.edgesChosen.add(state.origin.getEdgeByIds(left.id, right.id));
+                        }
+                        state.phase = LliseNodeAlgorithmPhase.CURRENTEDGECHOOSING;
+                    }
+
+                } else {
                     state.phase = LliseNodeAlgorithmPhase.CURRENTEDGECHOOSING;
                 }
-                break;
-            case MINEDGECHOOSING:
-                if(!state.edgesSortedByCoverage.isEmpty()) {
-                    state.currentEdgeMinCoverage = state.edgesSortedByCoverage.getFirst();
-                    state.edgesChosen.add(state.currentEdgeMinCoverage);
-                    addEdgeToTSPanner(algorithmState,state.currentEdgeMinCoverage);
-                    state.edgesSortedByCoverage.removeFirst();
-                    state.phase = LliseNodeAlgorithmPhase.SAMECOVERAGECHOOSING;
-                }else {
-                    state.phase = LliseNodeAlgorithmPhase.SHORTESTPATHCHECKING;
-                }
-
-                break;
-            case SAMECOVERAGECHOOSING:
-                if(state.edgesSortedByCoverage.getFirst().coverage == state.currentEdgeMinCoverage.coverage){
-                    state.edgesChosen.add(state.edgesSortedByCoverage.getFirst());
-                    addEdgeToTSPanner(algorithmState,state.edgesSortedByCoverage.getFirst());
-
-                    state.edgesSortedByCoverage.removeFirst();
-
-
-                }else{
-                    state.phase = LliseNodeAlgorithmPhase.SHORTESTPATHCHECKING;
-
-                }
-//                if(state.edgesSortedByCoverage.isEmpty()){
-//                    state.phase = LliseNodeAlgorithmPhase.PREFINISHED;
-//                }
                 break;
         }
         return state;
@@ -132,12 +119,8 @@ public class LliseNodeController extends AlgorithmController{
                 return "Calculate flooded neighbourhood";
             case CURRENTEDGECHOOSING:
                 return "Choose current Edge";
-            case SHORTESTPATHCHECKING:
-                return "Check if shortest path exists";
-            case MINEDGECHOOSING:
-                return "Choose Edge with min coverage";
-            case SAMECOVERAGECHOOSING:
-                return "Choose Edge with same coverage";
+            case MINCOVERAGEADDING:
+                return "Adding all edges with min coverage and check if shortest path exists";
             case FINISHED:
                 return "Finished";
             default:

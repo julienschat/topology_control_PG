@@ -36,7 +36,7 @@ public class LliseNodeAlgorithmState extends AlgorithmState {
         newState.phase = this.phase;
         if(this.newTSpannerGraph != null) newState.newTSpannerGraph = this.newTSpannerGraph.cloneGraphWithEdges();
         if(!this.edgesSortedByCoverage.isEmpty()) newState.edgesSortedByCoverage.addAll(this.edgesSortedByCoverage);
-        if(this.nodesOnShortestPath!=null) newState.nodesOnShortestPath.addAll(this.nodesOnShortestPath);
+//        if(this.nodesOnShortestPath!=null) newState.nodesOnShortestPath.addAll(this.nodesOnShortestPath);
         if(this.floodedGraph != null ) newState.floodedGraph = this.floodedGraph.cloneGraphWithEdges();
         if(!incidentEdges.isEmpty()) newState.incidentEdges.addAll(this.incidentEdges);
         newState.currentNode = newState.origin.getNodeById(this.currentNode.id);

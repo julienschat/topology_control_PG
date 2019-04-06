@@ -68,7 +68,7 @@ public class AlgorithmDrawer {
         drawPanel.update();
     }
 
-    public void drawAlgorithmState(AlgorithmState state, boolean heatMap, boolean coverage){
+    public void drawAlgorithmState(AlgorithmState state, boolean heatMap, boolean coverage) {
         drawPanel.shapes.clear();
 
         if (heatMap) {
@@ -78,8 +78,8 @@ public class AlgorithmDrawer {
         Color colorMax = new Color(255, 153, 153);
         Color colorMin = new Color(204, 229, 255);
 
-        if(state instanceof LiseAlgorithmState){
-            LiseAlgorithmState liseState = (LiseAlgorithmState)state;
+        if (state instanceof LiseAlgorithmState) {
+            LiseAlgorithmState liseState = (LiseAlgorithmState) state;
 
             if (liseState.phase != FINISHED) {
                 //Pre drawing of origin:
@@ -127,11 +127,11 @@ public class AlgorithmDrawer {
                     drawEdge(liseState.currentEdgeMinCoverage, Color.blue);
 
             } else {
-                drawFinishedState(liseState, heatMap);
+                drawFinishedState(liseState);
             }
 
-        }else if(state instanceof LifeAlgorithmState){
-            LifeAlgorithmState lifeState = (LifeAlgorithmState)state;
+        } else if (state instanceof LifeAlgorithmState) {
+            LifeAlgorithmState lifeState = (LifeAlgorithmState) state;
 
             if (lifeState.phase != LifeAlgorithmPhase.FINISHED) {
                 //Pre origin
@@ -156,24 +156,21 @@ public class AlgorithmDrawer {
                 }
 
             } else {
-                drawFinishedState(lifeState, heatMap);
+                drawFinishedState(lifeState);
             }
-        }else if(state instanceof LliseAlgorithmState){
+        } else if (state instanceof LliseAlgorithmState) {
             LliseAlgorithmState lliseState = (LliseAlgorithmState) state;
 
-            if (lliseState.phase != LliseAlgorithmPhase.FINISHED) {
+            if (lliseState.phase == LliseAlgorithmPhase.RUN_PARALLEL) {
                 //Pre drawing of origin:
 
-                // Draw the coverages of Min and Max Edge
+                // Draw the coverage of current edge
                 if (lliseState.nodeState.currentEdge != null)
                     drawCoverage(lliseState.nodeState.currentEdge, lliseState.nodeState.origin, colorMax);
-                if (lliseState.nodeState.currentStatesPhase == LliseNodeAlgorithmPhase.MINEDGECHOOSING || lliseState.nodeState.currentStatesPhase == LliseNodeAlgorithmPhase.SAMECOVERAGECHOOSING)
-                    drawCoverage(lliseState.nodeState.currentEdgeMinCoverage, lliseState.nodeState.origin, colorMin);
 
-                if (((LliseAlgorithmState) state).nodeState.floodedGraph != null &&
-                ((LliseAlgorithmState) state).nodeState.phase != LliseNodeAlgorithmPhase.FINISHED) {
+                if (lliseState.nodeState.floodedGraph != null && lliseState.nodeState.phase != LliseNodeAlgorithmPhase.FINISHED) {
                     draw(state.origin, new Color(220, 220, 220));
-                    draw(((LliseAlgorithmState) state).nodeState.floodedGraph, new Color(80, 80, 80));
+                    draw(lliseState.nodeState.floodedGraph, new Color(80, 80, 80));
                 } else {
                     draw(state.origin, new Color(120, 120, 120));
                 }
@@ -185,38 +182,29 @@ public class AlgorithmDrawer {
                     drawEdge(modelEdge, new Color(0, 0, 0));
                 }
 
-                // Mark nodes covered by Min and Max Edge
+                // Mark nodes covered by current Edge
                 if (lliseState.nodeState.currentEdge != null) {
                     for (Model.Node modelNode : lliseState.nodeState.origin.getCoveredNodesByEdge(lliseState.nodeState.currentEdge)) {
                         drawNode(modelNode, Color.red);
                     }
                 }
-                if (lliseState.nodeState.currentStatesPhase == LliseNodeAlgorithmPhase.MINEDGECHOOSING || lliseState.nodeState.currentStatesPhase == LliseNodeAlgorithmPhase.SAMECOVERAGECHOOSING) {
-                    for (Model.Node modelNode : lliseState.nodeState.origin.getCoveredNodesByEdge(lliseState.nodeState.currentEdgeMinCoverage)) {
-                        drawNode(modelNode, Color.blue);
-                    }
-                }
+
+                // Mark current edge
+                if (lliseState.nodeState.currentEdge != null) drawEdge(lliseState.nodeState.currentEdge, Color.red);
 
                 //Mark CurrentNode
-                drawNode(lliseState.nodeState.currentNode,Color.black);
+                drawNode(lliseState.nodeState.currentNode, Color.black);
 
                 // Mark the shortest path between v,w of current Max Edge
-                if (lliseState.nodeState.currentStatesPhase == LliseNodeAlgorithmPhase.SHORTESTPATHCHECKING) {
-                    if (lliseState.nodeState.nodesOnShortestPath != null) {
-                        for (int i = 0; i < lliseState.nodeState.nodesOnShortestPath.size() - 1; i++) {
-                            Edge newEdge = new Edge(lliseState.nodeState.nodesOnShortestPath.get(i), lliseState.nodeState.nodesOnShortestPath.get(i + 1));
-                            drawEdge(newEdge, Color.green);
-                        }
+                if (lliseState.nodeState.nodesOnShortestPath != null) {
+                    for (int i = 0; i < lliseState.nodeState.nodesOnShortestPath.size() - 1; i++) {
+                        Edge newEdge = new Edge(lliseState.nodeState.nodesOnShortestPath.get(i), lliseState.nodeState.nodesOnShortestPath.get(i + 1));
+                        drawEdge(newEdge, Color.green);
                     }
                 }
 
-                // Mark current Max and Min Edge
-                if (lliseState.nodeState.currentEdge != null) drawEdge(lliseState.nodeState.currentEdge, Color.red);
-                if (lliseState.nodeState.currentStatesPhase == LliseNodeAlgorithmPhase.MINEDGECHOOSING || lliseState.nodeState.currentStatesPhase == LliseNodeAlgorithmPhase.SAMECOVERAGECHOOSING)
-                    drawEdge(lliseState.nodeState.currentEdgeMinCoverage, Color.blue);
-
             } else {
-                drawFinishedState(lliseState.nodeState, heatMap);
+                drawFinishedState(lliseState);
             }
         }
 
@@ -226,10 +214,10 @@ public class AlgorithmDrawer {
         drawPanel.update();
     }
 
-    private void drawFinishedState(AlgorithmState state, boolean heatMap){
+    private void drawFinishedState(AlgorithmState state){
         draw(state.origin, new Color(120,120,120));
         for(Model.Edge modelEdge : state.edgesChosen){
-            drawEdge(modelEdge,Color.black);
+            drawEdge(modelEdge, Color.black);
         }
     }
 

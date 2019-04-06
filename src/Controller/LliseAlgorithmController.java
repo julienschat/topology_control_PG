@@ -2,15 +2,15 @@ package Controller;
 
 import Model.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import static Model.LliseAlgorithmPhase.FINISHED;
-import static Model.LliseAlgorithmPhase.RUNNING;
+import static Model.LliseAlgorithmPhase.*;
 
 public class LliseAlgorithmController extends AlgorithmController{
     private LliseNodeController nodeController;
-
-    private int currentNodeID;
     private double tMeasure;
 
     @Override
@@ -19,12 +19,12 @@ public class LliseAlgorithmController extends AlgorithmController{
         LliseAlgorithmState state = new LliseAlgorithmState(origin);
 
         origin.fixNodeIDs();
-        currentNodeID = origin.nodeList.size()-1;
+        state.currentNodeID = origin.nodeList.size()-1;
 
-        nodeController.setNode(origin.getNodeById(currentNodeID));
+        nodeController.setNode(origin.getNodeById(state.currentNodeID));
         state.nodeState = ((LliseNodeAlgorithmState)nodeController.init(origin));
         state.nodeState.tSpannerMeasure = tMeasure;
-        state.phase = RUNNING;
+        state.phase = RUN_PARALLEL;
 
         return state;
     }
@@ -36,21 +36,34 @@ public class LliseAlgorithmController extends AlgorithmController{
     @Override
     protected AlgorithmState processState(AlgorithmState algorithmState) {
         LliseAlgorithmState currentState = (LliseAlgorithmState)algorithmState;
-        if(nodeController.isFinished(currentState.nodeState)){
+        if (currentState.phase == RUN_PARALLEL) {
+            if (nodeController.isFinished(currentState.nodeState)) {
+                currentState.edgesChosenByNodes.add(currentState.edgesChosen);
+                if (currentState.currentNodeID <= 0) {
+                    currentState.edgesChosen = new LinkedList<>();
+                    currentState.phase = MERGING;
+                } else {
+                    currentState.currentNodeID -= 1;
+                    LinkedList<Edge> tmpEdges = new LinkedList<>();
+                    tmpEdges.addAll(currentState.nodeState.edgesChosen);
+                    double tSpannerMeasure = currentState.nodeState.tSpannerMeasure;
 
-            if(isFinished(currentState)){
-                currentState.phase = FINISHED;
-            }else {
-                currentNodeID -= 1;
-                LinkedList<Edge> tmpEdges = new LinkedList<>();
-                tmpEdges.addAll(currentState.nodeState.edgesChosen);
-
-                nodeController.setNode(currentState.nodeState.origin.getNodeById(currentNodeID));
-                currentState.nodeState = (LliseNodeAlgorithmState) nodeController.init(currentState.nodeState.origin);
-                currentState.edgesChosen = tmpEdges;
+                    nodeController.setNode(currentState.nodeState.origin.getNodeById(currentState.currentNodeID));
+                    currentState.nodeState = (LliseNodeAlgorithmState) nodeController.init(currentState.nodeState.origin);
+                    currentState.nodeState.tSpannerMeasure = tSpannerMeasure;
+                    currentState.edgesChosen = tmpEdges;
+                }
+            } else {
+                nodeController.processState(currentState.nodeState);
             }
-        }else {
-            nodeController.processState(currentState.nodeState);
+        } else if (currentState.phase == MERGING) {
+            if (currentState.edgesChosenByNodes.isEmpty()) {
+                currentState.phase = FINISHED;
+            } else {
+                List<Edge> newEdges = currentState.edgesChosenByNodes.pop().stream()
+                        .filter(e -> !currentState.edgesChosen.contains(e)).collect(Collectors.toList());
+                currentState.edgesChosen.addAll(newEdges);
+            }
         }
 
         return currentState;
@@ -58,15 +71,17 @@ public class LliseAlgorithmController extends AlgorithmController{
 
     @Override
     public boolean isFinished(AlgorithmState algorithmState) {
-        return currentNodeID <= 0;
+        return ((LliseAlgorithmState)algorithmState).phase == LliseAlgorithmPhase.FINISHED;
     }
 
     @Override
     public String getPhaseDescription(AlgorithmState _state) {
         LliseAlgorithmState state = (LliseAlgorithmState)_state;
         switch (state.phase) {
-            case RUNNING:
-                return String.format("Node %d: %s", currentNodeID, nodeController.getPhaseDescription(state.nodeState));
+            case RUN_PARALLEL:
+                return String.format("Node %d: %s", state.currentNodeID, nodeController.getPhaseDescription(state.nodeState));
+            case MERGING:
+                return "Merging results";
             case FINISHED:
                 return "Finished";
             default:

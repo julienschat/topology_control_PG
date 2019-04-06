@@ -165,4 +165,13 @@ public class Graph {
         }
         nodeList.remove(node);
     }
+
+    public Edge getEdgeByIds(int leftId, int rightId) {
+        Node left = this.getNodeById(leftId);
+        Node right = this.getNodeById(rightId);
+
+        return left.edgeList.stream()
+                .filter(e -> e.getNeighbourOf(left) == right)
+                .findFirst().orElse(null);
+    }
 }

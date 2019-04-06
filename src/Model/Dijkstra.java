@@ -7,9 +7,6 @@ public class Dijkstra {
         ShortestPathTree shortestPathTree = new ShortestPathTree(graph, source.id);
         MinHeap distanceHeap = new MinHeap(graph.nodeList.size());
 
-        //Could be implemented with Array
-        LinkedList<Node> reachedNodes = new LinkedList<Node>();
-
         for(Node n : graph.nodeList){
             n.key = -1;
         }
@@ -18,26 +15,18 @@ public class Dijkstra {
 
         while(!distanceHeap.isEmpty()){
             Node currentNode = ((Node)distanceHeap.extractMin());
-            reachedNodes.add(currentNode);
 
             for(Node neighbour : currentNode.getNeighbours()){
 
-                if(!reachedNodes.contains(neighbour)){
+                if(neighbour.key == -1){
+                    neighbour.key = currentNode.key + currentNode.distanceTo(neighbour);
+                    shortestPathTree.previousNode[neighbour.id] = currentNode;
+                    distanceHeap.insert(neighbour);
 
-                    if(neighbour.key == -1){
+                }else if(currentNode.key + currentNode.distanceTo(neighbour) < neighbour.key) {
+                    distanceHeap.decreaseKey(neighbour, currentNode.key + currentNode.distanceTo(neighbour));
+                    shortestPathTree.previousNode[neighbour.id] = currentNode;
 
-                        neighbour.key = currentNode.key + currentNode.distanceTo(neighbour);
-                        shortestPathTree.previousNode[neighbour.id] = currentNode;
-                        distanceHeap.insert(neighbour);
-
-                    }else{
-
-                        if(currentNode.key + currentNode.distanceTo(neighbour) < neighbour.key) {
-                            distanceHeap.decreaseKey(neighbour, currentNode.key + currentNode.distanceTo(neighbour));
-                            shortestPathTree.previousNode[neighbour.id] = currentNode;
-
-                        }
-                    }
                 }
             }
         }
@@ -74,10 +63,8 @@ public class Dijkstra {
                     if (neighbourInOriginal.key == -1) {
                         neighbourInOriginal.key = currentNode.key + edgeLength;
                         distanceHeap.insert(neighbourInOriginal);
-                    } else {
-                        if (currentNode.key + currentNode.distanceTo(neighbourInOriginal) < neighbourInOriginal.key) {
-                            distanceHeap.decreaseKey(neighbourInOriginal, currentNode.key + currentNode.distanceTo(neighbourInOriginal));
-                        }
+                    } else  if (currentNode.key + currentNode.distanceTo(neighbourInOriginal) < neighbourInOriginal.key) {
+                        distanceHeap.decreaseKey(neighbourInOriginal, currentNode.key + currentNode.distanceTo(neighbourInOriginal));
                     }
                 }
 
