@@ -170,7 +170,13 @@ public class AlgorithmDrawer {
                 if (lliseState.nodeState.currentStatesPhase == LliseNodeAlgorithmPhase.MINEDGECHOOSING || lliseState.nodeState.currentStatesPhase == LliseNodeAlgorithmPhase.SAMECOVERAGECHOOSING)
                     drawCoverage(lliseState.nodeState.currentEdgeMinCoverage, lliseState.nodeState.origin, colorMin);
 
-                draw(state.origin, new Color(120, 120, 120));
+                if (((LliseAlgorithmState) state).nodeState.floodedGraph != null &&
+                ((LliseAlgorithmState) state).nodeState.phase != LliseNodeAlgorithmPhase.FINISHED) {
+                    draw(state.origin, new Color(220, 220, 220));
+                    draw(((LliseAlgorithmState) state).nodeState.floodedGraph, new Color(80, 80, 80));
+                } else {
+                    draw(state.origin, new Color(120, 120, 120));
+                }
 
                 //Post drawing of origin:
 

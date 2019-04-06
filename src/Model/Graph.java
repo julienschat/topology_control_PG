@@ -47,6 +47,10 @@ public class Graph {
         return coveredNodes;
     }
 
+    public boolean areNodesConnected(Node a, Node b) {
+        return a.getNeighbours().contains(b);
+    }
+
     public void connectNodes(Node a, Node b) {
         Edge edge = new Edge(a, b);
         a.edgeList.add(edge);

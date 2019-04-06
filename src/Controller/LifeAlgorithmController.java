@@ -13,11 +13,10 @@ public class LifeAlgorithmController extends AlgorithmController {
     /**
      *
      * @param origin intial graph on which the algorithm runs
-     * @param params additional parameters unused
      * @return initial state
      */
     @Override
-    public AlgorithmState init(Graph origin, double... params) {
+    public AlgorithmState init(Graph origin) {
         LifeAlgorithmState state = new LifeAlgorithmState(origin);
         origin.fixNodeIDs();
         state.unionFind.makeSets(origin.nodeList);
@@ -48,5 +47,17 @@ public class LifeAlgorithmController extends AlgorithmController {
     @Override
     public boolean isFinished(AlgorithmState algorithmState) {
         return ((LifeAlgorithmState)algorithmState).phase == LifeAlgorithmPhase.FINISHED;
+    }
+
+    @Override
+    public String getPhaseDescription(AlgorithmState state) {
+        switch (((LifeAlgorithmState)state).phase) {
+            case FINDING_EDGES:
+                return "Finding Edges";
+            case FINISHED:
+                return "Finished";
+            default:
+                return "";
+        }
     }
 }

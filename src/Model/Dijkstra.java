@@ -46,7 +46,10 @@ public class Dijkstra {
     }
 
     public static Graph getKNeighbourhood(Graph graph, Edge edge, double k) {
-        Graph neighbourhood = new Graph();
+        graph.fixNodeIDs();
+        Graph neighbourhood = graph.cloneGraphWithoutEdges();
+        neighbourhood.connectNodes(neighbourhood.getNodeById(edge.left.id), neighbourhood.getNodeById(edge.right.id));
+
         MinHeap distanceHeap = new MinHeap(graph.nodeList.size());
 
         for (Node n : graph.nodeList) {
@@ -60,21 +63,20 @@ public class Dijkstra {
         while (!distanceHeap.isEmpty()) {
             Node currentNode = ((Node)distanceHeap.extractMin());
 
-            neighbourhood.nodeList.add(currentNode);
-
             for (Edge adjacentEdge: currentNode.edgeList) {
                 double edgeLength = adjacentEdge.getLength();
-                if (!graph.edgeList.contains(adjacentEdge) && currentNode.key + edgeLength < k) {
-                   // neighbourhood.edgeList.add(adjacentEdge);
-                    neighbourhood.connectNodes(adjacentEdge.left,adjacentEdge.right);
+                Node leftInNeighbourhood = neighbourhood.getNodeById(adjacentEdge.left.id);
+                Node rightInNeighbourhood = neighbourhood.getNodeById(adjacentEdge.right.id);
+                if (!neighbourhood.areNodesConnected(leftInNeighbourhood, rightInNeighbourhood) && currentNode.key + edgeLength < k) {
+                    neighbourhood.connectNodes(leftInNeighbourhood, rightInNeighbourhood);
+                    Node neighbourInOriginal = adjacentEdge.getNeighbourOf(currentNode);
 
-                    Node neighbour = adjacentEdge.getNeighbourOf(currentNode);
-                    if (neighbour.key == -1) {
-                        neighbour.key = currentNode.key + edgeLength;
-                        distanceHeap.insert(neighbour);
+                    if (neighbourInOriginal.key == -1) {
+                        neighbourInOriginal.key = currentNode.key + edgeLength;
+                        distanceHeap.insert(neighbourInOriginal);
                     } else {
-                        if (currentNode.key + currentNode.distanceTo(neighbour) < neighbour.key) {
-                            distanceHeap.decreaseKey(neighbour, currentNode.key + currentNode.distanceTo(neighbour));
+                        if (currentNode.key + currentNode.distanceTo(neighbourInOriginal) < neighbourInOriginal.key) {
+                            distanceHeap.decreaseKey(neighbourInOriginal, currentNode.key + currentNode.distanceTo(neighbourInOriginal));
                         }
                     }
                 }

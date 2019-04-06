@@ -11,27 +11,26 @@ public class LliseAlgorithmController extends AlgorithmController{
     private LliseNodeController nodeController;
 
     private int currentNodeID;
+    private double tMeasure;
+
     @Override
-    public AlgorithmState init(Graph origin, double... params) {
-
-        double tMeasure;
-        if(params.length>0) {
-            tMeasure = params[0];
-        }else{
-            tMeasure = 1;
-        }
-
+    public AlgorithmState init(Graph origin) {
         nodeController = new LliseNodeController();
         LliseAlgorithmState state = new LliseAlgorithmState(origin);
 
         origin.fixNodeIDs();
         currentNodeID = origin.nodeList.size()-1;
 
-        state.nodeState = ((LliseNodeAlgorithmState)nodeController.init(origin,currentNodeID));
+        nodeController.setNode(origin.getNodeById(currentNodeID));
+        state.nodeState = ((LliseNodeAlgorithmState)nodeController.init(origin));
         state.nodeState.tSpannerMeasure = tMeasure;
         state.phase = RUNNING;
 
         return state;
+    }
+
+    public void setTMeasure(double t) {
+        this.tMeasure = t;
     }
 
     @Override
@@ -46,8 +45,8 @@ public class LliseAlgorithmController extends AlgorithmController{
                 LinkedList<Edge> tmpEdges = new LinkedList<>();
                 tmpEdges.addAll(currentState.nodeState.edgesChosen);
 
-
-                currentState.nodeState = (LliseNodeAlgorithmState) nodeController.init(currentState.nodeState.origin, currentNodeID);
+                nodeController.setNode(currentState.nodeState.origin.getNodeById(currentNodeID));
+                currentState.nodeState = (LliseNodeAlgorithmState) nodeController.init(currentState.nodeState.origin);
                 currentState.edgesChosen = tmpEdges;
             }
         }else {
@@ -60,5 +59,18 @@ public class LliseAlgorithmController extends AlgorithmController{
     @Override
     public boolean isFinished(AlgorithmState algorithmState) {
         return currentNodeID <= 0;
+    }
+
+    @Override
+    public String getPhaseDescription(AlgorithmState _state) {
+        LliseAlgorithmState state = (LliseAlgorithmState)_state;
+        switch (state.phase) {
+            case RUNNING:
+                return String.format("Node %d: %s", currentNodeID, nodeController.getPhaseDescription(state.nodeState));
+            case FINISHED:
+                return "Finished";
+            default:
+                return "";
+        }
     }
 }

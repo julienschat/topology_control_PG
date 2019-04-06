@@ -22,7 +22,6 @@ public class LliseNodeAlgorithmState extends AlgorithmState {
         super(_origin);
         edgesChosen = new LinkedList<Edge>();
         nodesOnShortestPath = new LinkedList<Node>();
-
     }
 
     @Override
@@ -43,7 +42,5 @@ public class LliseNodeAlgorithmState extends AlgorithmState {
         newState.currentNode = newState.origin.getNodeById(this.currentNode.id);
 
         return newState;
-
-
     }
 }

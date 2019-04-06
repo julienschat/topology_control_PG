@@ -9,14 +9,12 @@ import java.util.stream.Collectors;
 
 
 public class LiseAlgorithmController extends AlgorithmController{
+    private double tMeasure = 2;
+
     @Override
-    public AlgorithmState init(Graph origin, double... params){
+    public AlgorithmState init(Graph origin){
         LiseAlgorithmState initState;
-        if(params.length>0) {
-            initState = new LiseAlgorithmState(origin, params[0]);
-        }else{
-            initState = new LiseAlgorithmState(origin, 40);
-        }
+        initState = new LiseAlgorithmState(origin, tMeasure);
         origin.fixNodeIDs();
         initState.newTSpannerGraph = origin.cloneGraphWithoutEdges();
 
@@ -30,6 +28,10 @@ public class LiseAlgorithmController extends AlgorithmController{
         initState.phase = LiseAlgorithmPhase.MAXEDGECHOOSING;
         initState.currentStatesPhase = LiseAlgorithmPhase.INIT;
         return initState;
+    }
+
+    public void setTMeasure(double t) {
+        this.tMeasure = t;
     }
 
     @Override
@@ -134,5 +136,25 @@ public class LiseAlgorithmController extends AlgorithmController{
     public void addEdgeToTSPanner(AlgorithmState algorithmState, Edge edge){
         LiseAlgorithmState state = (LiseAlgorithmState) algorithmState;
         state.newTSpannerGraph.connectNodes(state.newTSpannerGraph.getNodeById(edge.left.id),state.newTSpannerGraph.getNodeById(edge.right.id));
+    }
+
+    @Override
+    public String getPhaseDescription(AlgorithmState state) {
+        switch (((LiseAlgorithmState)state).phase) {
+            case MAXEDGECHOOSING:
+                return "Choose Edge with max coverage";
+            case SHORTESTPATHCHECKING:
+                return "Check if shortest path exists";
+            case MINEDGECHOOSING:
+                return "Choose Edge with min coverage";
+            case SAMECOVERAGECHOOSING:
+                return "Choose Edge with same coverage";
+            case FINISHED:
+                return "Finished";
+            case PREFINISHED:
+                return "Calculating final network";
+            default:
+                return "";
+        }
     }
 }

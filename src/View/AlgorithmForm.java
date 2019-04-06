@@ -92,21 +92,7 @@ public class AlgorithmForm {
             if(algorithmRunning){
                 setState(algorithmController.next(algorithmState));
             } else {
-                switch ((String) algoChooser.getSelectedItem()) {
-                    case "LIFE":
-                        algorithmController = new LifeAlgorithmController();
-                        setState(algorithmController.init(currentGraph));
-                        break;
-                    case "LISE":
-                        algorithmController = new LiseAlgorithmController();
-                        setState(algorithmController.init(currentGraph,((Number)(tSpanChooser.getModel().getValue())).doubleValue()));
-                        break;
-                    case "Llise":
-                        algorithmController = new LliseAlgorithmController();
-                        setState(algorithmController.init(currentGraph,((Number)(tSpanChooser.getModel().getValue())).doubleValue()));
-                        break;
-                }
-
+                initAlgorithmController();
                 algorithmRunning = true;
             }
         });
@@ -124,28 +110,33 @@ public class AlgorithmForm {
         });
     }
 
+    private void initAlgorithmController() {
+        switch((String)algoChooser.getSelectedItem()){
+            case "LIFE":
+                algorithmController = new LifeAlgorithmController();
+                setState(algorithmController.init(currentGraph));
+                break;
+            case "LISE":
+                algorithmController = new LiseAlgorithmController();
+                ((LiseAlgorithmController) algorithmController).setTMeasure(((Number)tSpanChooser.getModel().getValue()).doubleValue());
+                setState(algorithmController.init(currentGraph));
+                break;
+            case "LLISE":
+                algorithmController = new LliseAlgorithmController();
+                ((LliseAlgorithmController) algorithmController).setTMeasure(((Number)tSpanChooser.getModel().getValue()).doubleValue());
+                setState(algorithmController.init(currentGraph));
+                break;
+        }
+    }
+
     private void setupStartButton(){
         algoChooser.addItem("LIFE");
         algoChooser.addItem("LISE");
-        algoChooser.addItem("Llise");
+        algoChooser.addItem("LLISE");
         startButton.addActionListener(e -> {
             if (!algorithmRunning) {
                 algorithmRunning = true;
-
-                switch((String)algoChooser.getSelectedItem()){
-                    case "LIFE":
-                        algorithmController = new LifeAlgorithmController();
-                        setState(algorithmController.init(currentGraph));
-                        break;
-                    case "LISE":
-                        algorithmController = new LiseAlgorithmController();
-                        setState(algorithmController.init(currentGraph, ((Number)tSpanChooser.getModel().getValue()).doubleValue()));
-                        break;
-                    case "Llise":
-                        algorithmController = new LliseAlgorithmController();
-                        setState(algorithmController.init(currentGraph,((Number)tSpanChooser.getModel().getValue()).doubleValue()));
-                        break;
-                }
+                initAlgorithmController();
             }
 
             threadRunning.set(true);
@@ -157,7 +148,7 @@ public class AlgorithmForm {
         SpinnerNumberModel model = new SpinnerNumberModel();
         model.setMinimum(1.0);
         model.setStepSize(0.1);
-        model.setValue(1.0);
+        model.setValue(1.5);
         tSpanChooser.setModel(model);
     }
 
@@ -168,7 +159,8 @@ public class AlgorithmForm {
             if (state.step == 0) {
                 statusText.setText("Algorithm initialized");
             } else if (!algorithmController.isFinished(state)) {
-                statusText.setText(String.format("Step %d", state.step));
+                String phase = algorithmController.getPhaseDescription(state);
+                statusText.setText(String.format("Step %d: %s", state.step, phase));
             } else {
                 statusText.setText(String.format("Algorithm finished in %d steps", state.step));
             }

@@ -6,7 +6,7 @@ import Model.Node;
 
 abstract public class AlgorithmController {
 
-    public abstract Model.AlgorithmState init(Model.Graph pristine, double... params);
+    public abstract Model.AlgorithmState init(Model.Graph pristine);
 
     public Model.AlgorithmState next(Model.AlgorithmState state) {
         if (state.next != null) {
@@ -54,4 +54,6 @@ abstract public class AlgorithmController {
     protected abstract Model.AlgorithmState processState(Model.AlgorithmState algorithmState);
 
     public abstract boolean isFinished(Model.AlgorithmState algorithmState);
+
+    public abstract String getPhaseDescription(AlgorithmState state);
 }

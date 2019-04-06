@@ -8,20 +8,12 @@ import java.util.Queue;
 import java.util.stream.Collectors;
 
 public class LliseNodeController extends AlgorithmController{
-
+    private Node currentNode;
 
     @Override
-    public AlgorithmState init(Graph origin, double... params) {
-        LliseNodeAlgorithmState state = new LliseNodeAlgorithmState(null);
-
-        if(params.length > 0){
-            state.currentNode = origin.getNodeById((int)params[0]);
-
-        }else{
-            state.currentNode = origin.getNodeById(0);
-        }
-
-        state.origin = origin;
+    public AlgorithmState init(Graph origin) {
+        LliseNodeAlgorithmState state = new LliseNodeAlgorithmState(origin);
+        state.currentNode = currentNode;
 
         state.incidentEdges = state.currentNode.edgeList.stream()
                 .filter(e -> e.getNeighbourOf(state.currentNode).id < state.currentNode.id)
@@ -31,6 +23,10 @@ public class LliseNodeController extends AlgorithmController{
         return state;
     }
 
+    public void setNode(Node node) {
+        currentNode = node;
+    }
+
     @Override
     protected AlgorithmState processState(AlgorithmState algorithmState) {
         LliseNodeAlgorithmState state = (LliseNodeAlgorithmState)algorithmState;
@@ -38,8 +34,7 @@ public class LliseNodeController extends AlgorithmController{
         switch(state.phase){
             case CURRENTEDGECHOOSING:
                 if(!state.incidentEdges.isEmpty()) {
-                    state.currentEdge = state.incidentEdges.getFirst();
-                    state.incidentEdges.removeFirst();
+                    state.currentEdge = state.incidentEdges.pop();
                     state.phase = LliseNodeAlgorithmPhase.FLOODING;
                 }else{
                     state.phase = LliseNodeAlgorithmPhase.FINISHED;
@@ -127,5 +122,26 @@ public class LliseNodeController extends AlgorithmController{
     public void addEdgeToTSPanner(AlgorithmState algorithmState, Edge edge){
         LliseNodeAlgorithmState state = (LliseNodeAlgorithmState)algorithmState;
         state.newTSpannerGraph.connectNodes(state.newTSpannerGraph.getNodeById(edge.left.id),state.newTSpannerGraph.getNodeById(edge.right.id));
+    }
+
+    @Override
+    public String getPhaseDescription(AlgorithmState _state) {
+        LliseNodeAlgorithmState state = (LliseNodeAlgorithmState) _state;
+        switch (state.phase) {
+            case FLOODING:
+                return "Calculate flooded neighbourhood";
+            case CURRENTEDGECHOOSING:
+                return "Choose current Edge";
+            case SHORTESTPATHCHECKING:
+                return "Check if shortest path exists";
+            case MINEDGECHOOSING:
+                return "Choose Edge with min coverage";
+            case SAMECOVERAGECHOOSING:
+                return "Choose Edge with same coverage";
+            case FINISHED:
+                return "Finished";
+            default:
+                return "";
+        }
     }
 }

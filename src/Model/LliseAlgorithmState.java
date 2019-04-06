@@ -16,6 +16,7 @@ public class LliseAlgorithmState extends AlgorithmState{
     public AlgorithmState clone() {
         LliseAlgorithmState newState = new LliseAlgorithmState(origin);
         newState.nodeState = (LliseNodeAlgorithmState)nodeState.clone();
+        newState.phase = phase;
         return newState;
     }
 }
