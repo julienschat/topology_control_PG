@@ -20,7 +20,7 @@ public class MainController {
         try {
             Graph currentGraph = Graph.readFile("graph1.txt");
             editorForm.currentGraph = currentGraph;
-            editorForm.graphDrawer.draw(currentGraph, false,false, false);
+            editorForm.graphDrawer.draw(currentGraph, true,false, false);
         }catch(IOException ex){
             System.out.println("Could not load graph");
         }
