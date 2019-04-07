@@ -15,8 +15,8 @@ public class LiseAlgorithmState extends AlgorithmState {
     public Edge currentEdgeMinCoverage, currentEdgeMaxCoverage;
     public Graph newTSpannerGraph;
     public double tSpannerMeasure;
-    public LiseAlgorithmPhase phase;
-    public LiseAlgorithmPhase currentStatesPhase;
+    public LiseAlgorithmPhase nextPhase;
+    public LiseAlgorithmPhase currentPhase;
     public LinkedList<Edge> shortestPath;
 
     public LiseAlgorithmState(Graph _origin, double tSpannerMeasure) {
@@ -30,8 +30,8 @@ public class LiseAlgorithmState extends AlgorithmState {
         target.currentEdgeMaxCoverage = this.currentEdgeMaxCoverage;
         target.currentEdgeMinCoverage = this.currentEdgeMinCoverage;
         target.edgesChosen.addAll(this.edgesChosen);
-        target.currentStatesPhase = this.currentStatesPhase;
-        target.phase = this.phase;
+        target.currentPhase = this.currentPhase;
+        target.nextPhase = this.nextPhase;
         if (newTSpannerGraph != null) {
             target.newTSpannerGraph = this.newTSpannerGraph.cloneGraphWithEdges();
         }

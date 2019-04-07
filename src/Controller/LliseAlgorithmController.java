@@ -10,7 +10,11 @@ import java.util.stream.Collectors;
 
 import static Model.LliseAlgorithmPhase.*;
 
-public class LliseAlgorithmController extends AlgorithmController{
+/**
+ * The class LliseAlgorithmController implements the logic of the LLISE algorithm. It controls the workflow of the
+ * LliseNodecontrollers delegating the work to them.
+ */
+public class LliseAlgorithmController extends AlgorithmController {
     private LliseNodeController nodeController;
     private double tMeasure;
 
@@ -20,11 +24,11 @@ public class LliseAlgorithmController extends AlgorithmController{
         LliseAlgorithmState state = new LliseAlgorithmState(origin);
 
         origin.fixNodeIDs();
-        state.currentNodeID = origin.nodeList.size()-1;
+        state.currentNodeID = origin.nodeList.size() - 1;
 
         nodeController.setNode(origin.getNodeById(state.currentNodeID));
         nodeController.setTMeasure(tMeasure);
-        state.nodeState = ((LliseNodeAlgorithmState)nodeController.init(origin));
+        state.nodeState = ((LliseNodeAlgorithmState) nodeController.init(origin));
         state.phase = RUN_PARALLEL;
 
         return state;
@@ -36,7 +40,7 @@ public class LliseAlgorithmController extends AlgorithmController{
 
     @Override
     protected AlgorithmState processState(AlgorithmState algorithmState) {
-        LliseAlgorithmState currentState = (LliseAlgorithmState)algorithmState;
+        LliseAlgorithmState currentState = (LliseAlgorithmState) algorithmState;
         if (currentState.phase == RUN_PARALLEL) {
             if (nodeController.isFinished(currentState.nodeState)) {
                 currentState.edgesChosenByNodes.add(currentState.nodeState.edgesChosen);
@@ -72,12 +76,12 @@ public class LliseAlgorithmController extends AlgorithmController{
 
     @Override
     public boolean isFinished(AlgorithmState algorithmState) {
-        return ((LliseAlgorithmState)algorithmState).phase == LliseAlgorithmPhase.FINISHED;
+        return ((LliseAlgorithmState) algorithmState).phase == LliseAlgorithmPhase.FINISHED;
     }
 
     @Override
     public String getPhaseDescription(AlgorithmState _state) {
-        LliseAlgorithmState state = (LliseAlgorithmState)_state;
+        LliseAlgorithmState state = (LliseAlgorithmState) _state;
         switch (state.phase) {
             case RUN_PARALLEL:
                 return String.format("Node %d: %s", state.currentNodeID, nodeController.getPhaseDescription(state.nodeState));

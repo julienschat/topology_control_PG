@@ -88,13 +88,13 @@ public class AlgorithmDrawer {
         if (state instanceof LiseAlgorithmState) {
             LiseAlgorithmState liseState = (LiseAlgorithmState) state;
 
-            if (liseState.phase != FINISHED) {
+            if (liseState.nextPhase != FINISHED) {
                 //Pre drawing of origin:
 
                 // Draw the coverages of Min and Max Edge
                 if (liseState.currentEdgeMaxCoverage != null)
                     drawCoverage(liseState.currentEdgeMaxCoverage, liseState.origin, colorMax);
-                if (liseState.currentStatesPhase == MINEDGECHOOSING || liseState.currentStatesPhase == SAMECOVERAGECHOOSING)
+                if (liseState.currentPhase == MINEDGECHOOSING || liseState.currentPhase == SAMECOVERAGECHOOSING)
                     drawCoverage(liseState.currentEdgeMinCoverage, liseState.origin, colorMin);
 
                 draw(state.origin, new Color(160, 160, 160));
@@ -112,7 +112,7 @@ public class AlgorithmDrawer {
                         drawNode(modelNode, Color.red);
                     }
                 }
-                if (liseState.currentStatesPhase == MINEDGECHOOSING || liseState.currentStatesPhase == SAMECOVERAGECHOOSING) {
+                if (liseState.currentPhase == MINEDGECHOOSING || liseState.currentPhase == SAMECOVERAGECHOOSING) {
                     for (DataStructures.Node modelNode : liseState.origin.getCoveredNodesByEdge(liseState.currentEdgeMinCoverage)) {
                         drawNode(modelNode, Color.blue);
                     }
@@ -120,7 +120,7 @@ public class AlgorithmDrawer {
 
                 // Mark current Max and Min Edge
                 if (liseState.currentEdgeMaxCoverage != null) drawEdge(liseState.currentEdgeMaxCoverage, Color.red, 2);
-                if (liseState.currentStatesPhase == MINEDGECHOOSING || liseState.currentStatesPhase == SAMECOVERAGECHOOSING)
+                if (liseState.currentPhase == MINEDGECHOOSING || liseState.currentPhase == SAMECOVERAGECHOOSING)
                     drawEdge(liseState.currentEdgeMinCoverage, Color.blue, 2);
 
                 // Mark the shortest path between v,w of current Max Edge
@@ -172,16 +172,22 @@ public class AlgorithmDrawer {
                 if (lliseState.nodeState.currentEdge != null)
                     drawCoverage(lliseState.nodeState.currentEdge, lliseState.nodeState.origin, colorMax);
 
-                if (lliseState.nodeState.floodedGraph != null && lliseState.nodeState.phase != LliseNodeAlgorithmPhase.FINISHED) {
-                    draw(state.origin, new Color(220, 220, 220));
+                draw(state.origin, new Color(180, 180, 180));
+                if (lliseState.nodeState.floodedGraph != null && lliseState.nodeState.nextPhase != LliseNodeAlgorithmPhase.FINISHED) {
                     draw(lliseState.nodeState.floodedGraph, new Color(80, 80, 80));
-                } else {
-                    draw(state.origin, new Color(160, 160, 160));
+                    draw(state.origin.cloneGraphWithoutEdges(), new Color(180, 180, 180));
                 }
 
                 //Post drawing of origin:
 
-                if (lliseState.nodeState.newTSpannerGraph != null) {
+                // Mark current edge
+                if (lliseState.nodeState.currentEdge != null) drawEdge(lliseState.nodeState.currentEdge, Color.red, 2);
+
+                if(lliseState.nodeState.currentPhase == LliseNodeAlgorithmPhase.CURRENTEDGECHOOSING){
+                    for (Edge modelEdge : lliseState.nodeState.edgesChosen) {
+                        drawEdge(modelEdge, new Color(0, 0, 0), 2);
+                    }
+                }else if (lliseState.nodeState.newTSpannerGraph != null) {
                     //Show current network in which calculations are made
                     for (Edge modelEdge : lliseState.nodeState.newTSpannerGraph.edgeList) {
                         drawEdge(modelEdge, new Color(0, 0, 0), 2);
@@ -195,8 +201,6 @@ public class AlgorithmDrawer {
                     }
                 }
 
-                // Mark current edge
-                if (lliseState.nodeState.currentEdge != null) drawEdge(lliseState.nodeState.currentEdge, Color.red, 2);
 
                 //Mark CurrentNode
                 drawNode(lliseState.nodeState.currentNode, Color.black);

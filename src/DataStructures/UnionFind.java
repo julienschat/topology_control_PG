@@ -3,6 +3,9 @@ package DataStructures;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementation of a Union-Find datastructure.
+ */
 public class UnionFind {
     private ArrayList<InternalNode> universe;
 
@@ -10,6 +13,7 @@ public class UnionFind {
         InternalNode parent = null;
         int rank = 0;
         Node node;
+
         InternalNode(Node item) {
             this.node = item;
         }
@@ -17,7 +21,7 @@ public class UnionFind {
 
     public void makeSets(List<Node> nodes) {
         universe = new ArrayList<>(nodes.size());
-        for (Node node: nodes) {
+        for (Node node : nodes) {
             universe.add(new InternalNode(node));
         }
     }

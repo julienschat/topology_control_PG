@@ -4,6 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of a node.
+ */
 public class Node extends HeapableObject {
     public int id;
 

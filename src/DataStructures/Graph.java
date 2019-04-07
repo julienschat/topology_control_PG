@@ -8,11 +8,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * The graph class offers functionalities to create, update and retrieve imformation from a graph datastructure.
+ */
 public class Graph {
     public List<Node> nodeList = new ArrayList<>();
     public List<Edge> edgeList = new LinkedList<>();
 
-    public Graph() { }
+    public Graph() {
+    }
 
     public Graph(List<Node> nodes, List<Edge> edges) {
         nodeList = nodes;
@@ -26,24 +30,24 @@ public class Graph {
     }
 
     public void updateNeighbours(Node node) {
-        for (Edge edge: node.edgeList) {
+        for (Edge edge : node.edgeList) {
             edge.getNeighbourOf(node).edgeList.remove(edge);
         }
 
         this.edgeList.removeAll(node.edgeList);
         node.edgeList.clear();
 
-        for (Node other: getNodesInRange(node, node.radius).collect(Collectors.toList())) {
+        for (Node other : getNodesInRange(node, node.radius).collect(Collectors.toList())) {
             if (other.isInRange(node)) {
                 connectNodes(node, other);
             }
         }
     }
 
-    public List<Node> getCoveredNodesByEdge(Edge edge){
+    public List<Node> getCoveredNodesByEdge(Edge edge) {
         double length = edge.getLength();
-        List<Node> coveredNodes = this.getNodesInRange(edge.left,length).collect(Collectors.toList());
-        coveredNodes.addAll(this.getNodesInRange(edge.right,length).collect(Collectors.toList()));
+        List<Node> coveredNodes = this.getNodesInRange(edge.left, length).collect(Collectors.toList());
+        coveredNodes.addAll(this.getNodesInRange(edge.right, length).collect(Collectors.toList()));
         return coveredNodes;
     }
 
@@ -58,8 +62,8 @@ public class Graph {
         this.edgeList.add(edge);
     }
 
-    public Node getNodeById(int idOfNode){
-        return nodeList.stream().filter(n->idOfNode==n.id).findFirst().orElse(null);
+    public Node getNodeById(int idOfNode) {
+        return nodeList.stream().filter(n -> idOfNode == n.id).findFirst().orElse(null);
     }
 
     public Stream<Node> getNodesInRange(Node node, double range) {
@@ -76,12 +80,13 @@ public class Graph {
                 .collect(Collectors.toList());
         return newGraph;
     }
-    public Graph cloneGraphWithEdges(){
+
+    public Graph cloneGraphWithEdges() {
         fixNodeIDs();
         Graph newGraph = cloneGraphWithoutEdges();
-        for(Edge e: edgeList){
+        for (Edge e : edgeList) {
 
-            newGraph.connectNodes(newGraph.getNodeById(e.left.id),newGraph.getNodeById(e.right.id));
+            newGraph.connectNodes(newGraph.getNodeById(e.left.id), newGraph.getNodeById(e.right.id));
 
         }
         return newGraph;
@@ -89,7 +94,7 @@ public class Graph {
 
     public Graph reducedGraph(List<Edge> edges) {
         Graph newGraph = cloneGraphWithoutEdges();
-        for (Edge edge: edges) {
+        for (Edge edge : edges) {
             int lIndex = edge.left.index;
             int rIndex = edge.right.index;
             newGraph.connectNodes(newGraph.nodeList.get(lIndex), newGraph.nodeList.get(rIndex));
@@ -101,7 +106,7 @@ public class Graph {
         Graph graph = new Graph();
 
         int id = 0;
-        for (String line: Files.readAllLines(Paths.get(fileName))) {
+        for (String line : Files.readAllLines(Paths.get(fileName))) {
             String[] values = line.split(" ");
             if (values.length > 0) {
                 if (values.length != 3) {
@@ -126,16 +131,16 @@ public class Graph {
         Files.write(Paths.get(fileName), lines, Charset.defaultCharset());
     }
 
-    public void fixNodeIDs(){
+    public void fixNodeIDs() {
         int id = 0;
-        for (Node node: nodeList) {
+        for (Node node : nodeList) {
             node.id = id;
             id++;
         }
     }
 
     public void calculateCoverages() {
-        for (Edge edge: edgeList) {
+        for (Edge edge : edgeList) {
             double length = edge.getLength();
             Set<Node> nodes = this.getNodesInRange(edge.left, length).collect(Collectors.toSet());
             nodes.addAll(this.getNodesInRange(edge.right, length).collect(Collectors.toSet()));
@@ -143,23 +148,23 @@ public class Graph {
         }
     }
 
-    public void printGraph(){
+    public void printGraph() {
         System.out.println("Printing graph:");
-        System.out.println("#Knoten: "+nodeList.size());
-        System.out.println("#Kanten: "+edgeList.size());
-        for(Node node : nodeList) {
-            System.out.print("Knoten ID: "+node.id+", ");
+        System.out.println("#Knoten: " + nodeList.size());
+        System.out.println("#Kanten: " + edgeList.size());
+        for (Node node : nodeList) {
+            System.out.print("Knoten ID: " + node.id + ", ");
             System.out.print("Kanten zu: ");
 
-            for(Edge edge : node.edgeList){
-                System.out.print(edge.getNeighbourOf(node).id+", ");
+            for (Edge edge : node.edgeList) {
+                System.out.print(edge.getNeighbourOf(node).id + ", ");
             }
             System.out.println("");
         }
     }
 
     public void removeNode(Node node) {
-        for (Edge edge: node.edgeList) {
+        for (Edge edge : node.edgeList) {
             edge.getNeighbourOf(node).edgeList.remove(edge);
             edgeList.remove(edge);
         }

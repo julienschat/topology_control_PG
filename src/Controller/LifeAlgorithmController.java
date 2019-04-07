@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
  */
 public class LifeAlgorithmController extends AlgorithmController {
     /**
-     *
      * @param origin intial graph on which the algorithm runs
      * @return initial state
      */
@@ -35,7 +34,7 @@ public class LifeAlgorithmController extends AlgorithmController {
     @Override
     protected Model.AlgorithmState processState(AlgorithmState algorithmState) {
         LifeAlgorithmState state = (LifeAlgorithmState) algorithmState;
-        switch(state.phase) {
+        switch (state.phase) {
             case FINDING_EDGES:
                 Edge e = state.edgesByCoverage.pop();
                 if (state.unionFind.find(e.left) != state.unionFind.find(e.right)) {
@@ -56,12 +55,12 @@ public class LifeAlgorithmController extends AlgorithmController {
 
     @Override
     public boolean isFinished(AlgorithmState algorithmState) {
-        return ((LifeAlgorithmState)algorithmState).phase == LifeAlgorithmPhase.FINISHED;
+        return ((LifeAlgorithmState) algorithmState).phase == LifeAlgorithmPhase.FINISHED;
     }
 
     @Override
     public String getPhaseDescription(AlgorithmState state) {
-        switch (((LifeAlgorithmState)state).phase) {
+        switch (((LifeAlgorithmState) state).phase) {
             case FINDING_EDGES:
                 return "Finding Edges";
             case FINISHED:

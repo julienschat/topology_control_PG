@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
  * </ul>
  * </p>
  */
-public class LiseAlgorithmController extends AlgorithmController{
+public class LiseAlgorithmController extends AlgorithmController {
     private double tMeasure = 2;
 
     @Override
-    public AlgorithmState init(Graph origin){
+    public AlgorithmState init(Graph origin) {
         LiseAlgorithmState initState;
         initState = new LiseAlgorithmState(origin, tMeasure);
         origin.fixNodeIDs();
@@ -38,8 +38,8 @@ public class LiseAlgorithmController extends AlgorithmController{
                 .collect(Collectors.toCollection(LinkedList::new));
 
 
-        initState.phase = LiseAlgorithmPhase.MAXEDGECHOOSING;
-        initState.currentStatesPhase = LiseAlgorithmPhase.INIT;
+        initState.nextPhase = LiseAlgorithmPhase.MAXEDGECHOOSING;
+        initState.currentPhase = LiseAlgorithmPhase.INIT;
         return initState;
     }
 
@@ -52,16 +52,16 @@ public class LiseAlgorithmController extends AlgorithmController{
 
         LiseAlgorithmState state = (LiseAlgorithmState) algorithmState;
 
-        switch(state.phase) {
+        switch (state.nextPhase) {
             case MAXEDGECHOOSING:
-                state.currentStatesPhase = LiseAlgorithmPhase.MAXEDGECHOOSING;
+                state.currentPhase = LiseAlgorithmPhase.MAXEDGECHOOSING;
 
                 state.currentEdgeMaxCoverage = state.edgesByCoverage.getLast();
-                state.phase = LiseAlgorithmPhase.SHORTESTPATHCHECKING;
+                state.nextPhase = LiseAlgorithmPhase.SHORTESTPATHCHECKING;
 
-            break;
+                break;
             case SHORTESTPATHCHECKING:
-                state.currentStatesPhase = LiseAlgorithmPhase.SHORTESTPATHCHECKING;
+                state.currentPhase = LiseAlgorithmPhase.SHORTESTPATHCHECKING;
                 // Take saved Maximum Edge e={v,w} and check distance between v and w in shortest path tree
 
                 Node sourceNode = state.newTSpannerGraph.getNodeById(state.currentEdgeMaxCoverage.left.id);
@@ -70,67 +70,71 @@ public class LiseAlgorithmController extends AlgorithmController{
                 ShortestPathTree shortestPathTree = Dijkstra.runDijkstra(state.newTSpannerGraph, sourceNode);
 
                 //View: Mark path from source to destination
-                if(destinationNode.key != -1) {
-                   state.shortestPath = shortestPathTree.getPathToSourceFromNode(state.origin, destinationNode);
-                }else{
+                if (destinationNode.key != -1) {
+                    state.shortestPath = shortestPathTree.getPathToSourceFromNode(state.origin, destinationNode);
+                } else {
                     // Better would be the ~ best possible path so far
                     state.shortestPath = null;
                 }
 
-                if(destinationNode.key == -1 ||
-                        destinationNode.key > state.tSpannerMeasure * state.currentEdgeMaxCoverage.getLength()){
+                if (destinationNode.key == -1 ||
+                        destinationNode.key > state.tSpannerMeasure * state.currentEdgeMaxCoverage.getLength()) {
 
-                    state.phase = LiseAlgorithmPhase.MINEDGECHOOSING;
-                }else{
+                    state.nextPhase = LiseAlgorithmPhase.MINEDGECHOOSING;
+                } else {
 
                     state.edgesByCoverage.removeLast();
-                    if(state.edgesByCoverage.isEmpty()){
-                        state.phase = LiseAlgorithmPhase.PREFINISHED;
-                    }else {
-                        state.phase = LiseAlgorithmPhase.MAXEDGECHOOSING;
+                    if (state.edgesByCoverage.isEmpty()) {
+                        state.nextPhase = LiseAlgorithmPhase.PREFINISHED;
+                    } else {
+                        state.nextPhase = LiseAlgorithmPhase.MAXEDGECHOOSING;
 
                     }
                 }
 
-            break;
+                break;
             case MINEDGECHOOSING:
-                state.currentStatesPhase = LiseAlgorithmPhase.MINEDGECHOOSING;
+                state.currentPhase = LiseAlgorithmPhase.MINEDGECHOOSING;
                 // Choose Edge with minimum coverage
 
                 state.currentEdgeMinCoverage = state.edgesByCoverage.getFirst();
                 state.edgesByCoverage.removeFirst();
                 state.edgesChosen.add(state.currentEdgeMinCoverage);
-                addEdgeToTSPanner(algorithmState,state.currentEdgeMinCoverage);
+                addEdgeToTSPanner(algorithmState, state.currentEdgeMinCoverage);
 
-                state.phase = LiseAlgorithmPhase.SAMECOVERAGECHOOSING;
-                if(state.edgesByCoverage.isEmpty()){
-                    state.phase = LiseAlgorithmPhase.PREFINISHED;
+
+                if (state.edgesByCoverage.isEmpty()) {
+                    state.nextPhase = LiseAlgorithmPhase.PREFINISHED;
+                } else if (state.edgesByCoverage.getFirst().coverage == state.currentEdgeMinCoverage.coverage) {
+                    state.nextPhase = LiseAlgorithmPhase.SAMECOVERAGECHOOSING;
+                } else {
+                    state.nextPhase = LiseAlgorithmPhase.SHORTESTPATHCHECKING;
                 }
 
                 break;
 
             case SAMECOVERAGECHOOSING:
-                state.currentStatesPhase = LiseAlgorithmPhase.SAMECOVERAGECHOOSING;
+                state.currentPhase = LiseAlgorithmPhase.SAMECOVERAGECHOOSING;
                 //Add all edges with same coverage as currentEdgeMinCoverage and add them to the graph
-                if(state.edgesByCoverage.getFirst().coverage == state.currentEdgeMinCoverage.coverage){
-                    //View: Mark the Edge
-                    state.edgesChosen.add(state.edgesByCoverage.getFirst());
-                    addEdgeToTSPanner(algorithmState, state.edgesByCoverage.getFirst());
+                //View: Mark the Edge
+                state.edgesChosen.add(state.edgesByCoverage.getFirst());
+                addEdgeToTSPanner(algorithmState, state.edgesByCoverage.getFirst());
 
-                    state.edgesByCoverage.removeFirst();
-                }else{
-                    state.phase = LiseAlgorithmPhase.SHORTESTPATHCHECKING;
+                state.edgesByCoverage.removeFirst();
 
-                }
-                if(state.edgesByCoverage.isEmpty()){
-                    state.phase = LiseAlgorithmPhase.PREFINISHED;
+                if (state.edgesByCoverage.isEmpty()) {
+                    state.nextPhase = LiseAlgorithmPhase.PREFINISHED;
+                } else if (state.edgesByCoverage.getFirst().coverage == state.currentEdgeMinCoverage.coverage) {
+                    state.nextPhase = LiseAlgorithmPhase.SAMECOVERAGECHOOSING;
+                } else {
+                    state.nextPhase = LiseAlgorithmPhase.SHORTESTPATHCHECKING;
                 }
 
                 break;
 
             case PREFINISHED:
                 calculateFinishedNetwork(state);
-                state.phase = LiseAlgorithmPhase.FINISHED;
+                state.nextPhase = LiseAlgorithmPhase.FINISHED;
                 break;
         }
         return state;
@@ -138,17 +142,17 @@ public class LiseAlgorithmController extends AlgorithmController{
 
     @Override
     public boolean isFinished(AlgorithmState algorithmState) {
-        return ((LiseAlgorithmState)algorithmState).phase == LiseAlgorithmPhase.FINISHED;
+        return ((LiseAlgorithmState) algorithmState).nextPhase == LiseAlgorithmPhase.FINISHED;
     }
 
-    public void addEdgeToTSPanner(AlgorithmState algorithmState, Edge edge){
+    public void addEdgeToTSPanner(AlgorithmState algorithmState, Edge edge) {
         LiseAlgorithmState state = (LiseAlgorithmState) algorithmState;
-        state.newTSpannerGraph.connectNodes(state.newTSpannerGraph.getNodeById(edge.left.id),state.newTSpannerGraph.getNodeById(edge.right.id));
+        state.newTSpannerGraph.connectNodes(state.newTSpannerGraph.getNodeById(edge.left.id), state.newTSpannerGraph.getNodeById(edge.right.id));
     }
 
     @Override
     public String getPhaseDescription(AlgorithmState state) {
-        switch (((LiseAlgorithmState)state).phase) {
+        switch (((LiseAlgorithmState) state).currentPhase) {
             case MAXEDGECHOOSING:
                 return "Choose Edge with max coverage";
             case SHORTESTPATHCHECKING:

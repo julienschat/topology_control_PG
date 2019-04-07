@@ -12,7 +12,8 @@ import java.util.LinkedList;
  * a list of incidentEdges.
  */
 public class LliseNodeAlgorithmState extends LiseAlgorithmState {
-    public LliseNodeAlgorithmPhase phase;
+    public LliseNodeAlgorithmPhase nextPhase, currentPhase;
+
 
     public LinkedList<Edge> incidentEdges = new LinkedList<>();
     public Node currentNode;
@@ -29,7 +30,7 @@ public class LliseNodeAlgorithmState extends LiseAlgorithmState {
         LliseNodeAlgorithmState newState = new LliseNodeAlgorithmState(this.origin, tSpannerMeasure);
         super.cloneTo(newState);
 
-        newState.phase = this.phase;
+        newState.nextPhase = this.nextPhase;
         newState.currentEdge = this.currentEdge;
 
         if (this.floodedGraph != null) {

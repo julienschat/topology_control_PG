@@ -33,8 +33,7 @@ public class AlgorithmRunner implements Runnable {
                 algoForm.setState(state);
                 TimeUnit.MILLISECONDS.sleep(this.sleep);
             }
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

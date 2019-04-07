@@ -1,5 +1,8 @@
 package DataStructures;
 
+/**
+ * Implementation of an edge.
+ */
 public class Edge {
     public Node left;
     public Node right;
@@ -26,7 +29,8 @@ public class Edge {
         left.edgeList.remove(this);
         right.edgeList.remove(this);
     }
-    public boolean checkIfPointIsCovered(double x, double y){
+
+    public boolean checkIfPointIsCovered(double x, double y) {
         double distanceLeft = Math.sqrt(Math.pow(x - left.x, 2) + Math.pow(y - left.y, 2));
         double distanceRight = Math.sqrt(Math.pow(x - right.x, 2) + Math.pow(y - right.y, 2));
         return (distanceLeft <= getLength() || distanceRight <= getLength());

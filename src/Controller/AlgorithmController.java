@@ -10,7 +10,6 @@ import DataStructures.Edge;
  * These functions initialize an algorithm state and calculate the next one from the forwarded one respectively.
  * On top of that they have to implement functions for returning a description of the current step and checking if the algorithm finished so far.
  * AlgorithmController implements functions to move forward and backward in the algorithms history (next, back).
- *
  */
 abstract public class AlgorithmController {
 
@@ -32,22 +31,22 @@ abstract public class AlgorithmController {
         return state.previous == null ? state : state.previous;
     }
 
-    public void calculateFinishedNetwork(Model.AlgorithmState state){
+    public void calculateFinishedNetwork(Model.AlgorithmState state) {
         double[] maxEdgeLengthPerNode = new double[state.origin.nodeList.size()];
         // calculate longest edge for each node
-        for(Edge edge : state.edgesChosen){
+        for (Edge edge : state.edgesChosen) {
             double edgeLength = edge.getLength();
-            if(maxEdgeLengthPerNode[edge.left.id] < edgeLength){
+            if (maxEdgeLengthPerNode[edge.left.id] < edgeLength) {
                 maxEdgeLengthPerNode[edge.left.id] = edgeLength;
             }
 
-            if(maxEdgeLengthPerNode[edge.right.id] < edgeLength){
+            if (maxEdgeLengthPerNode[edge.right.id] < edgeLength) {
                 maxEdgeLengthPerNode[edge.right.id] = edgeLength;
             }
         }
         state.edgesChosen.clear();
 
-        for(Edge edge : state.origin.edgeList){
+        for (Edge edge : state.origin.edgeList) {
             double edgeLength = edge.getLength();
             if (maxEdgeLengthPerNode[edge.left.id] >= edgeLength && maxEdgeLengthPerNode[edge.right.id] >= edgeLength) {
                 state.edgesChosen.add(edge);
