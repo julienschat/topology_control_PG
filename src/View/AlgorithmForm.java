@@ -11,6 +11,10 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * The AlgorithmForm wires the buttons of the algorithm frontend with the corresponding controllers.
+ * It interacts with the AlgorithmDrawer to display the current state of the selected algorithm.
+ */
 public class AlgorithmForm {
     public JPanel mainPanel;
     private DrawPanel drawPanel;
@@ -71,8 +75,8 @@ public class AlgorithmForm {
         statusText.setText("Ready");
     }
 
-    private void setUpRadioControls(){
-        ActionListener update = e->{
+    private void setUpRadioControls() {
+        ActionListener update = e -> {
             if (algorithmState == null) {
                 algorithmDrawer.draw(currentGraph, Color.black, heatmapRadioButton.isSelected(), coverageRadioButton.isSelected());
             } else {
@@ -83,15 +87,15 @@ public class AlgorithmForm {
         this.coverageRadioButton.addActionListener(update);
     }
 
-    private void setupReloadButton(){
+    private void setupReloadButton() {
         this.reloadButton.addActionListener(e -> {
             loadGraph();
         });
     }
 
-    private void setupStepButton(){
+    private void setupStepButton() {
         stepButton.addActionListener(e -> {
-            if(algorithmRunning){
+            if (algorithmRunning) {
                 setState(algorithmController.next(algorithmState));
             } else {
                 initAlgorithmController();
@@ -115,7 +119,7 @@ public class AlgorithmForm {
         });
     }
 
-    private void setupStopButton(){
+    private void setupStopButton() {
         stopButton.addActionListener(e -> threadRunning.set(false));
     }
 
@@ -128,30 +132,30 @@ public class AlgorithmForm {
     }
 
     private void initAlgorithmController() {
-        switch((String)algoChooser.getSelectedItem()){
+        switch ((String) algoChooser.getSelectedItem()) {
             case "LIFE":
                 algorithmController = new LifeAlgorithmController();
                 setState(algorithmController.init(currentGraph));
                 break;
             case "LISE":
                 algorithmController = new LiseAlgorithmController();
-                ((LiseAlgorithmController) algorithmController).setTMeasure(((Number)tSpanChooser.getModel().getValue()).doubleValue());
+                ((LiseAlgorithmController) algorithmController).setTMeasure(((Number) tSpanChooser.getModel().getValue()).doubleValue());
                 setState(algorithmController.init(currentGraph));
                 break;
             case "LISE (Alt)":
                 algorithmController = new LiseAlternativeController();
-                ((LiseAlternativeController) algorithmController).setTMeasure(((Number)tSpanChooser.getModel().getValue()).doubleValue());
+                ((LiseAlternativeController) algorithmController).setTMeasure(((Number) tSpanChooser.getModel().getValue()).doubleValue());
                 setState(algorithmController.init(currentGraph));
                 break;
             case "LLISE":
                 algorithmController = new LliseAlgorithmController();
-                ((LliseAlgorithmController) algorithmController).setTMeasure(((Number)tSpanChooser.getModel().getValue()).doubleValue());
+                ((LliseAlgorithmController) algorithmController).setTMeasure(((Number) tSpanChooser.getModel().getValue()).doubleValue());
                 setState(algorithmController.init(currentGraph));
                 break;
         }
     }
 
-    private void setupStartButton(){
+    private void setupStartButton() {
         algoChooser.addItem("LIFE");
         algoChooser.addItem("LISE");
         algoChooser.addItem("LISE (Alt)");

@@ -4,17 +4,17 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.util.ArrayList;
 
+/**
+ * Abstract base class for draw instructions. Providing mouselistener interfaces which get fired by the draw panel,
+ * these rely on the abstract isNear function.
+ */
 public abstract class Shape {
     public Color color = Color.BLACK;
     public boolean hovered = false;
 
     private java.util.List<MouseAdapter> mouseListeners = new ArrayList<MouseAdapter>();
 
-    public void draw(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(
-                RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
+    public void draw(Graphics2D g2d) {
         Color before = g2d.getColor();
         g2d.setColor(color);
         drawShape(g2d);

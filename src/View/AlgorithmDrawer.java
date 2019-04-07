@@ -19,24 +19,25 @@ public class AlgorithmDrawer {
     private DrawPanel drawPanel;
     private HeatmapDrawer heatMapDrawer;
 
-    public AlgorithmDrawer(DrawPanel panel){
+    public AlgorithmDrawer(DrawPanel panel) {
         this.drawPanel = panel;
         heatMapDrawer = new HeatmapDrawer(panel);
     }
-    public void drawNode(DataStructures.Node modelNode, Color color){
-        View.Shapes.Node viewNode = new View.Shapes.Node(modelNode.x,modelNode.y);
+
+    public void drawNode(DataStructures.Node modelNode, Color color) {
+        View.Shapes.Node viewNode = new View.Shapes.Node(modelNode.x, modelNode.y);
         viewNode.color = color;
         drawPanel.shapes.add(viewNode);
     }
 
-    public void drawEdge(Edge modelEdge, Color color, int width){
-        View.Shapes.Edge viewEdge = new View.Shapes.Edge(modelEdge.left.x,modelEdge.left.y,modelEdge.right.x,modelEdge.right.y);
+    public void drawEdge(Edge modelEdge, Color color, int width) {
+        View.Shapes.Edge viewEdge = new View.Shapes.Edge(modelEdge.left.x, modelEdge.left.y, modelEdge.right.x, modelEdge.right.y);
         viewEdge.strokeWidth = width;
         viewEdge.color = color;
         drawPanel.shapes.add(viewEdge);
     }
 
-    public void draw(Graph graph, Color color, boolean heatMap, boolean coverage){
+    public void draw(Graph graph, Color color, boolean heatMap, boolean coverage) {
         drawPanel.shapes.clear();
 
         if (heatMap) {
@@ -50,21 +51,21 @@ public class AlgorithmDrawer {
         }
     }
 
-    private void draw(Graph graph, Color color){
-        for(DataStructures.Node modelNode : graph.nodeList){
-            drawNode(modelNode,color);
+    private void draw(Graph graph, Color color) {
+        for (DataStructures.Node modelNode : graph.nodeList) {
+            drawNode(modelNode, color);
         }
 
-        for(Edge edge: graph.edgeList){
+        for (Edge edge : graph.edgeList) {
             drawEdge(edge, color, 1);
         }
 
         drawPanel.update();
     }
 
-    public void drawCoverage(Edge edge, Graph graph, Color color){
-        View.Shapes.Circle circle1 = new Circle(edge.left.x,edge.left.y,edge.getLength());
-        View.Shapes.Circle circle2 = new Circle(edge.right.x,edge.right.y,edge.getLength());
+    public void drawCoverage(Edge edge, Graph graph, Color color) {
+        View.Shapes.Circle circle1 = new Circle(edge.left.x, edge.left.y, edge.getLength());
+        View.Shapes.Circle circle2 = new Circle(edge.right.x, edge.right.y, edge.getLength());
 
         circle1.color = color;
         circle2.color = color;
@@ -124,7 +125,7 @@ public class AlgorithmDrawer {
 
                 // Mark the shortest path between v,w of current Max Edge
                 if (liseState.shortestPath != null) {
-                    for (Edge edge: liseState.shortestPath) {
+                    for (Edge edge : liseState.shortestPath) {
                         drawEdge(edge, Color.green, 2);
                     }
                 }
@@ -202,7 +203,7 @@ public class AlgorithmDrawer {
 
                 // Mark the shortest path between v,w of current Max Edge
                 if (lliseState.nodeState.shortestPath != null) {
-                    for (Edge edge: lliseState.nodeState.shortestPath) {
+                    for (Edge edge : lliseState.nodeState.shortestPath) {
                         drawEdge(edge, Color.green, 2);
                     }
                 }
@@ -218,9 +219,9 @@ public class AlgorithmDrawer {
         drawPanel.update();
     }
 
-    private void drawFinishedState(AlgorithmState state){
+    private void drawFinishedState(AlgorithmState state) {
         draw(state.origin, new Color(160, 160, 160));
-        for(Edge modelEdge : state.edgesChosen){
+        for (Edge modelEdge : state.edgesChosen) {
             drawEdge(modelEdge, Color.black, 2);
         }
     }

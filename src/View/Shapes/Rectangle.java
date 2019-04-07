@@ -3,10 +3,13 @@ package View.Shapes;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
+/**
+ * A rectangular shape
+ */
 public class Rectangle extends Shape {
     private double x, y, height, width;
 
-    public Rectangle(double x, double y, double height, double width){
+    public Rectangle(double x, double y, double height, double width) {
         this.x = x;
         this.y = y;
         this.height = height;

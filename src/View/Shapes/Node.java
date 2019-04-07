@@ -6,11 +6,14 @@ import java.awt.geom.Ellipse2D;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
+/**
+ * Draw a node of a graph.
+ */
 public class Node extends Shape {
 
-    double x;
-    double y;
-    double radius = 5;
+    private double x;
+    private double y;
+    private double radius = 5;
     public boolean drawBorder = false;
 
     public Node(double x, double y) {
@@ -23,14 +26,12 @@ public class Node extends Shape {
         this.y = y;
     }
 
-
-
     @Override
     public void drawShape(Graphics2D g2d) {
-        Ellipse2D.Double circle = new Ellipse2D.Double(x-radius,y-radius,radius*2,radius*2);
+        Ellipse2D.Double circle = new Ellipse2D.Double(x - radius, y - radius, radius * 2, radius * 2);
         g2d.fill(circle);
-        if(drawBorder){
-            Ellipse2D.Double border = new Ellipse2D.Double(x-radius,y-radius,radius*2,radius*2);
+        if (drawBorder) {
+            Ellipse2D.Double border = new Ellipse2D.Double(x - radius, y - radius, radius * 2, radius * 2);
             Color formerColor = g2d.getColor();
             g2d.setColor(Color.black);
             g2d.draw(border);

@@ -3,14 +3,15 @@ package View.Shapes;
 import java.awt.*;
 import java.awt.geom.Line2D;
 
+/**
+ * A shape for edges of a graph
+ */
 public class Edge extends Shape {
+    private double x1;
+    private double y1;
+    private double x2;
+    private double y2;
 
-    double x1;
-    double y1;
-    double x2;
-    double y2;
-
-    public boolean highlight = false;
     public int strokeWidth = 1;
 
     public Edge(double x1, double y1, double x2, double y2) {
@@ -26,7 +27,7 @@ public class Edge extends Shape {
         if (strokeWidth != 1) {
             g2d.setStroke(new BasicStroke(strokeWidth));
         }
-        Line2D line  = new Line2D.Double(x1, y1, x2, y2);
+        Line2D line = new Line2D.Double(x1, y1, x2, y2);
         g2d.draw(line);
         if (strokeWidth != 1) {
             g2d.setStroke(s);
@@ -35,7 +36,6 @@ public class Edge extends Shape {
 
     @Override
     public boolean isNear(double x, double y) {
-        // TODO: implement
         return false;
     }
 }
