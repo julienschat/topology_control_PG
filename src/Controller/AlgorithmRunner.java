@@ -6,6 +6,9 @@ import View.AlgorithmForm;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * AlgorithmRunner is a Runnable, running the chosen algorithm automatically till it's finished or the thread is interrupted.
+ */
 public class AlgorithmRunner implements Runnable {
     private AlgorithmState state;
     private int sleep;

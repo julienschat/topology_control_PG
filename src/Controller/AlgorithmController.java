@@ -4,6 +4,14 @@ import DataStructures.Graph;
 import Model.AlgorithmState;
 import DataStructures.Edge;
 
+/**
+ * The class AlgorithmController is the abstract base class for all the algorithm controllers ( LIFE, LISE, LLISE, LISEALT)
+ * which have to implement the two main functions init(Graph pristine) and processState(AlgorithmState state).
+ * These functions initialize an algorithm state and calculate the next one from the forwarded one respectively.
+ * On top of that they have to implement functions for returning a description of the current step and checking if the algorithm finished so far.
+ * AlgorithmController implements functions to move forward and backward in the algorithms history (next, back).
+ *
+ */
 abstract public class AlgorithmController {
 
     public abstract Model.AlgorithmState init(Graph pristine);

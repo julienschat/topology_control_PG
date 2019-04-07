@@ -9,7 +9,9 @@ import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 /**
- *
+ * LifeAlgorithmController is the controller for the LIFE algorithm. It implements the two functions init and processState
+ * thereby defining the algorithms logic. With the help of a Union-Find datastructure the LIFE algorithm works identical to
+ * the Kruskal algorithm finding a MST.
  */
 public class LifeAlgorithmController extends AlgorithmController {
     /**

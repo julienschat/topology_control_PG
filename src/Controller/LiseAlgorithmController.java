@@ -8,7 +8,19 @@ import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 
-
+/**
+ * LiseAgorithmController is the controller for the LISE algorithm. It implements the two functions init and processState
+ * thereby defining the algorithms logic. The algorithm is seperated into five main steps:
+ * <p>
+ * <ul>
+ * <li>In the initializing step the edges are sorted by coverage and the datastructures are instantiated. </li>
+ * <li>In the MAXEDGECHOOSING step the edge with maximum coverage is chosen.</li>
+ * <li>In the SHORTESTPATHCHECKING step, it is checked wether there exists a path P in the current subgraph with |P| <= t*|u,v|, where u, v are the defining nodes of the maximum edge.</li>
+ * <li>In the MINEDGECHOOSING step the edge with minimum coverage is chosen and added to the new subgraph. </li>
+ * <li>In the SAMECOVERAGECHOOSING step edges with the same coverage as the minimumedge are also added to the new subgraph.</li>
+ * </ul>
+ * </p>
+ */
 public class LiseAlgorithmController extends AlgorithmController{
     private double tMeasure = 2;
 
