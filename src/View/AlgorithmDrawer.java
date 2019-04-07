@@ -112,21 +112,18 @@ public class AlgorithmDrawer {
                     }
                 }
 
-                // Mark the shortest path between v,w of current Max Edge
-                if (liseState.currentStatesPhase == SHORTESTPATHCHECKING) {
-                    if (liseState.nodesOnShortestPath != null) {
-                        for (int i = 0; i < liseState.nodesOnShortestPath.size() - 1; i++) {
-                            Edge newEdge = new Edge(liseState.nodesOnShortestPath.get(i), liseState.nodesOnShortestPath.get(i + 1));
-                            drawEdge(newEdge, Color.green, 2);
-                        }
-                    }
-                }
-
                 // Mark current Max and Min Edge
                 if (liseState.currentEdgeMaxCoverage != null) drawEdge(liseState.currentEdgeMaxCoverage, Color.red, 2);
                 if (liseState.currentStatesPhase == MINEDGECHOOSING || liseState.currentStatesPhase == SAMECOVERAGECHOOSING)
                     drawEdge(liseState.currentEdgeMinCoverage, Color.blue, 2);
 
+                // Mark the shortest path between v,w of current Max Edge
+                if (liseState.shortestPath != null) {
+                    for (Edge edge: liseState.shortestPath) {
+                        drawEdge(edge, Color.green, 2);
+                    }
+                }
+                
             } else {
                 drawFinishedState(liseState);
             }
@@ -199,10 +196,9 @@ public class AlgorithmDrawer {
                 drawNode(lliseState.nodeState.currentNode, Color.black);
 
                 // Mark the shortest path between v,w of current Max Edge
-                if (lliseState.nodeState.nodesOnShortestPath != null) {
-                    for (int i = 0; i < lliseState.nodeState.nodesOnShortestPath.size() - 1; i++) {
-                        Edge newEdge = new Edge(lliseState.nodeState.nodesOnShortestPath.get(i), lliseState.nodeState.nodesOnShortestPath.get(i + 1));
-                        drawEdge(newEdge, Color.green, 2);
+                if (lliseState.nodeState.shortestPath != null) {
+                    for (Edge edge: lliseState.nodeState.shortestPath) {
+                        drawEdge(edge, Color.green, 2);
                     }
                 }
 

@@ -17,16 +17,13 @@ public class Dijkstra {
             Node currentNode = ((Node)distanceHeap.extractMin());
 
             for(Node neighbour : currentNode.getNeighbours()){
-
                 if(neighbour.key == -1){
                     neighbour.key = currentNode.key + currentNode.distanceTo(neighbour);
                     shortestPathTree.previousNode[neighbour.id] = currentNode;
                     distanceHeap.insert(neighbour);
-
-                }else if(currentNode.key + currentNode.distanceTo(neighbour) < neighbour.key) {
+                } else if(currentNode.key + currentNode.distanceTo(neighbour) < neighbour.key) {
                     distanceHeap.decreaseKey(neighbour, currentNode.key + currentNode.distanceTo(neighbour));
                     shortestPathTree.previousNode[neighbour.id] = currentNode;
-
                 }
             }
         }

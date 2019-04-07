@@ -1,43 +1,45 @@
 package Model;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class LiseAlgorithmState extends AlgorithmState {
 
-    public LinkedList<Edge> edgesSortedByCoverage = new LinkedList<Edge>();
+    public LinkedList<Edge> edgesByCoverage = new LinkedList<Edge>();
 
     public Edge currentEdgeMinCoverage,currentEdgeMaxCoverage;
     public Graph newTSpannerGraph;
     public double tSpannerMeasure;
     public LiseAlgorithmPhase phase;
     public LiseAlgorithmPhase currentStatesPhase;
-    public LinkedList<Node> nodesOnShortestPath;
+    public LinkedList<Edge> shortestPath;
 
     public LiseAlgorithmState(Graph _origin, double tSpannerMeasure){
         super(_origin);
         this.tSpannerMeasure = tSpannerMeasure;
         edgesChosen = new LinkedList<Edge>();
-        nodesOnShortestPath = new LinkedList<Node>();
+        shortestPath = new LinkedList<Edge>();
     }
 
     public List<Node> getCurrentNodes(){
         return newTSpannerGraph.nodeList;
     }
 
+    public void cloneTo(LiseAlgorithmState target) {
+        target.currentEdgeMaxCoverage = this.currentEdgeMaxCoverage;
+        target.currentEdgeMinCoverage = this.currentEdgeMinCoverage;
+        target.edgesChosen.addAll(this.edgesChosen);
+        target.currentStatesPhase = this.currentStatesPhase;
+        target.phase = this.phase;
+        target.newTSpannerGraph = this.newTSpannerGraph.cloneGraphWithEdges();
+        target.edgesByCoverage.addAll(this.edgesByCoverage);
+//        if(this.shortestPath!=null) newState.shortestPath.addAll(this.shortestPath);
+    }
+
     @Override
     public AlgorithmState clone() {
         LiseAlgorithmState newState = new LiseAlgorithmState(this.origin,this.tSpannerMeasure);
-        newState.currentEdgeMaxCoverage = this.currentEdgeMaxCoverage;
-        newState.currentEdgeMinCoverage = this.currentEdgeMinCoverage;
-        newState.edgesChosen.addAll(this.edgesChosen);
-        newState.currentStatesPhase = this.currentStatesPhase;
-        newState.phase = this.phase;
-        newState.newTSpannerGraph = this.newTSpannerGraph.cloneGraphWithEdges();
-        newState.edgesSortedByCoverage.addAll(this.edgesSortedByCoverage);
-        if(this.nodesOnShortestPath!=null) newState.nodesOnShortestPath.addAll(this.nodesOnShortestPath);
+        cloneTo(newState);
         return newState;
-
     }
 }

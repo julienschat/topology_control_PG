@@ -138,6 +138,11 @@ public class AlgorithmForm {
                 ((LiseAlgorithmController) algorithmController).setTMeasure(((Number)tSpanChooser.getModel().getValue()).doubleValue());
                 setState(algorithmController.init(currentGraph));
                 break;
+            case "LISE (Alt)":
+                algorithmController = new LiseAlternativeController();
+                ((LiseAlternativeController) algorithmController).setTMeasure(((Number)tSpanChooser.getModel().getValue()).doubleValue());
+                setState(algorithmController.init(currentGraph));
+                break;
             case "LLISE":
                 algorithmController = new LliseAlgorithmController();
                 ((LliseAlgorithmController) algorithmController).setTMeasure(((Number)tSpanChooser.getModel().getValue()).doubleValue());
@@ -149,6 +154,7 @@ public class AlgorithmForm {
     private void setupStartButton(){
         algoChooser.addItem("LIFE");
         algoChooser.addItem("LISE");
+        algoChooser.addItem("LISE (Alt)");
         algoChooser.addItem("LLISE");
         startButton.addActionListener(e -> {
             if (!algorithmRunning) {

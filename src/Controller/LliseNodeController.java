@@ -79,12 +79,8 @@ public class LliseNodeController extends AlgorithmController{
                             destinationNode.key > state.tSpannerMeasure * state.currentEdge.getLength()){
                         state.phase = LliseNodeAlgorithmPhase.MINCOVERAGEADDING;
                     }else{
-                        state.nodesOnShortestPath = shortestPathTree.getPathToSourceFromNode(destinationNode);
-                        for (int i = 0; i < state.nodesOnShortestPath.size() - 1; i++) {
-                            Node left = state.nodesOnShortestPath.get(i);
-                            Node right = state.nodesOnShortestPath.get(i + 1);
-                            state.edgesChosen.add(state.origin.getEdgeByIds(left.id, right.id));
-                        }
+                        state.shortestPath = shortestPathTree.getPathToSourceFromNode(state.origin, destinationNode);
+                        state.edgesChosen.addAll(state.shortestPath);
                         state.phase = LliseNodeAlgorithmPhase.CURRENTEDGECHOOSING;
                     }
 

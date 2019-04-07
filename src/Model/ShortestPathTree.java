@@ -10,7 +10,6 @@ public class ShortestPathTree {
     public Node[] previousNode;
     public int sourceId;
 
-
     public ShortestPathTree(Graph originGraph, int sourceId){
 
         previousNode = new Node[originGraph.nodeList.size()];
@@ -20,20 +19,15 @@ public class ShortestPathTree {
 
     }
 
-    public LinkedList<Node> getPathToSourceFromNode(Node destinationNode){
-        LinkedList<Node> path = new LinkedList<Node>();
+    public LinkedList<Edge> getPathToSourceFromNode(Graph origin, Node destinationNode){
+        LinkedList<Edge> path = new LinkedList<>();
         Node currentNode = destinationNode;
-        path.add(currentNode);
         while(currentNode.id != sourceId){
-            path.add(previousNode[currentNode.id]);
+            path.add(origin.getEdgeByIds(currentNode.id, previousNode[currentNode.id].id));
             currentNode = previousNode[currentNode.id];
         }
         return path;
     }
 
     //public HashMap<Node,Integer> distance = new HashMap<Node,Integer>();
-
-
-
-
 }
