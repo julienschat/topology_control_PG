@@ -9,6 +9,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Observable;
 
+/**
+ * The class GraphDrawer is responsible for drawing the Graph and changes performed on it in the Editormenu.
+ */
 public class GraphDrawer extends Observable {
     private DrawPanel drawPanel;
 

@@ -9,6 +9,11 @@ import java.awt.*;
 
 import static Model.LiseAlgorithmPhase.*;
 
+/**
+ * AlgorithmsDrawer is the class responsible for visualizing the different algorithms and their current state of operation.
+ * It is capable of drawing nodes, edges and coverages in different colors.
+ * The drawing differentiates between the different AlgorithmStates, to account for their unique procedure.
+ */
 public class AlgorithmDrawer {
 
     private DrawPanel drawPanel;
