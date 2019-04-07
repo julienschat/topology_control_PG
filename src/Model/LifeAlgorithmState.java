@@ -15,7 +15,10 @@ public class LifeAlgorithmState extends AlgorithmState {
     public LinkedList<Edge> edgesByCoverage;
     public UnionFind unionFind = new UnionFind();
 
-    public LifeAlgorithmPhase phase;
+    public LifeAlgorithmPhase currentPhase;
+    public LifeAlgorithmPhase nextPhase;
+
+    public Edge currentEdge;
 
     public LifeAlgorithmState(Graph _origin) {
         super(_origin);
@@ -27,8 +30,9 @@ public class LifeAlgorithmState extends AlgorithmState {
         LifeAlgorithmState state = new LifeAlgorithmState(origin);
         state.edgesChosen.addAll(this.edgesChosen);
         state.edgesByCoverage = this.edgesByCoverage;
-        state.phase = this.phase;
+        state.nextPhase = this.nextPhase;
         state.unionFind = this.unionFind;
+        state.currentEdge = this.currentEdge;
         return state;
     }
 }

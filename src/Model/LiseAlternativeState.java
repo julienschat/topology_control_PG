@@ -23,6 +23,7 @@ public class LiseAlternativeState extends LiseAlgorithmState {
         super.cloneTo(state);
         state.edgesByCoverageInCycle.addAll(edgesByCoverageInCycle);
         state.edgesFinal.addAll(edgesFinal);
+        state.shortestPath = shortestPath;
         return state;
     }
 }

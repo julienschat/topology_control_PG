@@ -137,28 +137,25 @@ public class AlgorithmDrawer {
         } else if (state instanceof LifeAlgorithmState) {
             LifeAlgorithmState lifeState = (LifeAlgorithmState) state;
 
-            if (lifeState.phase != LifeAlgorithmPhase.FINISHED) {
-                //Pre origin
-                if (!lifeState.edgesChosen.isEmpty()) {
-                    drawCoverage(lifeState.edgesChosen.getFirst(), lifeState.origin, colorMin);
+            if (lifeState.currentPhase != LifeAlgorithmPhase.FINISHED) {
+                // Pre origin
+                if (lifeState.currentEdge != null) {
+                    drawCoverage(lifeState.currentEdge, lifeState.origin, colorMin);
                 }
 
                 draw(state.origin, new Color(160, 160, 160));
 
-                //Post origin
-                if (!lifeState.edgesChosen.isEmpty()) {
-                    for (DataStructures.Node modelNode : lifeState.origin.getCoveredNodesByEdge(lifeState.edgesChosen.getFirst())) {
-                        drawNode(modelNode, Color.blue);
-                    }
-                }
-
+                // Post origin
                 for (Edge modelEdge : lifeState.edgesChosen) {
                     drawEdge(modelEdge, Color.black, 2);
                 }
-                if (!lifeState.edgesChosen.isEmpty()) {
-                    drawEdge(lifeState.edgesChosen.getFirst(), Color.blue, 2);
-                }
 
+                if (lifeState.currentEdge != null) {
+                    for (DataStructures.Node modelNode : lifeState.origin.getCoveredNodesByEdge(lifeState.currentEdge)) {
+                        drawNode(modelNode, Color.blue);
+                    }
+                    drawEdge(lifeState.currentEdge, Color.blue, 2);
+                }
             } else {
                 drawFinishedState(lifeState);
             }

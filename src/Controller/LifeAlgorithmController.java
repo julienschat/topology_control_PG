@@ -27,27 +27,34 @@ public class LifeAlgorithmController extends AlgorithmController {
         state.edgesByCoverage = origin.edgeList.stream()
                 .sorted(Comparator.comparing(e -> e.coverage))
                 .collect(Collectors.toCollection(LinkedList::new));
-        state.phase = LifeAlgorithmPhase.FINDING_EDGES;
+        state.nextPhase = LifeAlgorithmPhase.FINDING_EDGES;
         return state;
     }
 
     @Override
     protected Model.AlgorithmState processState(AlgorithmState algorithmState) {
         LifeAlgorithmState state = (LifeAlgorithmState) algorithmState;
-        switch (state.phase) {
+        state.currentPhase = state.nextPhase;
+        switch (state.nextPhase) {
             case FINDING_EDGES:
-                Edge e = state.edgesByCoverage.pop();
-                if (state.unionFind.find(e.left) != state.unionFind.find(e.right)) {
-                    state.edgesChosen.push(e);
-                    state.unionFind.union(e.left, e.right);
+                state.currentEdge = state.edgesByCoverage.pop();
+                if (state.unionFind.find(state.currentEdge.left) != state.unionFind.find(state.currentEdge.right)) {
+                    state.nextPhase = LifeAlgorithmPhase.ADDING_EDGES;
                 }
                 if (state.edgesByCoverage.isEmpty()) {
-                    state.phase = LifeAlgorithmPhase.PREFINISHED;
+                    state.nextPhase = LifeAlgorithmPhase.PREFINISHED;
                 }
                 break;
+            case ADDING_EDGES:
+                state.edgesChosen.push(state.currentEdge);
+                state.unionFind.union(state.currentEdge.left, state.currentEdge.right);
+                state.currentEdge = null;
+                state.nextPhase = LifeAlgorithmPhase.FINDING_EDGES;
+                break;
             case PREFINISHED:
+                state.currentEdge = null;
                 calculateFinishedNetwork(state);
-                state.phase = LifeAlgorithmPhase.FINISHED;
+                state.nextPhase = LifeAlgorithmPhase.FINISHED;
                 break;
         }
         return state;
@@ -55,14 +62,16 @@ public class LifeAlgorithmController extends AlgorithmController {
 
     @Override
     public boolean isFinished(AlgorithmState algorithmState) {
-        return ((LifeAlgorithmState) algorithmState).phase == LifeAlgorithmPhase.FINISHED;
+        return ((LifeAlgorithmState) algorithmState).nextPhase == LifeAlgorithmPhase.FINISHED;
     }
 
     @Override
     public String getPhaseDescription(AlgorithmState state) {
-        switch (((LifeAlgorithmState) state).phase) {
+        switch (((LifeAlgorithmState) state).currentPhase) {
             case FINDING_EDGES:
                 return "Finding Edges";
+            case ADDING_EDGES:
+                return "Adding Edges";
             case FINISHED:
                 return "Finished";
             default:
