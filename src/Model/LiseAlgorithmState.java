@@ -2,11 +2,12 @@ package Model;
 
 import DataStructures.Edge;
 import DataStructures.Graph;
-import DataStructures.Node;
 
 import java.util.LinkedList;
-import java.util.List;
 
+/**
+ * LiseAlgorithmState holds a list of edges sorted by coverage, the tSpannerGraph and some meta data for LISE.
+ */
 public class LiseAlgorithmState extends AlgorithmState {
 
     public LinkedList<Edge> edgesByCoverage = new LinkedList<Edge>();
@@ -18,7 +19,7 @@ public class LiseAlgorithmState extends AlgorithmState {
     public LiseAlgorithmPhase currentStatesPhase;
     public LinkedList<Edge> shortestPath;
 
-    public LiseAlgorithmState(Graph _origin, double tSpannerMeasure){
+    public LiseAlgorithmState(Graph _origin, double tSpannerMeasure) {
         super(_origin);
         this.tSpannerMeasure = tSpannerMeasure;
         edgesChosen = new LinkedList<Edge>();
@@ -39,7 +40,7 @@ public class LiseAlgorithmState extends AlgorithmState {
 
     @Override
     public AlgorithmState clone() {
-        LiseAlgorithmState newState = new LiseAlgorithmState(this.origin,this.tSpannerMeasure);
+        LiseAlgorithmState newState = new LiseAlgorithmState(this.origin, this.tSpannerMeasure);
         cloneTo(newState);
         return newState;
     }

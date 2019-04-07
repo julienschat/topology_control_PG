@@ -8,7 +8,8 @@ import java.util.LinkedList;
 
 /**
  * The LliseNodeAlgorithmState is the LLISE state for one particular node.
- * Additionally
+ * Additionally to the normal LiseStatus it remembers the node it works on, the flooded neighbourhood and holds
+ * a list of incidentEdges.
  */
 public class LliseNodeAlgorithmState extends LiseAlgorithmState {
     public LliseNodeAlgorithmPhase phase;

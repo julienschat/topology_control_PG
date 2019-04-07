@@ -1,7 +1,9 @@
 package Model;
 
+/**
+ * LISE phases
+ */
 public enum LiseAlgorithmPhase {
-
     INIT,
     MAXEDGECHOOSING,
     SHORTESTPATHCHECKING,
@@ -9,5 +11,4 @@ public enum LiseAlgorithmPhase {
     SAMECOVERAGECHOOSING,
     FINISHED,
     PREFINISHED
-
 }
