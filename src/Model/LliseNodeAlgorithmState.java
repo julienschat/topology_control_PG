@@ -6,43 +6,38 @@ import DataStructures.Node;
 
 import java.util.LinkedList;
 
-public class LliseNodeAlgorithmState extends AlgorithmState {
+/**
+ * The LliseNodeAlgorithmState is the LLISE state for one particular node.
+ * Additionally
+ */
+public class LliseNodeAlgorithmState extends LiseAlgorithmState {
     public LliseNodeAlgorithmPhase phase;
 
-    public LinkedList<Edge> edgesSortedByCoverage = new LinkedList<Edge>();
-    public LinkedList<Edge> incidentEdges = new LinkedList<Edge>();
+    public LinkedList<Edge> incidentEdges = new LinkedList<>();
     public Node currentNode;
-    public Edge currentEdge,currentEdgeMinCoverage;
+    public Edge currentEdge;
 
     public Graph floodedGraph;
-    public Graph newTSpannerGraph;
 
-    public double tSpannerMeasure;
-
-    public LliseNodeAlgorithmPhase currentStatesPhase;
-    public LinkedList<Edge> shortestPath;
-
-    public LliseNodeAlgorithmState(Graph _origin) {
-        super(_origin);
-        edgesChosen = new LinkedList<Edge>();
+    public LliseNodeAlgorithmState(Graph _origin, double tSpan) {
+        super(_origin, tSpan);
     }
 
     @Override
     public AlgorithmState clone() {
-        LliseNodeAlgorithmState newState = new LliseNodeAlgorithmState(this.origin);
-        newState.tSpannerMeasure = this.tSpannerMeasure;
+        LliseNodeAlgorithmState newState = new LliseNodeAlgorithmState(this.origin, tSpannerMeasure);
+        super.cloneTo(newState);
 
-        newState.currentEdge= this.currentEdge;
-        newState.currentEdgeMinCoverage = this.currentEdgeMinCoverage;
-        newState.edgesChosen.addAll(this.edgesChosen);
-        newState.currentStatesPhase = this.currentStatesPhase;
         newState.phase = this.phase;
-        if(this.newTSpannerGraph != null) newState.newTSpannerGraph = this.newTSpannerGraph.cloneGraphWithEdges();
-        if(!this.edgesSortedByCoverage.isEmpty()) newState.edgesSortedByCoverage.addAll(this.edgesSortedByCoverage);
-//        if(this.shortestPath!=null) newState.shortestPath.addAll(this.shortestPath);
-        if(this.floodedGraph != null ) newState.floodedGraph = this.floodedGraph.cloneGraphWithEdges();
-        if(!incidentEdges.isEmpty()) newState.incidentEdges.addAll(this.incidentEdges);
-        newState.currentNode = newState.origin.getNodeById(this.currentNode.id);
+        newState.currentEdge = this.currentEdge;
+
+        if (this.floodedGraph != null) {
+            newState.floodedGraph = this.floodedGraph.cloneGraphWithEdges();
+        }
+        if (!incidentEdges.isEmpty()) {
+            newState.incidentEdges.addAll(this.incidentEdges);
+        }
+        newState.currentNode = this.currentNode;
 
         return newState;
     }

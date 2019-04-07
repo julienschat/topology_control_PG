@@ -9,10 +9,11 @@ import java.util.stream.Collectors;
 
 public class LliseNodeController extends AlgorithmController{
     private Node currentNode;
+    private double tMeasure;
 
     @Override
     public AlgorithmState init(Graph origin) {
-        LliseNodeAlgorithmState state = new LliseNodeAlgorithmState(origin);
+        LliseNodeAlgorithmState state = new LliseNodeAlgorithmState(origin, tMeasure);
         state.currentNode = currentNode;
 
         state.incidentEdges = state.currentNode.edgeList.stream()
@@ -21,6 +22,10 @@ public class LliseNodeController extends AlgorithmController{
 
         state.phase = LliseNodeAlgorithmPhase.CURRENTEDGECHOOSING;
         return state;
+    }
+
+    public void setTMeasure(double t) {
+        this.tMeasure = t;
     }
 
     public void setNode(Node node) {
@@ -45,7 +50,7 @@ public class LliseNodeController extends AlgorithmController{
 
                 state.floodedGraph.calculateCoverages();
 
-                state.edgesSortedByCoverage = state.floodedGraph.edgeList.stream()
+                state.edgesByCoverage = state.floodedGraph.edgeList.stream()
                         .sorted(Comparator.comparing(e->e.coverage))
                         .collect(Collectors.toCollection(LinkedList::new));
 
@@ -60,13 +65,13 @@ public class LliseNodeController extends AlgorithmController{
 
                 break;
             case MINCOVERAGEADDING:
-                if(!state.edgesSortedByCoverage.isEmpty()) {
-                    state.currentEdgeMinCoverage = state.edgesSortedByCoverage.pop();
+                if(!state.edgesByCoverage.isEmpty()) {
+                    state.currentEdgeMinCoverage = state.edgesByCoverage.pop();
                     addEdgeToTSPanner(algorithmState, state.currentEdgeMinCoverage);
 
-                    while (!state.edgesSortedByCoverage.isEmpty() &&
-                        state.edgesSortedByCoverage.getFirst().coverage == state.currentEdgeMinCoverage.coverage) {
-                        Edge sameCoverage = state.edgesSortedByCoverage.pop();
+                    while (!state.edgesByCoverage.isEmpty() &&
+                        state.edgesByCoverage.getFirst().coverage == state.currentEdgeMinCoverage.coverage) {
+                        Edge sameCoverage = state.edgesByCoverage.pop();
                         addEdgeToTSPanner(algorithmState, sameCoverage);
                     }
 
