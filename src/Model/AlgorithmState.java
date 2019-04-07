@@ -1,5 +1,8 @@
 package Model;
 
+import DataStructures.Edge;
+import DataStructures.Graph;
+
 import java.util.LinkedList;
 
 

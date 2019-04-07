@@ -1,6 +1,4 @@
-package Model;
-
-import java.util.*;
+package DataStructures;
 
 public class Dijkstra {
     public static ShortestPathTree runDijkstra(Graph graph, Node source){

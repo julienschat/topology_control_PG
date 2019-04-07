@@ -1,5 +1,9 @@
 package Model;
 
+import DataStructures.Edge;
+import DataStructures.Graph;
+import DataStructures.Node;
+
 import java.util.LinkedList;
 
 public class LliseNodeAlgorithmState extends AlgorithmState {

@@ -1,5 +1,7 @@
 package View;
 
+import DataStructures.Edge;
+import DataStructures.Node;
 import View.Shapes.Rectangle;
 import java.awt.*;
 import java.util.Arrays;
@@ -17,7 +19,7 @@ public class HeatmapDrawer {
         this.gridSize = 2;
     }
 
-    public void updateScaling(List<Model.Edge> edgeList) {
+    public void updateScaling(List<Edge> edgeList) {
         updateScaling(this.calculateMap(gridSize, edgeList));
     }
 
@@ -28,25 +30,25 @@ public class HeatmapDrawer {
                 .orElse(0);
     }
 
-    private int[][] calculateMap(int gridSize, List<Model.Edge> edgeList) {
+    private int[][] calculateMap(int gridSize, List<Edge> edgeList) {
         int height = drawPanel.getHeight();
         int width = drawPanel.getWidth();
         // map stores how many edges affect the grid cell
         map = new int[width / gridSize + 1][height / gridSize + 1];
-        for (Model.Edge edge: edgeList) {
+        for (Edge edge: edgeList) {
             updateMapCells(gridSize, edge);
         }
 
         return map;
     }
 
-    public void scaleAndDrawMap(List<Model.Edge> edgeList) {
+    public void scaleAndDrawMap(List<Edge> edgeList) {
         int[][] map = calculateMap(gridSize, edgeList);
         updateScaling(map);
         draw(map);
     }
 
-    private void updateMapCells(int gridSize, Model.Edge edge) {
+    private void updateMapCells(int gridSize, Edge edge) {
         // check which grid cells are affected by the edge
         double radius = edge.getLength();
         double radiusSq = Math.pow(radius, 2);
@@ -105,14 +107,14 @@ public class HeatmapDrawer {
 //        }
     }
 
-    public void draw(List<Model.Edge> edgeList){
+    public void draw(List<Edge> edgeList){
         int[][] map = calculateMap(gridSize, edgeList);
         draw(map);
     }
 
-    public void drawCurrentHeatOfNodes(List<Model.Node> nodes){
+    public void drawCurrentHeatOfNodes(List<Node> nodes){
         int scaling = Arrays.stream(map).map(row -> Arrays.stream(row).max().orElse(0)).max(Comparator.naturalOrder()).orElse(0);
-        for(Model.Node modelNode : nodes){
+        for(Node modelNode : nodes){
             int x = (int)(modelNode.x);
             int y = (int)(modelNode.y);
             float heatValue = ((float) map[x/gridSize][y/gridSize] / scaling);

@@ -1,6 +1,6 @@
 package Controller;
 
-import Model.Graph;
+import DataStructures.Graph;
 import View.EditorForm;
 
 import javax.swing.*;

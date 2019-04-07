@@ -1,6 +1,7 @@
 package View;
 
-import Model.Graph;
+import DataStructures.Node;
+import DataStructures.Graph;
 import View.Shapes.Edge;
 import View.Shapes.Radius;
 
@@ -17,10 +18,10 @@ public class GraphDrawer extends Observable {
 
     private boolean nodeClick = false;
 
-    public Model.Node draggedNode;
-    public Model.Node hoveredNode;
-    public Model.Node clickedNode;
-    public Model.Node draggedRadiusNode;
+    public Node draggedNode;
+    public Node hoveredNode;
+    public Node clickedNode;
+    public Node draggedRadiusNode;
 
     private HeatmapDrawer heatmapDrawer;
 
@@ -40,7 +41,7 @@ public class GraphDrawer extends Observable {
         heatmapDrawer = new HeatmapDrawer(panel);
     }
 
-    public void drawNode(Model.Node modelNode, boolean drawRadius, Color color) {
+    public void drawNode(Node modelNode, boolean drawRadius, Color color) {
         View.Shapes.Node viewNode = new View.Shapes.Node(modelNode.x, modelNode.y);
         viewNode.color = color;
 
@@ -116,7 +117,7 @@ public class GraphDrawer extends Observable {
             this.heatmapDrawer.scaleAndDrawMap(graph.edgeList);
         }
 
-        for (Model.Node modelNode : graph.nodeList) {
+        for (Node modelNode : graph.nodeList) {
             drawNode(modelNode, radii, Color.BLACK);
 //            double dist = node.edgeList.stream()
 //                    .map(e -> e.left.distanceTo(e.right))
@@ -125,7 +126,7 @@ public class GraphDrawer extends Observable {
 //            if (dist > 0) {
 //                drawPanel.shapes.add(new Radius(node.x, node.y, dist));
 //            }
-//            for (Model.Node other : graph.nodeList) {
+//            for (DataStructures.Node other : graph.nodeList) {
 //                if (node.distanceTo(other) < dist) {
 //                    if (!node.getNeighbours().contains(other)) {
 //                        Edge shapeEdge = new Edge(node.x, node.y, other.x, other.y);
@@ -135,7 +136,7 @@ public class GraphDrawer extends Observable {
 //                }
 //            }
         }
-        for (Model.Edge edge: graph.edgeList) {
+        for (DataStructures.Edge edge: graph.edgeList) {
             drawPanel.shapes.add(new Edge(edge.left.x, edge.left.y, edge.right.x, edge.right.y));
         }
 

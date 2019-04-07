@@ -1,7 +1,6 @@
-package Model;
+package DataStructures;
 
 import java.util.LinkedList;
-import java.util.List;
 
 public class ShortestPathTree {
 

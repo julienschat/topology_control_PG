@@ -1,8 +1,9 @@
 package Controller;
 
+import DataStructures.Edge;
+import DataStructures.Graph;
 import Model.*;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;

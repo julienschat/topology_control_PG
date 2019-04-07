@@ -1,4 +1,4 @@
-package Model;
+package DataStructures;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

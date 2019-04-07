@@ -2,7 +2,7 @@ package View;
 
 import Controller.*;
 import Model.AlgorithmState;
-import Model.Graph;
+import DataStructures.Graph;
 
 import javax.swing.*;
 import java.awt.*;

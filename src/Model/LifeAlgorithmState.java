@@ -1,8 +1,10 @@
 package Model;
 
-import java.util.ArrayList;
+import DataStructures.Edge;
+import DataStructures.Graph;
+import DataStructures.UnionFind;
+
 import java.util.LinkedList;
-import java.util.List;
 
 public class LifeAlgorithmState extends AlgorithmState {
 

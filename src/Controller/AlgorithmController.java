@@ -1,12 +1,12 @@
 package Controller;
 
+import DataStructures.Graph;
 import Model.AlgorithmState;
-import Model.Edge;
-import Model.Node;
+import DataStructures.Edge;
 
 abstract public class AlgorithmController {
 
-    public abstract Model.AlgorithmState init(Model.Graph pristine);
+    public abstract Model.AlgorithmState init(Graph pristine);
 
     public Model.AlgorithmState next(Model.AlgorithmState state) {
         if (state.next != null) {

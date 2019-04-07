@@ -1,5 +1,7 @@
 package Controller;
 
+import DataStructures.Edge;
+import DataStructures.Graph;
 import Model.*;
 
 import java.util.Comparator;

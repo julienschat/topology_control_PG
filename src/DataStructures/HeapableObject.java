@@ -1,4 +1,4 @@
-package Model;
+package DataStructures;
 
 public abstract class HeapableObject {
     public int index;

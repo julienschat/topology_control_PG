@@ -1,9 +1,9 @@
 package View;
 
+import DataStructures.Edge;
+import DataStructures.Graph;
 import Model.*;
 import View.Shapes.Circle;
-import View.Shapes.Node;
-import View.Shapes.Text;
 
 import java.awt.*;
 
@@ -23,13 +23,13 @@ public class AlgorithmDrawer {
         this.drawPanel = panel;
         heatMapDrawer = new HeatmapDrawer(panel);
     }
-    public void drawNode(Model.Node modelNode, Color color){
+    public void drawNode(DataStructures.Node modelNode, Color color){
         View.Shapes.Node viewNode = new View.Shapes.Node(modelNode.x,modelNode.y);
         viewNode.color = color;
         drawPanel.shapes.add(viewNode);
     }
 
-    public void drawEdge(Model.Edge modelEdge, Color color, int width){
+    public void drawEdge(Edge modelEdge, Color color, int width){
         View.Shapes.Edge viewEdge = new View.Shapes.Edge(modelEdge.left.x,modelEdge.left.y,modelEdge.right.x,modelEdge.right.y);
         viewEdge.strokeWidth = width;
         viewEdge.color = color;
@@ -51,7 +51,7 @@ public class AlgorithmDrawer {
     }
 
     private void draw(Graph graph, Color color){
-        for(Model.Node modelNode : graph.nodeList){
+        for(DataStructures.Node modelNode : graph.nodeList){
             drawNode(modelNode,color);
         }
 
@@ -62,7 +62,7 @@ public class AlgorithmDrawer {
         drawPanel.update();
     }
 
-    public void drawCoverage(Model.Edge edge, Model.Graph graph, Color color){
+    public void drawCoverage(Edge edge, Graph graph, Color color){
         View.Shapes.Circle circle1 = new Circle(edge.left.x,edge.left.y,edge.getLength());
         View.Shapes.Circle circle2 = new Circle(edge.right.x,edge.right.y,edge.getLength());
 
@@ -101,18 +101,18 @@ public class AlgorithmDrawer {
                 //Post drawing of origin:
 
                 //Mark Edges already chosen for new network
-                for (Model.Edge modelEdge : state.edgesChosen) {
+                for (Edge modelEdge : state.edgesChosen) {
                     drawEdge(modelEdge, new Color(0, 0, 0), 2);
                 }
 
                 // Mark nodes covered by Min and Max Edge
                 if (liseState.currentEdgeMaxCoverage != null) {
-                    for (Model.Node modelNode : liseState.origin.getCoveredNodesByEdge(liseState.currentEdgeMaxCoverage)) {
+                    for (DataStructures.Node modelNode : liseState.origin.getCoveredNodesByEdge(liseState.currentEdgeMaxCoverage)) {
                         drawNode(modelNode, Color.red);
                     }
                 }
                 if (liseState.currentStatesPhase == MINEDGECHOOSING || liseState.currentStatesPhase == SAMECOVERAGECHOOSING) {
-                    for (Model.Node modelNode : liseState.origin.getCoveredNodesByEdge(liseState.currentEdgeMinCoverage)) {
+                    for (DataStructures.Node modelNode : liseState.origin.getCoveredNodesByEdge(liseState.currentEdgeMinCoverage)) {
                         drawNode(modelNode, Color.blue);
                     }
                 }
@@ -146,12 +146,12 @@ public class AlgorithmDrawer {
 
                 //Post origin
                 if (!lifeState.edgesChosen.isEmpty()) {
-                    for (Model.Node modelNode : lifeState.origin.getCoveredNodesByEdge(lifeState.edgesChosen.getFirst())) {
+                    for (DataStructures.Node modelNode : lifeState.origin.getCoveredNodesByEdge(lifeState.edgesChosen.getFirst())) {
                         drawNode(modelNode, Color.blue);
                     }
                 }
 
-                for (Model.Edge modelEdge : lifeState.edgesChosen) {
+                for (Edge modelEdge : lifeState.edgesChosen) {
                     drawEdge(modelEdge, Color.black, 2);
                 }
                 if (!lifeState.edgesChosen.isEmpty()) {
@@ -182,14 +182,14 @@ public class AlgorithmDrawer {
 
                 if (lliseState.nodeState.newTSpannerGraph != null) {
                     //Show current network in which calculations are made
-                    for (Model.Edge modelEdge : lliseState.nodeState.newTSpannerGraph.edgeList) {
+                    for (Edge modelEdge : lliseState.nodeState.newTSpannerGraph.edgeList) {
                         drawEdge(modelEdge, new Color(0, 0, 0), 2);
                     }
                 }
 
                 // Mark nodes covered by current Edge
                 if (lliseState.nodeState.currentEdge != null) {
-                    for (Model.Node modelNode : lliseState.nodeState.origin.getCoveredNodesByEdge(lliseState.nodeState.currentEdge)) {
+                    for (DataStructures.Node modelNode : lliseState.nodeState.origin.getCoveredNodesByEdge(lliseState.nodeState.currentEdge)) {
                         drawNode(modelNode, Color.red);
                     }
                 }
@@ -220,12 +220,12 @@ public class AlgorithmDrawer {
 
     private void drawFinishedState(AlgorithmState state){
         draw(state.origin, new Color(160, 160, 160));
-        for(Model.Edge modelEdge : state.edgesChosen){
+        for(Edge modelEdge : state.edgesChosen){
             drawEdge(modelEdge, Color.black, 2);
         }
     }
 
-    public void updateScaling(java.util.List<Model.Edge> edgeList) {
+    public void updateScaling(java.util.List<Edge> edgeList) {
         this.heatMapDrawer.updateScaling(edgeList);
     }
 }

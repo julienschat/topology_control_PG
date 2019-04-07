@@ -1,13 +1,13 @@
 package View;
 
-import Model.Graph;
+import DataStructures.Graph;
+import DataStructures.Node;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Paths;
 
 import static java.lang.Math.pow;
@@ -17,7 +17,7 @@ public class EditorForm {
 
     private boolean nodeDrawing = false;
     private boolean radiusDrawing = false;
-    private Model.Node drawnNode = null;
+    private Node drawnNode = null;
     private int drawnX, drawnY;
     private boolean nodeDragging = false;
     private boolean radiusDragging = false;
@@ -154,7 +154,7 @@ public class EditorForm {
             public void mouseDragged(MouseEvent e) {
                 super.mouseDragged(e);
                 if (graphDrawer.draggedRadiusNode != null) {
-                    Model.Node n = graphDrawer.draggedRadiusNode;
+                    Node n = graphDrawer.draggedRadiusNode;
                     n.radius = sqrt(pow(n.x - e.getX(), 2) + pow(n.y - e.getY(), 2));
                     currentGraph.updateNeighbours(n);
                     drawGraph();
@@ -197,7 +197,7 @@ public class EditorForm {
                 if (nodeDrawing) {
                     drawnX = e.getX();
                     drawnY = e.getY();
-                    drawnNode = new Model.Node(drawnX, drawnY, 0);
+                    drawnNode = new Node(drawnX, drawnY, 0);
                     currentGraph.insertNode(drawnNode);
 
                     drawGraph();

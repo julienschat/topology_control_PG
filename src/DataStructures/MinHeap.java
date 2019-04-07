@@ -1,4 +1,4 @@
-package Model;
+package DataStructures;
 
 public class MinHeap {
     public int size;
