@@ -6,13 +6,16 @@ import DataStructures.Graph;
 import java.util.LinkedList;
 import java.util.List;
 
-public class LliseAlgorithmState extends AlgorithmState{
+/**
+ * The LliseAlgorithmState maintains always one LliseNodeAlgorithmState which in theory would be multiple in parallel.
+ */
+public class LliseAlgorithmState extends AlgorithmState {
 
     public LliseNodeAlgorithmState nodeState;
     public LliseAlgorithmPhase phase;
 
     public int currentNodeID;
-    public LinkedList<List<Edge>> edgesChosenByNodes =  new LinkedList<>();
+    public LinkedList<List<Edge>> edgesChosenByNodes = new LinkedList<>();
 
     public LliseAlgorithmState(Graph _origin) {
         super(_origin);
@@ -22,7 +25,7 @@ public class LliseAlgorithmState extends AlgorithmState{
     @Override
     public AlgorithmState clone() {
         LliseAlgorithmState newState = new LliseAlgorithmState(origin);
-        newState.nodeState = (LliseNodeAlgorithmState)nodeState.clone();
+        newState.nodeState = (LliseNodeAlgorithmState) nodeState.clone();
         newState.phase = phase;
         newState.currentNodeID = currentNodeID;
         newState.edgesChosenByNodes.addAll(edgesChosenByNodes);

@@ -1,7 +1,10 @@
 package Model;
 
+/**
+ * LIFE phases
+ */
 public enum LifeAlgorithmPhase {
-    INIT,
     FINDING_EDGES,
+    PREFINISHED,
     FINISHED
 }

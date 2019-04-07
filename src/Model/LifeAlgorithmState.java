@@ -6,6 +6,10 @@ import DataStructures.UnionFind;
 
 import java.util.LinkedList;
 
+/**
+ * LifeAlgorithmState holds a list of edges sorted by coverage and a union find data structure to save the connected
+ * components of the network.
+ */
 public class LifeAlgorithmState extends AlgorithmState {
 
     public LinkedList<Edge> edgesByCoverage;

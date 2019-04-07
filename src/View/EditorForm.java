@@ -13,6 +13,10 @@ import java.nio.file.Paths;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
+/**
+ * The EditorForm wires the buttons of the Editor Frontend with the corresponding controllers.
+ * It interacts heavily with the GraphDrawer to find out which nodes, edges and radii are interacted with.
+ */
 public class EditorForm {
 
     private boolean nodeDrawing = false;
@@ -122,6 +126,7 @@ public class EditorForm {
                     drawGraph();
                 }
             }
+
             @Override
             public void mouseMoved(MouseEvent e) {
                 super.mouseMoved(e);
@@ -144,7 +149,7 @@ public class EditorForm {
         if (coverageRadioButton.isSelected()) {
             currentGraph.calculateCoverages();
         }
-        graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(),heatmapRadioButton.isSelected(),
+        graphDrawer.draw(currentGraph, radiiRadioButton.isSelected(), heatmapRadioButton.isSelected(),
                 coverageRadioButton.isSelected());
     }
 

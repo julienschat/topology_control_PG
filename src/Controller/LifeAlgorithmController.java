@@ -35,15 +35,21 @@ public class LifeAlgorithmController extends AlgorithmController {
     @Override
     protected Model.AlgorithmState processState(AlgorithmState algorithmState) {
         LifeAlgorithmState state = (LifeAlgorithmState) algorithmState;
-        if (state.phase != LifeAlgorithmPhase.FINISHED) {
-            Edge e = state.edgesByCoverage.pop();
-            if (state.unionFind.find(e.left) != state.unionFind.find(e.right)) {
-                state.edgesChosen.push(e);
-                state.unionFind.union(e.left, e.right);
-            }
-            if (state.edgesByCoverage.isEmpty()) {
+        switch(state.phase) {
+            case FINDING_EDGES:
+                Edge e = state.edgesByCoverage.pop();
+                if (state.unionFind.find(e.left) != state.unionFind.find(e.right)) {
+                    state.edgesChosen.push(e);
+                    state.unionFind.union(e.left, e.right);
+                }
+                if (state.edgesByCoverage.isEmpty()) {
+                    state.phase = LifeAlgorithmPhase.PREFINISHED;
+                }
+                break;
+            case PREFINISHED:
+                calculateFinishedNetwork(state);
                 state.phase = LifeAlgorithmPhase.FINISHED;
-            }
+                break;
         }
         return state;
     }

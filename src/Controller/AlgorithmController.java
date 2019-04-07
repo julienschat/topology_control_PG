@@ -33,27 +33,23 @@ abstract public class AlgorithmController {
     }
 
     public void calculateFinishedNetwork(Model.AlgorithmState state){
-        Edge[] maxEdgePerNode = new Edge[state.origin.nodeList.size()];
+        double[] maxEdgeLengthPerNode = new double[state.origin.nodeList.size()];
+        // calculate longest edge for each node
         for(Edge edge : state.edgesChosen){
-            if(maxEdgePerNode[edge.left.id] !=null){
-                if(edge.getLength()>maxEdgePerNode[edge.left.id].getLength()) {
-                    maxEdgePerNode[edge.left.id] = edge;
-                }
-            }else{
-                maxEdgePerNode[edge.left.id] = edge;
+            double edgeLength = edge.getLength();
+            if(maxEdgeLengthPerNode[edge.left.id] < edgeLength){
+                maxEdgeLengthPerNode[edge.left.id] = edgeLength;
             }
 
-            if(maxEdgePerNode[edge.right.id] !=null){
-                if(edge.getLength()>maxEdgePerNode[edge.right.id].getLength()) {
-                    maxEdgePerNode[edge.right.id] = edge;
-                }
-            }else{
-                maxEdgePerNode[edge.right.id] = edge;
+            if(maxEdgeLengthPerNode[edge.right.id] < edgeLength){
+                maxEdgeLengthPerNode[edge.right.id] = edgeLength;
             }
         }
         state.edgesChosen.clear();
+
         for(Edge edge : state.origin.edgeList){
-            if((maxEdgePerNode[edge.left.id]!=null&&maxEdgePerNode[edge.left.id].getLength()>=edge.getLength())&&(maxEdgePerNode[edge.right.id]!=null&&maxEdgePerNode[edge.right.id].getLength()>=edge.getLength())){
+            double edgeLength = edge.getLength();
+            if (maxEdgeLengthPerNode[edge.left.id] >= edgeLength && maxEdgeLengthPerNode[edge.right.id] >= edgeLength) {
                 state.edgesChosen.add(edge);
             }
         }

@@ -3,11 +3,17 @@ package View;
 import DataStructures.Edge;
 import DataStructures.Node;
 import View.Shapes.Rectangle;
+
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Draws a heatmap on the background of a drawPanel. The heatmap shows areas that have high interference.
+ * It samples squares in size of the internal gridSize parameter and draws a color ranging from blue over green and
+ * yellow to red. Where blue is a minimal interference and red is the maximum.
+ */
 public class HeatmapDrawer {
     private DrawPanel drawPanel;
     private int[][] map;
@@ -35,7 +41,7 @@ public class HeatmapDrawer {
         int width = drawPanel.getWidth();
         // map stores how many edges affect the grid cell
         map = new int[width / gridSize + 1][height / gridSize + 1];
-        for (Edge edge: edgeList) {
+        for (Edge edge : edgeList) {
             updateMapCells(gridSize, edge);
         }
 
@@ -52,8 +58,8 @@ public class HeatmapDrawer {
         // check which grid cells are affected by the edge
         double radius = edge.getLength();
         double radiusSq = Math.pow(radius, 2);
-        int boxLeft = Math.max(0, (int)(Math.min(edge.left.x, edge.right.x) - radius) / gridSize);
-        int boxTop =  Math.max(0, (int)(Math.min(edge.left.y, edge.right.y) - radius) / gridSize);
+        int boxLeft = Math.max(0, (int) (Math.min(edge.left.x, edge.right.x) - radius) / gridSize);
+        int boxTop = Math.max(0, (int) (Math.min(edge.left.y, edge.right.y) - radius) / gridSize);
         int maxBoxSize = 3 * (int) radius / gridSize;
         int boxXSize = Math.min(boxLeft + maxBoxSize, map.length) - boxLeft;
         int boxYSize = Math.min(boxTop + maxBoxSize, map[0].length) - boxTop;
@@ -107,19 +113,19 @@ public class HeatmapDrawer {
 //        }
     }
 
-    public void draw(List<Edge> edgeList){
+    public void draw(List<Edge> edgeList) {
         int[][] map = calculateMap(gridSize, edgeList);
         draw(map);
     }
 
-    public void drawCurrentHeatOfNodes(List<Node> nodes){
+    public void drawCurrentHeatOfNodes(List<Node> nodes) {
         int scaling = Arrays.stream(map).map(row -> Arrays.stream(row).max().orElse(0)).max(Comparator.naturalOrder()).orElse(0);
-        for(Node modelNode : nodes){
-            int x = (int)(modelNode.x);
-            int y = (int)(modelNode.y);
-            float heatValue = ((float) map[x/gridSize][y/gridSize] / scaling);
+        for (Node modelNode : nodes) {
+            int x = (int) (modelNode.x);
+            int y = (int) (modelNode.y);
+            float heatValue = ((float) map[x / gridSize][y / gridSize] / scaling);
             float hue = 0.6f - (heatValue * 0.6f);
-            View.Shapes.Node viewNode = new View.Shapes.Node(modelNode.x,modelNode.y);
+            View.Shapes.Node viewNode = new View.Shapes.Node(modelNode.x, modelNode.y);
             viewNode.color = new Color(Color.HSBtoRGB(hue, 1, 0.7f));
             viewNode.drawBorder = true;
             drawPanel.shapes.add(viewNode);

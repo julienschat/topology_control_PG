@@ -2,6 +2,9 @@ package View.Shapes;
 
 import java.awt.*;
 
+/**
+ * A Shape to draw text strings.
+ */
 public class Text extends Shape {
     private final String text;
     private final double x;
@@ -15,7 +18,7 @@ public class Text extends Shape {
 
     @Override
     public void drawShape(Graphics2D g) {
-        g.drawString(text,(float) x, (float) y);
+        g.drawString(text, (float) x, (float) y);
     }
 
     @Override

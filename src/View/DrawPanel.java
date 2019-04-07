@@ -8,6 +8,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 
+/**
+ * The DrawPanel subclasses JPanel and draws Shapes on itself. It calls the draw method of the shapes to draw them.
+ * It also redirects all kind of mouse events to the shapes. It simulates mouseenter and mouseleave events for shapes.
+ */
 public class DrawPanel extends JPanel {
 
     public java.util.List<View.Shapes.Shape> shapes = new LinkedList<View.Shapes.Shape>();
@@ -22,7 +26,7 @@ public class DrawPanel extends JPanel {
     }
 
     private void redirectMouseEvent(MouseEvent e, RedirectMouseEvent deferrer) {
-        for (View.Shapes.Shape shape: this.shapes) {
+        for (View.Shapes.Shape shape : this.shapes) {
             if (shape.isNear(e.getX(), e.getY())) {
                 for (MouseAdapter ma : shape.getMouseListeners()) {
                     deferrer.redirect(ma);
@@ -32,7 +36,7 @@ public class DrawPanel extends JPanel {
     }
 
     private void createEnterEvents(MouseEvent e) {
-        for (View.Shapes.Shape shape: this.shapes) {
+        for (View.Shapes.Shape shape : this.shapes) {
             if (shape.isNear(e.getX(), e.getY()) && !shape.hovered) {
                 shape.hovered = true;
                 for (MouseAdapter ma : shape.getMouseListeners()) {
@@ -43,7 +47,7 @@ public class DrawPanel extends JPanel {
     }
 
     private void createExitEvents(MouseEvent e) {
-        for (View.Shapes.Shape shape: this.shapes) {
+        for (View.Shapes.Shape shape : this.shapes) {
             if (!shape.isNear(e.getX(), e.getY()) && shape.hovered) {
                 shape.hovered = false;
                 for (MouseAdapter ma : shape.getMouseListeners()) {
@@ -99,11 +103,16 @@ public class DrawPanel extends JPanel {
     }
 
     @Override
-    public void paintComponent(Graphics g){
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        for (Shape shape : shapes){
-             shape.draw(g);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+
+        for (Shape shape : shapes) {
+            shape.draw(g2d);
         }
     }
 }

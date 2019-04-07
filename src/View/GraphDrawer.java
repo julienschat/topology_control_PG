@@ -51,21 +51,25 @@ public class GraphDrawer extends Observable {
                 super.mousePressed(e);
                 draggedNode = modelNode;
             }
+
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
                 draggedNode = null;
             }
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 super.mouseEntered(e);
                 hoveredNode = modelNode;
             }
+
             @Override
             public void mouseExited(MouseEvent e) {
                 super.mouseExited(e);
                 hoveredNode = null;
             }
+
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
@@ -94,11 +98,13 @@ public class GraphDrawer extends Observable {
                     radius.color = Color.BLACK;
                     drawPanel.update();
                 }
+
                 @Override
                 public void mousePressed(MouseEvent e) {
                     super.mousePressed(e);
                     draggedRadiusNode = modelNode;
                 }
+
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     super.mouseReleased(e);
@@ -136,11 +142,11 @@ public class GraphDrawer extends Observable {
 //                }
 //            }
         }
-        for (DataStructures.Edge edge: graph.edgeList) {
+        for (DataStructures.Edge edge : graph.edgeList) {
             drawPanel.shapes.add(new Edge(edge.left.x, edge.left.y, edge.right.x, edge.right.y));
         }
 
-        if(heatMap) {
+        if (heatMap) {
             this.heatmapDrawer.drawCurrentHeatOfNodes(graph.nodeList);
         }
 

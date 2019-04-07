@@ -6,10 +6,13 @@ import java.awt.geom.Ellipse2D;
 import static java.lang.Math.pow;
 import static java.lang.StrictMath.sqrt;
 
+/**
+ * A circle around a point
+ */
 public class Radius extends Shape {
     public double x;
     public double y;
-    public double radius;
+    private double radius;
 
     public Radius(double x, double y, double r) {
         this.x = x;
@@ -19,7 +22,7 @@ public class Radius extends Shape {
 
     @Override
     public void drawShape(Graphics2D g2d) {
-        Ellipse2D.Double circle = new Ellipse2D.Double(x-radius,y-radius,radius*2,radius*2);
+        Ellipse2D.Double circle = new Ellipse2D.Double(x - radius, y - radius, radius * 2, radius * 2);
         g2d.draw(circle);
     }
 

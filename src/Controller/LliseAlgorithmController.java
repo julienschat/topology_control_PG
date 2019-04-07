@@ -23,8 +23,8 @@ public class LliseAlgorithmController extends AlgorithmController{
         state.currentNodeID = origin.nodeList.size()-1;
 
         nodeController.setNode(origin.getNodeById(state.currentNodeID));
+        nodeController.setTMeasure(tMeasure);
         state.nodeState = ((LliseNodeAlgorithmState)nodeController.init(origin));
-        state.nodeState.tSpannerMeasure = tMeasure;
         state.phase = RUN_PARALLEL;
 
         return state;
