@@ -123,7 +123,7 @@ public class AlgorithmDrawer {
                         drawEdge(edge, Color.green, 2);
                     }
                 }
-                
+
             } else {
                 drawFinishedState(liseState);
             }

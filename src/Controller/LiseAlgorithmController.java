@@ -44,7 +44,6 @@ public class LiseAlgorithmController extends AlgorithmController{
                 state.currentStatesPhase = LiseAlgorithmPhase.MAXEDGECHOOSING;
 
                 state.currentEdgeMaxCoverage = state.edgesByCoverage.getLast();
-                state.edgesByCoverage.removeLast();
                 state.phase = LiseAlgorithmPhase.SHORTESTPATHCHECKING;
 
             break;
@@ -90,10 +89,8 @@ public class LiseAlgorithmController extends AlgorithmController{
                 state.edgesChosen.add(state.currentEdgeMinCoverage);
                 addEdgeToTSPanner(algorithmState,state.currentEdgeMinCoverage);
 
-
-                if(!state.edgesByCoverage.isEmpty()){
-                    state.phase = LiseAlgorithmPhase.SAMECOVERAGECHOOSING;
-                } else {
+                state.phase = LiseAlgorithmPhase.SAMECOVERAGECHOOSING;
+                if(state.edgesByCoverage.isEmpty()){
                     state.phase = LiseAlgorithmPhase.PREFINISHED;
                 }
 
