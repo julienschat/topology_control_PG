@@ -169,6 +169,9 @@ public class AlgorithmDrawer {
                 if (lliseState.nodeState.currentEdge != null)
                     drawCoverage(lliseState.nodeState.currentEdge, lliseState.nodeState.origin, colorMax);
 
+                if (lliseState.nodeState.currentPhase == LliseNodeAlgorithmPhase.MINCOVERAGEADDING)
+                    drawCoverage(lliseState.nodeState.currentEdgeMinCoverage, lliseState.nodeState.origin, colorMin);
+
                 draw(state.origin, new Color(180, 180, 180));
                 if (lliseState.nodeState.floodedGraph != null && lliseState.nodeState.nextPhase != LliseNodeAlgorithmPhase.FINISHED) {
                     draw(lliseState.nodeState.floodedGraph, new Color(80, 80, 80));
@@ -195,6 +198,12 @@ public class AlgorithmDrawer {
                 if (lliseState.nodeState.currentEdge != null) {
                     for (DataStructures.Node modelNode : lliseState.nodeState.origin.getCoveredNodesByEdge(lliseState.nodeState.currentEdge)) {
                         drawNode(modelNode, Color.red);
+                    }
+                }
+
+                if (lliseState.nodeState.currentPhase == LliseNodeAlgorithmPhase.MINCOVERAGEADDING) {
+                    for (DataStructures.Node modelNode : lliseState.nodeState.origin.getCoveredNodesByEdge(lliseState.nodeState.currentEdgeMinCoverage)) {
+                        drawNode(modelNode, Color.blue);
                     }
                 }
 
